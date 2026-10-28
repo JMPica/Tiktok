@@ -1,0 +1,24 @@
+{
+  "source": "IMG_4246_1.mov",
+  "output": "una_mes_CA.mp4",
+  "grade": "punchy",
+  "loop": true,
+  "brand": {"font": "Inter Display Black", "accent": "#96FF28", "punch_text": "#000000"},
+  "audio": {"keep_original": false, "sfx": true, "target_lufs": -16},
+  "segments": [
+    {"id": "hook",  "in": 25.75, "out": 26.70, "speed": 0.5,  "slowmo": true, "zoom": 1.2,  "x": 1.0,   "y": "bottom", "impact": 26.47},
+    {"id": "rep2",  "in": 15.40, "out": 17.00, "speed": 1.35, "zoom": 1.35, "x": 0.714, "y": "bottom", "impact": 16.45},
+    {"id": "rep5",  "in": 27.30, "out": 29.00, "speed": 1.35, "zoom": 1.15, "x": 1.0,   "y": "bottom", "impact": 28.35},
+    {"id": "palo1", "in": 34.60, "out": 37.40, "speed": 1.45, "zoom": 1.0,  "y": "bottom"},
+    {"id": "palo2", "in": 44.60, "out": 46.40, "speed": 1.35, "zoom": 1.5,  "x": 0.958, "y": "bottom"},
+    {"id": "outro", "in": 56.20, "out": 58.75, "speed": 1.3,  "zoom": 1.0,  "y": "bottom", "pushin": true, "silent_cut": true},
+    {"id": "cierre","in": 24.00, "out": 25.75, "speed": 1.35, "zoom": 1.2,  "x": 1.0,   "y": "bottom"}
+  ],
+  "captions": [
+    {"start": 0,        "end": "@rep2",  "text": "Una més i marxo."},
+    {"start": "@rep2",  "end": "@outro", "text": "L’última."},
+    {"start": "@palo1", "end": "@outro", "text": "Ara sí.", "y": 435},
+    {"start": "@outro", "end": "@cierre","text": "Ja està."},
+    {"start": "@cierre","end": "@total", "text": "Bé... una més.", "style": "punch", "y": 340}
+  ]
+}

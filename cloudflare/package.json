@@ -1,0 +1,8 @@
+{
+  "name": "blau-tiktok-v3-cloudflare",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "wrangler dev", "deploy": "wrangler deploy", "db:local": "wrangler d1 execute blau-tiktok-v3 --local --file=./schema.sql", "db:remote": "wrangler d1 execute blau-tiktok-v3 --remote --file=./schema.sql" },
+  "dependencies": { "jose": "^6.0.0" },
+  "devDependencies": { "wrangler": "^4.0.0" }
+}

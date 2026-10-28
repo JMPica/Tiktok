@@ -1,0 +1,20 @@
+services:
+  api:
+    build: .
+    environment:
+      STUDIO_DATA_DIR: /data
+      STUDIO_JWT_SECRET: ${STUDIO_JWT_SECRET:?Set a secret of at least 32 characters}
+      STUDIO_ORIGIN: ${STUDIO_ORIGIN:?Configure origin}
+    volumes: ["studio-data:/data"]
+    ports: ["127.0.0.1:8080:8080"] # Pruebas locales: no exponer API sin autenticación standalone
+    restart: unless-stopped
+  worker:
+    build: .
+    command: ["python","-m","server.worker"]
+    environment:
+      STUDIO_DATA_DIR: /data
+      STUDIO_JWT_SECRET: ${STUDIO_JWT_SECRET:?Set a secret of at least 32 characters}
+    volumes: ["studio-data:/data"]
+    restart: unless-stopped
+volumes:
+  studio-data:

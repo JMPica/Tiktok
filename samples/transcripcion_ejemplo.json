@@ -1,0 +1,15 @@
+{
+  "note": "EJEMPLO FICTICIO, NO ES TRANSCRIPCIÓN DE UN CLIENTE NI DE ARCHIVO REAL",
+  "segments": [
+    {
+      "start": 25,
+      "end": 30,
+      "text": "¿Sabes por qué el cuidado de la piel cambia con los años?"
+    },
+    {
+      "start": 30.3,
+      "end": 35,
+      "text": "Hoy lo explicamos de manera sencilla con un ejemplo real."
+    }
+  ]
+}

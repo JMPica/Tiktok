@@ -1,0 +1,236 @@
+{
+  "schema_version": "4.0.0",
+  "release_date": "2026-10-28",
+  "project": "Blau de Mar TikTok Studio V4",
+  "editorial_mode": "quality_over_quantity",
+  "profiles": [
+    {
+      "id": "auto",
+      "label": "Director automático",
+      "intent": "Deja que el material determine formato y duración",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.0,
+        "max": 3.6
+      },
+      "story_arc": "auto",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "tacho_humano",
+      "label": "Humano auténtico · inspiración Tacho",
+      "intent": "Persona reconocible, historia real, confianza, humor; nunca imitar frases ajenas",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.4,
+        "max": 4.5
+      },
+      "story_arc": "hook_context_payoff",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "tacho_humor",
+      "label": "Humor cotidiano",
+      "intent": "Fallo, complicidad, giro y remate sin exagerar reacción",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 0.8,
+        "max": 2.5
+      },
+      "story_arc": "setup_twist",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "backstage",
+      "label": "Detrás de cámaras",
+      "intent": "Vida real del equipo, rutinas y errores inocuos",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.2,
+        "max": 4.2
+      },
+      "story_arc": "day_story",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "microvlog",
+      "label": "Mini-vlog",
+      "intent": "Un día en el centro, narrativa cotidiana con voz o rótulos",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.3,
+        "max": 3.4
+      },
+      "story_arc": "day_story",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "pov",
+      "label": "POV / relatable",
+      "intent": "Situación reconocible, texto temprano y remate",
+      "look": "dynamic",
+      "target_shot_seconds": {
+        "min": 0.7,
+        "max": 2.0
+      },
+      "story_arc": "setup_twist",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "fast_cuts",
+      "label": "Fast cut / kinetic",
+      "intent": "Cortes a ritmo, zooms discretos y subtítulo cinético",
+      "look": "dynamic",
+      "target_shot_seconds": {
+        "min": 0.6,
+        "max": 1.8
+      },
+      "story_arc": "hook_payoff",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "clean_talking",
+      "label": "Talking head limpio",
+      "intent": "Retoque mínimo; respeta pausas con intención",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 2.0,
+        "max": 5.0
+      },
+      "story_arc": "hook_context_payoff",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "educativo",
+      "label": "Mito o consejo",
+      "intent": "Pregunta buscable, explicación verificable y aprendizaje",
+      "look": "educational",
+      "target_shot_seconds": {
+        "min": 1.5,
+        "max": 4.0
+      },
+      "story_arc": "question_answer",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "respuesta_comentario",
+      "label": "Responder comentario",
+      "intent": "Comentario real autorizado, respuesta contextual",
+      "look": "educational",
+      "target_shot_seconds": {
+        "min": 1.5,
+        "max": 3.8
+      },
+      "story_arc": "question_answer",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "premium",
+      "label": "Quiet luxury",
+      "intent": "Imagen natural, calma, detalles, sonido original",
+      "look": "premium",
+      "target_shot_seconds": {
+        "min": 2.2,
+        "max": 5.0
+      },
+      "story_arc": "sensory_story",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "asmr",
+      "label": "ASMR / proceso",
+      "intent": "Proceso real sin música superpuesta, audio textura auténtica",
+      "look": "premium",
+      "target_shot_seconds": {
+        "min": 2.3,
+        "max": 6.0
+      },
+      "story_arc": "sensory_story",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "cinematic",
+      "label": "Cinemático sutil",
+      "intent": "Grado de color natural, planos detalle, música licenciada",
+      "look": "premium",
+      "target_shot_seconds": {
+        "min": 1.7,
+        "max": 4.6
+      },
+      "story_arc": "sensory_story",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "before_after",
+      "label": "Antes / después auténtico",
+      "intent": "Solo consentimiento + evidencia comparable, nunca retoques de resultado",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.2,
+        "max": 3.3
+      },
+      "story_arc": "evidence",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "reveal",
+      "label": "Revelación / curiosidad",
+      "intent": "Promesa visual honesta, descubrimiento y contexto",
+      "look": "dynamic",
+      "target_shot_seconds": {
+        "min": 0.9,
+        "max": 2.6
+      },
+      "story_arc": "hook_payoff",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "loop",
+      "label": "Humor y bucle",
+      "intent": "Remate que conecta último plano con apertura",
+      "look": "dynamic",
+      "target_shot_seconds": {
+        "min": 0.8,
+        "max": 2.5
+      },
+      "story_arc": "setup_twist",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "trend_adaptation",
+      "label": "Adaptar tendencia comprobada",
+      "intent": "Fuente fechada, vigencia, derechos y encaje de marca",
+      "look": "dynamic",
+      "target_shot_seconds": {
+        "min": 0.8,
+        "max": 2.8
+      },
+      "story_arc": "hook_payoff",
+      "automated_state": "preset_specification"
+    },
+    {
+      "id": "service_conversion",
+      "label": "Servicio / reserva sin anuncio duro",
+      "intent": "Problema real, explicación correcta, CTA a reserva",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.4,
+        "max": 4.0
+      },
+      "story_arc": "question_answer",
+      "automated_state": "preset_specification"
+    }
+  ],
+  "global_rules": {
+    "minimum_results": 0,
+    "maximum_results": null,
+    "max_zoom_4k": 1.5,
+    "max_zoom_1080": 1.1,
+    "no_intro_logo_first_second": true,
+    "no_fixed_18s_trim": true,
+    "no_tiktok_autopublish": true,
+    "costly_integrations_default": false,
+    "approval_per_output_sha256": true,
+    "original_audio_retained_if_dialogue": true
+  }
+}

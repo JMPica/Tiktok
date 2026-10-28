@@ -1,0 +1,25 @@
+services:
+  editor:
+    build:
+      context: ..
+      dockerfile: local_worker/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 4g
+    cpus: 2.0
+    read_only: true
+    volumes:
+      - blau_work:/work
+    environment:
+      TMPDIR: /work
+    networks:
+      - outbound
+volumes:
+  blau_work:
+networks:
+  outbound:
+    driver: bridge

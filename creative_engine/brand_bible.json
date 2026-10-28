@@ -1,0 +1,58 @@
+{
+  "brand": "Blau de Mar",
+  "location": "Arenys de Mar, Maresme, Catalunya",
+  "primary_langs": [
+    "ca",
+    "es"
+  ],
+  "tiktok_voice": [
+    "natural",
+    "divertit",
+    "proper",
+    "humà",
+    "reconeixible",
+    "sense vergonya aliena"
+  ],
+  "premium_voice": [
+    "luxe silenciós",
+    "pausat",
+    "professional",
+    "cuidat"
+  ],
+  "avoid": [
+    "clínica",
+    "diagnósticos",
+    "promesas terapéuticas sin evidencia",
+    "testimonios inventados",
+    "resultados retocados",
+    "imitar a Josep Casas"
+  ],
+  "audiences": [
+    "Maresme",
+    "Barcelona",
+    "Cataluña"
+  ],
+  "angles": [
+    "equipo auténtico",
+    "preguntas frecuentes reales",
+    "técnica explicada",
+    "experiencia en cabina",
+    "humor del día a día"
+  ],
+  "objectives": [
+    "alcance",
+    "confianza",
+    "conversion"
+  ],
+  "consent": {
+    "staff_opt_in": true,
+    "customer_explicit": true,
+    "minors_restricted": true
+  },
+  "brand_assets": {
+    "logo_placement": "never_first_second",
+    "fonts": "libre o licencias verificadas",
+    "color": "identidad existente, no inventar"
+  },
+  "rule": "Primero pieza interesante, después mensaje de marca. No tratar servicios como actos médicos ni afirmar efectos sin validación legal y técnica."
+}

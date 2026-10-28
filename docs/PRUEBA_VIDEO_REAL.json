@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "source": "IMG_4246(1).mp4",
+  "source_size": 37003051,
+  "source_metadata": {
+    "duration": 59.4,
+    "width": 512,
+    "height": 910,
+    "fps": "30/1",
+    "audio": true,
+    "hdr": false,
+    "codec": "h264"
+  },
+  "render": {
+    "id": "020fd5f6795245c887231ebcc1d0b402",
+    "status": "needs_approval",
+    "mode": "real",
+    "qc": {
+      "decode_ok": true,
+      "width": 1080,
+      "height": 1920,
+      "duration": 3.021333,
+      "audio_present": true,
+      "original_has_audio": true,
+      "frame_rate": "30/1",
+      "source_segments": [
+        {
+          "in": 15.0,
+          "out": 18.0
+        }
+      ],
+      "generative_effects": "disabled",
+      "claims_review": "human_required",
+      "editorial_review": "pending",
+      "caption_review": "pending"
+    },
+    "error": null,
+    "sha256": "32fbf65940e7d7ee56f9571b7355e856c77667de2e0e084b6a99d9a778894088",
+    "approved_at": null,
+    "preview_path": "/v3/renders/020fd5f6795245c887231ebcc1d0b402/preview"
+  },
+  "checks": [
+    "large real upload",
+    "private upload",
+    "3s selected segment",
+    "FFmpeg render",
+    "decode QA",
+    "preview hash",
+    "manual approval gate"
+  ],
+  "date": "2026-10-27",
+  "site_deployed": false
+}
