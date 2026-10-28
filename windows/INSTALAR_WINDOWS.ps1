@@ -58,11 +58,12 @@ Push-Location $script:Root
 try {
     & $script:PythonVenv -m pip install --disable-pip-version-check --no-input -r requirements-ai-local.txt
     Asegurar-CodigoSalida 'instalar dependencias'
-    & $script:PythonVenv -m py_compile local_worker/agent.py server/core.py server/worker.py creative_engine/director.py creative_engine/transcribe.py
+    & $script:PythonVenv -m compileall -q creative_engine local_worker
     Asegurar-CodigoSalida 'comprobar sintaxis'
 } finally { Pop-Location }
 Write-Host ''
 Write-Host 'PREPARACION COMPLETADA.' -ForegroundColor Green
-Write-Host 'Nota: en la primera transcripcion Whisper descargara un modelo si no lo tienes en cache.'
+Write-Host 'Nota: en la primera transcripcion Whisper descargara un modelo (unos 500 MB) si no lo tienes en cache.'
+Write-Host 'Recomendado: ejecuta 04_PROBAR_WINDOWS.cmd para la autoprueba local.'
 Write-Host 'Siguiente paso: doble clic en 02_CONFIGURAR_WINDOWS.cmd.'
 Write-Host 'Necesitas Cloudflare ya preparado y sus 3 credenciales del agente.'

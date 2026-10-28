@@ -1,0 +1,72 @@
+{
+ "date": "2026-10-28T20:06:50.647Z",
+ "status": "passed",
+ "browser": "Chromium (viewport iPhone 13), no Safari real",
+ "checks": [
+  {
+   "check": "Simple: sessió d’equip visible i sense commutador Advanced",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "18 estils al selector",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "sense scroll horitzontal a 390 px",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "cal confirmar consentiment abans de pujar",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "pujada amb progrés real fins a la cua",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "agent local processa el vídeo",
+   "status": "passed",
+   "detail": "ntrol de qualitat fet\n  [ 93%] Pujant proposta 1 de 2\n  → proposta 1 pujada (8.8 MB) · needs_approval\n  [ 96%] Pujant proposta 2 de 2\n  → proposta 2 pujada (7.4 MB) · needs_approval\n[56b0b92f] acabat\n"
+  },
+  {
+   "check": "propostes visibles amb vídeo i explicació",
+   "status": "passed",
+   "detail": "2 propostes"
+  },
+  {
+   "check": "l’equip no veu el botó Aprovar",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "petició de canvi en text crea una correcció a la cua",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "Advanced: veu tots els vídeos",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "Advanced: editor de segments i subtítols",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "checklist d’aprovació (consentiment, subtítols, afirmacions)",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "aprovació amb hash exacte des de la interfície",
+   "status": "passed",
+   "detail": ""
+  }
+ ]
+}

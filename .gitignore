@@ -25,3 +25,5 @@ venv/
 /uploads/
 /renders/
 /data/
+.wrangler/
+docs/evidence/**/*.mp4

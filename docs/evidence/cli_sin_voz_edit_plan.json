@@ -1,0 +1,14 @@
+{
+ "style_requested": "auto",
+ "style": "asmr",
+ "style_reason": "gairebé sense diàleg: muntatge sensorial del procés amb so real",
+ "automatic_publish": false,
+ "editorial_review_required": true,
+ "caption_review_required": true,
+ "claims_checked": false,
+ "selection": "multimodal_signals+speech",
+ "semantic_vision": "no disponible: només senyals d’imatge i so",
+ "status": "needs_review",
+ "reason": "No es pot muntar sense inventar: només 4.5s de material visual aprofitable. Prova un estil sensorial (ASMR/Premium) o grava una nova presa.",
+ "candidates": []
+}

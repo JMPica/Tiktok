@@ -1,30 +1,34 @@
-# Auditoría de estado — 28 octubre 2026
+# Estado real V4 — 28 octubre 2026
 
-## Realmente contenido en el ZIP
-- Herencia V3: Cloudflare Worker/API con upload multipart, D1, R2, interfaz móvil básica, cola D1 vía polling de agente, aprobación por hash SHA256, descarga privada; Python local y FFmpeg.
-- Herencia V3: tests `tests/test_flow.py` (API local FastAPI) que **no prueban** Cloudflare ni Safari.
-- V4 prototipo: 18 fichas de estilo, director **textual** con selección heurística no fija, transcriptor local opt-in, CLI, tests unitarios, selector estilo UI y columna D1, uso preliminar en agente.
-- Herencia `legacy`: analizador y render EDL de alta calidad anterior; **no conectados plenamente al pipeline local**. Preservar.
+Leyenda: `implemented` (código escrito) · `tested_unit` · `tested_e2e_local` (Worker real con wrangler dev +
+D1/R2 locales + agente + FFmpeg + navegador Chromium con viewport iPhone) · `deployed` (tu Cloudflare) · `tested_device`.
 
-## FALTA para afirmar producto terminado
-- Director realmente multimodal de vídeo y sonido (reconocer acciones, caras en contexto sin identificar personas, escenas, silencios con intención, estructura de chiste, mejor toma).
-- Edición automática de calidad profesional validada en bruto real; sin una revisión humana su perfección no está garantizada con software gratis.
-- Múltiples piezas distintas por original y variantes A/B persistidas como entidades en BD; la cola Cloudflare actual devuelve solo un output por job.
-- Estilos de animación real, motion captions palabra a palabra, beat sync, sound design y selección inteligente de b-roll (sin inventar tratamientos).
-- Endpoint y UX de cambios en lenguaje natural, presets asociados a algoritmo real (actualmente catálogo descriptivo).
-- Revisión y edición de subtítulos/EDL sobre iPhone, Simple/Advanced como experiencias distintas, historial/analítica/aprendizaje.
-- Validación de compatibilidad VFR, Dolby Vision/HLG, rotación, color, fps exactos, audio LUFS y pico real; la etapa de baseline conserva limitaciones.
-- `faster-whisper` no viene instalado en requirements base, véase `requirements-ai-local.txt`; puede descargar modelo en primera ejecución.
-- Archivos reales de vídeo y credenciales no incluidos; no desplegado ni testado en la cuenta Cloudflare del usuario.
-- Seguridad productiva: expiración y eliminación de uploads multipart, cuotas por usuaria, control de miembros, validación de formato mágico de archivo, rate limits, token hygiene, logs GDPR, protección de previews y secretos.
+| Área | Estado | Notas |
+|---|---|---|
+| Recorte fijo de 18 s eliminado (Worker, agente, servidor V3) | tested_e2e_local | sin plan => `needs_review` |
+| Análisis de imagen/sonido local | tested_unit + e2e_local | señales, no comprensión semántica |
+| Transcripción ca/es local | tested_e2e_local | probado con sherpa-onnx (Whisper small ONNX) sobre voz sintética espeak ca/es; **faster-whisper no probado aquí** (descarga de modelos bloqueada en el entorno de desarrollo) |
+| Director 0..N, puntuación, claims, consentimiento | tested_unit + e2e_local | 2 propuestas distintas del mismo bruto; 0 con motivo si no hay historia |
+| 18 estilos como recetas de render | tested_unit (auto/educativo/humor/asmr) | resto: mismos mecanismos con otros parámetros; sin validación creativa humana |
+| Render 1080×1920, HDR→SDR, fps, LUFS/true peak | tested_unit + e2e_local | HDR probado con HLG sintético, no con un MOV real de iPhone |
+| QC medido + bloqueo de export mudo | tested_unit + e2e_local | |
+| Variantes en D1/R2, preview Range, descarga, portada | tested_e2e_local | |
+| Aprobación ligada a SHA256 + checklist consentimiento/claims | tested_e2e_local + UI | |
+| Corrección en texto y edición Advanced | tested_e2e_local + UI | parser de reglas ca/es; Ollama opcional no probado |
+| Access JWT (firma, aud, iss, exp), roles, allowlist | tested_e2e_local | con emisor JWKS local; **Access real no probado** |
+| Subida reanudable, reintentos, pausa, varios ficheros | tested_e2e_local + UI | Safari iPhone real no probado |
+| Reintentos/lease/latido, no duplicar trabajos | tested_e2e_local (duplicado) | caída del PC a mitad: lógica implementada, no simulada |
+| Borrado RGPD / borrar solo original / auditoría / cron | tested_e2e_local | |
+| Windows/macOS scripts | implemented | sin probar en equipos reales |
+| Despliegue Cloudflare | **no** | requiere tu login (ver `CLOUDFLARE_PASOS.md`) |
+| Publicación TikTok, analítica post-publicación (P6) | no implementado | a propósito: sin API autorizada |
+| Visión semántica (acciones, emoción, mejor chiste) | no implementado | hook `semantic_vision` preparado; necesita modelo local potente |
+| Música licenciada / sound design | no implementado | solo audio original; no se añade música |
 
-## Riesgos concretos del código heredado
-- FFmpeg `server.worker.ffmpeg_render(..., segments=None)` recorta 18 s: prohibido en flujo V4 salvo prueba técnica aislada con etiqueta explícita.
-- El agente V4 usa una primera propuesta de transcripción; sin modelo disponible lanza error en vez de fingir edición. Reconvertir a estado recuperable `needs_review` con diagnóstico útil en frontend.
-- La interfaz puede decir «creativa» aunque los algoritmos diferenciados no estén terminados; documentar estados de forma honesta.
-- El esquema D1 requiere `migrations/0001_add_style.sql` **solo en bases existentes**. Si BD nueva usa `schema.sql` y no ejecutes migración duplicada.
-- El render por segmento con concat-copy puede tener desajustes de audio/fps/PTS; tests con VFR y múltiples segmentos son necesarios.
-- Planos cortos con voz requieren cuidado, no eliminar chistes/pausas dramáticas ciegamente.
-
-## Definición de done
-Cada función de `docs/PRUEBAS_DE_ACEPTACION.md` debe estar marcada probado E2E en entorno real, con fecha, plataforma, entrada y salida. Unit tests no son prueba E2E.
+## Brechas principales y siguiente paso
+1. **Desplegar** en tu cuenta y repetir la verificación con tu iPhone (T01–T05, T18, T21).
+2. **Material real consentido** (p. ej. `IMG_4246`) para juzgar la calidad editorial; la puntuación está calibrada
+   con ejemplos sintéticos y necesitará ajustes con brutos reales.
+3. **Visión semántica**: si el PC lo permite (GPU o Apple Silicon ≥16 GB), un modelo local tipo Qwen2.5-VL vía Ollama
+   para describir planos clave; sin él, el director dice explícitamente que solo usa señales.
+4. **Windows/Mac reales**: ejecutar `04_PROBAR_*` y un vídeo completo.

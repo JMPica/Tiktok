@@ -57,8 +57,9 @@ def chunk(words: list[dict], max_chars: int = MAX_LINE_CHARS * 2, gap: float = 0
 
     for w in words:
         if cur:
-            text_len = len(' '.join(x['word'] for x in cur)) + 1 + len(w['word'])
-            if (w['start'] - cur[-1]['end'] > gap or text_len > max_chars
+            candidate = ' '.join(x['word'] for x in cur) + ' ' + w['word']
+            too_wide = max(len(line) for line in _wrap(candidate).split('\n')) > MAX_LINE_CHARS
+            if (w['start'] - cur[-1]['end'] > gap or len(candidate) > max_chars or too_wide
                     or w['end'] - cur[0]['start'] > MAX_EVENT_SECONDS or cur[-1]['word'][-1:] in '.?!'):
                 flush()
         cur.append(w)

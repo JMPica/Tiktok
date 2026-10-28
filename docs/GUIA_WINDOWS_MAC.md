@@ -1,29 +1,42 @@
-# Guía paso a paso — desarrollo y runtime Windows / macOS
+# Ordenador editor — Windows y Mac (sin Docker, sin Claude Code)
 
-## 1. Para programar con Claude Code
-1. Descomprime el ZIP en tu Windows o Mac.
-2. Abre esa carpeta con Claude Code (si ya lo tienes) y pega `PROMPT_UNICO_CLAUDE_CODE.md`.
-3. Claude audita, modifica código y ejecuta tests. No necesita tus credenciales de Cloudflare hasta el despliegue.
-4. Si solo usas Claude en navegador, adjunta ZIP y pega `PROMPT_PARA_CLAUDE_CHAT.md`. Chat no despliega por sí mismo sin herramientas.
+El ordenador editor recibe los vídeos de la cola de Cloudflare, los edita en local y sube las propuestas.
+Solo hace falta que esté **encendido y con sesión iniciada**. Si está apagado, los vídeos esperan en cola
+y se procesan al encenderlo. Mientras edita, el agente impide que se suspenda.
 
-## 2. Runtime sin Claude Code
-**Windows:** en el paquete están `01_INSTALAR_WINDOWS.cmd`...`06_QUITAR_AUTOARRANQUE_WINDOWS.cmd` heredados V3. Son auxiliares no validados en tu Windows real. Antes de ejecutarlos revísalos: deben instalar Python, Node, FFmpeg y permitir configurar Cloudflare. Para V4 instala además `pip install -r requirements-ai-local.txt` y prueba transcripción real ca/es.
+Requisitos: Python 3.11/3.12, FFmpeg «full» (con libass, zscale/libzimg y tonemap), ~3 GB libres,
+8 GB de RAM recomendados. La primera transcripción descarga el modelo Whisper *small* (~500 MB).
 
-**Mac:** Python 3.11/3.12 y FFmpeg disponibles (por ejemplo instalación gestionada por ti), crear entorno virtual, instalar `requirements-ai-local.txt`, rellenar `local_worker/.env` a partir de ejemplo, y lanzar `python local_worker/agent.py`. Sin Docker y sin Claude Code para runtime. Revisar permisos de Terminal y suspensión.
+## Windows 10/11
+1. Descomprime el proyecto en una carpeta tuya (p. ej. `Documentos\BlauStudio`).
+2. Doble clic `01_INSTALAR_WINDOWS.cmd` → ofrece instalar Python y FFmpeg con *winget* (gratis) y prepara el entorno.
+3. Doble clic `02_CONFIGURAR_WINDOWS.cmd` → pega la URL del Worker, `AGENT_TOKEN`, *Client ID* y *Client Secret*
+   (se guardan solo en `local_worker\.env`, con permisos únicamente para tu usuario).
+4. Doble clic `04_PROBAR_WINDOWS.cmd` → autoprueba: render 1080×1920, −16 LUFS, pico ≤ −1 dBTP, motor de
+   transcripción y conexión con tu Worker. Debe acabar en «AUTOPRUEBA SUPERADA».
+5. Doble clic `03_INICIAR_EDITOR_WINDOWS.cmd` → deja la ventana abierta. Para arrancarlo al iniciar sesión:
+   `05_ACTIVAR_AUTOARRANQUE_WINDOWS.cmd` (y `06_…` para quitarlo).
 
-**Ambos:** primera carga de faster-whisper requiere obtener modelo autorizado, después funciona localmente. Para 0 transferencias fuera del PC, instalar modelo y set `BLAU_WHISPER_MODEL_DIR` antes de bloquear salida de red.
+## macOS (Intel o Apple Silicon)
+1. Instala Python 3.12 (python.org) y FFmpeg (`brew install ffmpeg`, Homebrew gratuito).
+2. `macos/01_PREPARAR_MAC.command` (si macOS lo bloquea: clic derecho → Abrir).
+3. `macos/02_CONFIGURAR_MAC.command` → abre `local_worker/.env`: rellena las 4 credenciales y guarda.
+4. `macos/04_PROBAR_MAC.command` → autoprueba.
+5. `macos/03_INICIAR_MAC.command` para editar. Autoarranque: `macos/05_ACTIVAR_AUTOARRANQUE_MAC.command`.
 
-## 3. Cloudflare
-1. Usar la cuenta Cloudflare que ya tienes. Revisar que Workers, R2, D1 y Access están disponibles en plan Free.
-2. Crear R2 privado, D1, aplicar `cloudflare/schema.sql` **si la base es nueva**. Si V3 ya desplegada, aplicar solo migración 0001 y hacer copia de seguridad.
-3. Configurar binding de R2/D1 en Wrangler y dominio. Aplicar Access al hostname completo y lista explícita de emails de equipo, sin público anónimo.
-4. Crear token de servicio Access para PC y secreto `STUDIO_AGENT_TOKEN` distinto; no copiar claves a frontend ni a este ZIP.
-5. Configurar `STUDIO_PUBLIC_URL`, `STUDIO_AGENT_TOKEN`, `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET` y lengua predeterminada en `.env` privado, nunca en git.
-6. Desplegar desde CLI por `wrangler deploy` solo con autorización. Probar `/api/me` y `/api/health` con las credenciales adecuadas.
-7. Probar 1 original MP4 y 1 MOV desde Safari, reinicio PC, preview privada, aprobación y descarga.
+## Ajustes útiles (`local_worker/.env`)
+- `BLAU_WHISPER_MODEL=medium` → mejor catalán, más lento (recomendado si el PC tiene 16 GB).
+- `BLAU_WHISPER_DEVICE=cuda` con GPU NVIDIA.
+- `BLAU_X264_PRESET=veryfast` en ordenadores lentos.
+- `BLAU_OLLAMA_MODEL=…` solo si ya usas Ollama: entiende peticiones de cambio más libres. Opcional.
 
-## 4. Sin Docker ni servidor adicional
-El render usa el PC encendido conectado por HTTPS saliente a Cloudflare. Si duerme, no se edita nada hasta despertarlo. Puedes ejecutar agente como servicio de Windows o `launchd` de Mac una vez revisado y probado. No requiere abrir puertos.
+## Si algo falla
+- «Falta zscale»: instala la build *full* de FFmpeg (Windows: `winget install Gyan.FFmpeg`).
+- El trabajo queda «En cua»: el ordenador está apagado, sin red o el agente cerrado.
+- Tras 3 intentos fallidos el trabajo pasa a «Error» con el motivo; en la web puedes «Reintentar».
 
-## 5. Orden de costes
-No activar pagos ni generar con Runway/Higgsfield sin confirmación. Configurar límite de almacenamiento, retención y alerta. Revisar precios reales: https://developers.cloudflare.com/workers/platform/pricing/ y https://developers.cloudflare.com/r2/pricing/.
+## Limitaciones honestas
+- Probado en Linux (entorno de desarrollo). **No probado aún en un Windows ni un Mac reales**: los scripts
+  `.ps1`/`.command` están revisados pero pendientes de ejecución en tus equipos.
+- La «comprensión» de imagen son señales (planos, caras, nitidez, movimiento, energía de audio) + transcripción.
+  No reconoce acciones ni emociones: para eso haría falta un modelo de visión local más potente (ver estado).

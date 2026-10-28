@@ -1,0 +1,374 @@
+{
+ "qc": {
+  "status": "pass",
+  "checks": [
+   {
+    "check": "resolución",
+    "status": "pass",
+    "detail": "1080x1920"
+   },
+   {
+    "check": "códec",
+    "status": "pass",
+    "detail": "h264/aac"
+   },
+   {
+    "check": "decodificación completa",
+    "status": "pass",
+    "detail": "sin errores"
+   },
+   {
+    "check": "duración",
+    "status": "pass",
+    "detail": "7.50s (esperado 7.50s)"
+   },
+   {
+    "check": "fps",
+    "status": "pass",
+    "detail": "30/1 · fps nativo del bruto"
+   },
+   {
+    "check": "audio",
+    "status": "pass",
+    "detail": "audio presente"
+   },
+   {
+    "check": "sonoridad",
+    "status": "pass",
+    "detail": "-16.0 LUFS (objetivo -16)"
+   },
+   {
+    "check": "pico real",
+    "status": "pass",
+    "detail": "-1.50 dBTP (máximo -1)"
+   },
+   {
+    "check": "negros",
+    "status": "pass",
+    "detail": "0.0% del metraje en negro"
+   },
+   {
+    "check": "subtítulos",
+    "status": "pass",
+    "detail": "4 subtítulos · pendientes de revisión humana"
+   }
+  ],
+  "measured": {
+   "duration": 7.5,
+   "width": 1080,
+   "height": 1920,
+   "coded_width": 1080,
+   "coded_height": 1920,
+   "rotation": 0,
+   "fps": "30/1",
+   "fps_float": 30.0,
+   "r_frame_rate": "30/1",
+   "vfr": false,
+   "hdr": false,
+   "color_transfer": "bt709",
+   "color_primaries": "bt709",
+   "color_space": "bt709",
+   "dolby_vision": false,
+   "pix_fmt": "yuv420p",
+   "codec": "h264",
+   "audio": true,
+   "audio_codec": "aac",
+   "audio_channels": 2,
+   "audio_rate": 48000,
+   "size_bytes": 7520973,
+   "integrated_lufs": -16.0,
+   "lra_lu": 1.8,
+   "true_peak_dbtp": -1.5,
+   "black_ratio": 0.0
+  },
+  "captions": {
+   "mode": "phrase",
+   "events": 4,
+   "overlays": 0,
+   "issues": [],
+   "verified_by_human": false
+  },
+  "decode_ok": true,
+  "audio_present": true,
+  "width": 1080,
+  "height": 1920,
+  "duration": 7.5,
+  "fps": "30/1",
+  "editorial_review": "human_required",
+  "generative_effects": "disabled"
+ },
+ "render": {
+  "fps": "30/1",
+  "fps_reason": "fps nativo del bruto",
+  "expected_duration": 7.5,
+  "loudness_input": {
+   "input_i": "-21.25",
+   "input_tp": "-6.16",
+   "input_lra": "1.70",
+   "input_thresh": "-31.37",
+   "output_i": "-16.47",
+   "output_tp": "-1.67",
+   "output_lra": "1.20",
+   "output_thresh": "-26.58",
+   "normalization_type": "dynamic",
+   "target_offset": "0.47"
+  },
+  "tonemapped": false,
+  "filters": "single_pass_concat",
+  "encoder": "libx264 crf18"
+ },
+ "sha256": "7917d188f78e61523fdd9d252cddc278fc9cd3c8d6e6485b96bad3b3f8376557",
+ "edl": {
+  "schema": "blau.edl/4",
+  "id": "45112611abac",
+  "version": 1,
+  "style": "educativo",
+  "style_label": "Mito o consejo",
+  "language": "ca",
+  "grade": "natural",
+  "output": {
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "fps_reason": "fps nativo del bruto"
+  },
+  "source": {
+   "duration": 30.475011,
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "hdr": false
+  },
+  "segments": [
+   {
+    "id": "s1",
+    "in": 2.934,
+    "out": 7.438,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s2",
+    "in": 8.086,
+    "out": 11.086,
+    "zoom": 1.04,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   }
+  ],
+  "captions": {
+   "mode": "phrase",
+   "size": "m",
+   "position": "lower",
+   "events": [
+    {
+     "start": 0.08,
+     "end": 2.289,
+     "text": "A Ui Ui senceria\nem compre parem",
+     "words": [
+      {
+       "start": 0.08,
+       "end": 0.214,
+       "word": "A",
+       "source_start": 3.014
+      },
+      {
+       "start": 0.214,
+       "end": 0.415,
+       "word": "Ui",
+       "source_start": 3.148
+      },
+      {
+       "start": 0.415,
+       "end": 0.616,
+       "word": "Ui",
+       "source_start": 3.349
+      },
+      {
+       "start": 0.616,
+       "end": 1.218,
+       "word": "senceria",
+       "source_start": 3.55
+      },
+      {
+       "start": 1.218,
+       "end": 1.419,
+       "word": "em",
+       "source_start": 4.152
+      },
+      {
+       "start": 1.419,
+       "end": 1.887,
+       "word": "compre",
+       "source_start": 4.353
+      },
+      {
+       "start": 1.887,
+       "end": 2.289,
+       "word": "parem",
+       "source_start": 4.821
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 2.289,
+     "end": 4.73,
+     "text": "la carina l'ans\nla cara t'acat I",
+     "words": [
+      {
+       "start": 2.289,
+       "end": 2.49,
+       "word": "la",
+       "source_start": 5.223
+      },
+      {
+       "start": 2.49,
+       "end": 2.958,
+       "word": "carina",
+       "source_start": 5.424
+      },
+      {
+       "start": 2.958,
+       "end": 3.36,
+       "word": "l'ans",
+       "source_start": 5.892
+      },
+      {
+       "start": 3.36,
+       "end": 3.561,
+       "word": "la",
+       "source_start": 6.294
+      },
+      {
+       "start": 3.561,
+       "end": 3.895,
+       "word": "cara",
+       "source_start": 6.495
+      },
+      {
+       "start": 3.895,
+       "end": 4.364,
+       "word": "t'acat",
+       "source_start": 6.829
+      },
+      {
+       "start": 4.584,
+       "end": 4.73,
+       "word": "I",
+       "source_start": 8.166
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 4.73,
+     "end": 6.486,
+     "text": "a mi, la tenen\ntotes les",
+     "words": [
+      {
+       "start": 4.73,
+       "end": 4.877,
+       "word": "a",
+       "source_start": 8.312
+      },
+      {
+       "start": 4.877,
+       "end": 5.096,
+       "word": "mi,",
+       "source_start": 8.459
+      },
+      {
+       "start": 5.096,
+       "end": 5.316,
+       "word": "la",
+       "source_start": 8.678
+      },
+      {
+       "start": 5.316,
+       "end": 5.755,
+       "word": "tenen",
+       "source_start": 8.898
+      },
+      {
+       "start": 5.755,
+       "end": 6.193,
+       "word": "totes",
+       "source_start": 9.337
+      },
+      {
+       "start": 6.193,
+       "end": 6.486,
+       "word": "les",
+       "source_start": 9.775
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 6.486,
+     "end": 7.364,
+     "text": "superfícies.",
+     "words": [
+      {
+       "start": 6.486,
+       "end": 7.364,
+       "word": "superfícies.",
+       "source_start": 10.068
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    }
+   ]
+  },
+  "overlays": [],
+  "audio": {
+   "keep_original": true,
+   "target_lufs": -16,
+   "true_peak_max": -1.0,
+   "music": null,
+   "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+  },
+  "loop": false,
+  "duration": 7.504,
+  "score": {
+   "hook": 9,
+   "story": 17,
+   "authenticity": 12,
+   "utility": 4,
+   "rhythm": 12,
+   "brand": 4,
+   "total": 58,
+   "meaning": "puntuació editorial, no probabilitat de viralitat"
+  },
+  "provenance": {
+   "transcript_rows": [
+    0,
+    1
+   ],
+   "source_range": [
+    3.014,
+    10.946
+   ],
+   "text": "A Ui Ui senceria em compre parem la carina l'ans la cara t'acat I a mi, la tenen totes les superfícies.",
+   "notes": [
+    "reacció/riure probable al final"
+   ]
+  },
+  "risks": [],
+  "requires": [
+   "claims_review",
+   "team_consent"
+  ],
+  "explanation": "Fragment 3.0–10.9s del bruto. Diàleg explicatiu: format consell/mite. Per què: reacció/riure probable al final. Puntuació editorial 58/100 (no és predicció de viralitat).",
+  "automatic_publish": false,
+  "editorial_review_required": true,
+  "hook_overlay_suggestion": "A Ui Ui senceria em compre parem la carina l'ans la cara t'acat",
+  "title": "2. A Ui Ui senceria em compre parem la carina l'ans"
+ }
+}

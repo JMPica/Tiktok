@@ -8,8 +8,9 @@ Safari iPhone -> [Cloudflare Access: identidad] -> Worker + Assets
                       +-- (Queues opcional)
 
 PC Windows o Mac encendido -> agente Python HTTPS saliente (Access service token + secreto agente)
-    -> descarga temporal cifrada por transporte -> ffprobe/audio/visión/Whisper
-    -> director -> edit_plan + FFmpeg -> QA -> subida privada -> «needs_approval»
+    -> descarga temporal (Range, reanudable) -> ffprobe/señales de imagen y sonido/Whisper local
+    -> director 0..N -> EDL + FFmpeg -> QC medido -> subida privada por variante -> «needs_approval»
+    (cola en D1 con reserva de 30 min + latido; sin Queues)
 
 Owner: revisa SHA256 -> «approved» -> descarga
 Publicación: desactivada hasta integración API permitida + confirmación humana

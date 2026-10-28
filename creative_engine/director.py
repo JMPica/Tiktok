@@ -254,7 +254,7 @@ def _requirements(style, styles, text, options) -> tuple[list[str], list[str]]:
 
 def _explain(win, style_reason, scores, notes, language) -> str:
     a, b = win['range']
-    parts = [f'Fragment {a:.1f}–{b:.1f}s del bruto.', style_reason.capitalize() + '.']
+    parts = [f'Fragment {a:.1f}–{b:.1f} s del vídeo original.', style_reason.capitalize() + '.']
     if notes:
         parts.append('Per què: ' + '; '.join(notes[:4]) + '.')
     parts.append(f'Puntuació editorial {sum(scores.values())}/100 (no és predicció de viralitat).')

@@ -1,0 +1,325 @@
+{
+ "qc": {
+  "status": "pass",
+  "checks": [
+   {
+    "check": "resolución",
+    "status": "pass",
+    "detail": "1080x1920"
+   },
+   {
+    "check": "códec",
+    "status": "pass",
+    "detail": "h264/aac"
+   },
+   {
+    "check": "decodificación completa",
+    "status": "pass",
+    "detail": "sin errores"
+   },
+   {
+    "check": "duración",
+    "status": "pass",
+    "detail": "5.60s (esperado 5.57s)"
+   },
+   {
+    "check": "fps",
+    "status": "pass",
+    "detail": "30/1 · fps nativo del bruto"
+   },
+   {
+    "check": "audio",
+    "status": "pass",
+    "detail": "audio presente"
+   },
+   {
+    "check": "sonoridad",
+    "status": "pass",
+    "detail": "-15.9 LUFS (objetivo -16)"
+   },
+   {
+    "check": "pico real",
+    "status": "pass",
+    "detail": "-1.30 dBTP (máximo -1)"
+   },
+   {
+    "check": "negros",
+    "status": "pass",
+    "detail": "0.0% del metraje en negro"
+   },
+   {
+    "check": "subtítulos",
+    "status": "warn",
+    "detail": "línea demasiado ancha (17 car.): «olvidamos el café»"
+   }
+  ],
+  "measured": {
+   "duration": 5.6,
+   "width": 1080,
+   "height": 1920,
+   "coded_width": 1080,
+   "coded_height": 1920,
+   "rotation": 0,
+   "fps": "30/1",
+   "fps_float": 30.0,
+   "r_frame_rate": "30/1",
+   "vfr": false,
+   "hdr": false,
+   "color_transfer": "bt709",
+   "color_primaries": "bt709",
+   "color_space": "bt709",
+   "dolby_vision": false,
+   "pix_fmt": "yuv420p",
+   "codec": "h264",
+   "audio": true,
+   "audio_codec": "aac",
+   "audio_channels": 2,
+   "audio_rate": 48000,
+   "size_bytes": 6580238,
+   "integrated_lufs": -15.9,
+   "lra_lu": 1.2,
+   "true_peak_dbtp": -1.3,
+   "black_ratio": 0.0
+  },
+  "captions": {
+   "mode": "words",
+   "events": 3,
+   "overlays": 0,
+   "issues": [
+    "línea demasiado ancha (17 car.): «olvidamos el café»"
+   ],
+   "verified_by_human": false
+  },
+  "decode_ok": true,
+  "audio_present": true,
+  "width": 1080,
+  "height": 1920,
+  "duration": 5.6,
+  "fps": "30/1",
+  "editorial_review": "human_required",
+  "generative_effects": "disabled"
+ },
+ "render": {
+  "fps": "30/1",
+  "fps_reason": "fps nativo del bruto",
+  "expected_duration": 5.567,
+  "loudness_input": {
+   "input_i": "-21.96",
+   "input_tp": "-5.65",
+   "input_lra": "1.00",
+   "input_thresh": "-32.01",
+   "output_i": "-15.66",
+   "output_tp": "-1.50",
+   "output_lra": "0.20",
+   "output_thresh": "-25.66",
+   "normalization_type": "dynamic",
+   "target_offset": "-0.34"
+  },
+  "tonemapped": false,
+  "filters": "single_pass_concat",
+  "encoder": "libx264 crf18"
+ },
+ "sha256": "894d10551f43549900f07adab2759aecfaf466c4758d64a3e6caf883debd22ed",
+ "edl": {
+  "schema": "blau.edl/4",
+  "id": "6af5974a5113",
+  "version": 1,
+  "style": "tacho_humor",
+  "style_label": "Humor cotidiano",
+  "language": "es",
+  "grade": "punchy",
+  "output": {
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "fps_reason": "fps nativo del bruto"
+  },
+  "source": {
+   "duration": 30.72898,
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "hdr": false
+  },
+  "segments": [
+   {
+    "id": "s1",
+    "in": 21.75,
+    "out": 23.758,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s2",
+    "in": 24.886,
+    "out": 28.462,
+    "zoom": 1.06,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   }
+  ],
+  "captions": {
+   "mode": "words",
+   "size": "l",
+   "position": "lower",
+   "events": [
+    {
+     "start": 0.08,
+     "end": 1.868,
+     "text": "La música y\nla luz suave.",
+     "words": [
+      {
+       "start": 0.08,
+       "end": 0.295,
+       "word": "La",
+       "source_start": 21.83
+      },
+      {
+       "start": 0.295,
+       "end": 0.795,
+       "word": "música",
+       "source_start": 22.045
+      },
+      {
+       "start": 0.795,
+       "end": 0.938,
+       "word": "y",
+       "source_start": 22.545
+      },
+      {
+       "start": 0.938,
+       "end": 1.153,
+       "word": "la",
+       "source_start": 22.688
+      },
+      {
+       "start": 1.153,
+       "end": 1.439,
+       "word": "luz",
+       "source_start": 22.903
+      },
+      {
+       "start": 1.439,
+       "end": 1.868,
+       "word": "suave.",
+       "source_start": 23.189
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 2.088,
+     "end": 4.707,
+     "text": "Y nunca, nunca,\nolvidamos el café",
+     "words": [
+      {
+       "start": 2.088,
+       "end": 2.252,
+       "word": "Y",
+       "source_start": 24.966
+      },
+      {
+       "start": 2.252,
+       "end": 2.743,
+       "word": "nunca,",
+       "source_start": 25.13
+      },
+      {
+       "start": 2.743,
+       "end": 3.234,
+       "word": "nunca,",
+       "source_start": 25.621
+      },
+      {
+       "start": 3.234,
+       "end": 4.052,
+       "word": "olvidamos",
+       "source_start": 26.112
+      },
+      {
+       "start": 4.052,
+       "end": 4.298,
+       "word": "el",
+       "source_start": 26.93
+      },
+      {
+       "start": 4.298,
+       "end": 4.707,
+       "word": "café",
+       "source_start": 27.176
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 4.707,
+     "end": 5.444,
+     "text": "de Marta.",
+     "words": [
+      {
+       "start": 4.707,
+       "end": 4.953,
+       "word": "de",
+       "source_start": 27.585
+      },
+      {
+       "start": 4.953,
+       "end": 5.444,
+       "word": "Marta.",
+       "source_start": 27.831
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    }
+   ]
+  },
+  "overlays": [],
+  "audio": {
+   "keep_original": true,
+   "target_lufs": -16,
+   "true_peak_max": -1.0,
+   "music": null,
+   "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+  },
+  "loop": false,
+  "duration": 5.584,
+  "score": {
+   "hook": 9,
+   "story": 17,
+   "authenticity": 12,
+   "utility": 4,
+   "rhythm": 12,
+   "brand": 4,
+   "total": 58,
+   "meaning": "puntuació editorial, no probabilitat de viralitat"
+  },
+  "provenance": {
+   "transcript_rows": [
+    5,
+    6
+   ],
+   "source_range": [
+    21.83,
+    28.322
+   ],
+   "text": "La música y la luz suave. Y nunca, nunca, olvidamos el café de Marta.",
+   "notes": [
+    "reacció/riure probable al final"
+   ]
+  },
+  "risks": [],
+  "requires": [
+   "team_consent"
+  ],
+  "explanation": "Fragment 21.8–28.3s del bruto. Reaccions/riures detectats: humor quotidià. Per què: reacció/riure probable al final. Puntuació editorial 58/100 (no és predicció de viralitat).",
+  "automatic_publish": false,
+  "editorial_review_required": true,
+  "hook_overlay_suggestion": "La música y la luz suave.",
+  "title": "2. La música y la luz suave."
+ }
+}

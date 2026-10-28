@@ -29,7 +29,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Automàtic (recomanat)",
+      "intent_ca": "El material decideix format i durada"
     },
     {
       "id": "tacho_humano",
@@ -56,7 +58,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Humà autèntic · inspiració Tacho",
+      "intent_ca": "Persona reconeixible, història real, confiança i humor; mai imitar frases d’altri"
     },
     {
       "id": "tacho_humor",
@@ -84,7 +88,9 @@
         "loop": false,
         "requires": [],
         "comedy_pauses": true
-      }
+      },
+      "label_ca": "Humor quotidià",
+      "intent_ca": "Errada, complicitat, gir i remat sense exagerar"
     },
     {
       "id": "backstage",
@@ -111,7 +117,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Entre bastidors",
+      "intent_ca": "Vida real de l’equip, rutines i errades innòcues"
     },
     {
       "id": "microvlog",
@@ -138,7 +146,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Mini-vlog",
+      "intent_ca": "Un dia al centre, relat quotidià amb veu o rètols"
     },
     {
       "id": "pov",
@@ -166,7 +176,9 @@
         "loop": false,
         "requires": [],
         "hook_text": true
-      }
+      },
+      "label_ca": "POV / situació reconeixible",
+      "intent_ca": "Situació que tothom reconeix, text aviat i remat"
     },
     {
       "id": "fast_cuts",
@@ -193,7 +205,9 @@
         "punch_zoom": 0.08,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Dinàmic",
+      "intent_ca": "Talls amb ritme, zooms discrets i subtítol paraula a paraula"
     },
     {
       "id": "clean_talking",
@@ -220,7 +234,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Parlant a càmera net",
+      "intent_ca": "Retoc mínim; respecta les pauses amb intenció"
     },
     {
       "id": "educativo",
@@ -250,7 +266,9 @@
           "claims_review"
         ],
         "hook_text": true
-      }
+      },
+      "label_ca": "Mite o consell",
+      "intent_ca": "Pregunta que la gent busca, explicació verificable i aprenentatge"
     },
     {
       "id": "respuesta_comentario",
@@ -279,7 +297,9 @@
         "requires": [
           "comment_text"
         ]
-      }
+      },
+      "label_ca": "Respondre un comentari",
+      "intent_ca": "Comentari real autoritzat i resposta en context"
     },
     {
       "id": "premium",
@@ -306,7 +326,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "Luxe silenciós",
+      "intent_ca": "Imatge natural, calma, detalls i so original"
     },
     {
       "id": "asmr",
@@ -333,7 +355,9 @@
         "punch_zoom": 0,
         "loop": false,
         "requires": []
-      }
+      },
+      "label_ca": "ASMR / procés",
+      "intent_ca": "Procés real sense música afegida, textura de so autèntica"
     },
     {
       "id": "cinematic",
@@ -362,7 +386,9 @@
         "requires": [
           "licensed_music"
         ]
-      }
+      },
+      "label_ca": "Cinemàtic subtil",
+      "intent_ca": "Color natural, plans de detall, música amb llicència"
     },
     {
       "id": "before_after",
@@ -392,7 +418,9 @@
           "client_consent",
           "before_after_evidence"
         ]
-      }
+      },
+      "label_ca": "Abans / després real",
+      "intent_ca": "Només amb consentiment i evidència comparable, sense retocs"
     },
     {
       "id": "reveal",
@@ -420,7 +448,9 @@
         "loop": false,
         "requires": [],
         "hook_text": true
-      }
+      },
+      "label_ca": "Revelació / curiositat",
+      "intent_ca": "Promesa visual honesta, descobriment i context"
     },
     {
       "id": "loop",
@@ -448,7 +478,9 @@
         "loop": true,
         "requires": [],
         "comedy_pauses": true
-      }
+      },
+      "label_ca": "Humor en bucle",
+      "intent_ca": "El final connecta amb l’inici"
     },
     {
       "id": "trend_adaptation",
@@ -478,7 +510,9 @@
           "trend_source",
           "licensed_music"
         ]
-      }
+      },
+      "label_ca": "Adaptar tendència comprovada",
+      "intent_ca": "Font amb data, vigència, drets i encaix de marca"
     },
     {
       "id": "service_conversion",
@@ -508,7 +542,9 @@
           "claims_review"
         ],
         "cta": true
-      }
+      },
+      "label_ca": "Servei / reserva sense anunci dur",
+      "intent_ca": "Problema real, explicació correcta i crida a reservar"
     }
   ],
   "global_rules": {

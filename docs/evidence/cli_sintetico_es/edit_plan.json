@@ -1,0 +1,576 @@
+{
+ "style_requested": "auto",
+ "style": "tacho_humor",
+ "style_reason": "reaccions/riures detectats: humor quotidià",
+ "automatic_publish": false,
+ "editorial_review_required": true,
+ "caption_review_required": true,
+ "claims_checked": false,
+ "selection": "multimodal_signals+speech",
+ "semantic_vision": "no disponible: només senyals d’imatge i so",
+ "status": "drafts",
+ "candidates": [
+  {
+   "schema": "blau.edl/4",
+   "id": "607c38ac1d3b",
+   "version": 1,
+   "style": "tacho_humor",
+   "style_label": "Humor cotidiano",
+   "language": "es",
+   "grade": "punchy",
+   "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "fps_reason": "fps nativo del bruto"
+   },
+   "source": {
+    "duration": 30.72898,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "hdr": false
+   },
+   "segments": [
+    {
+     "id": "s1",
+     "in": 2.678,
+     "out": 16.494,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    },
+    {
+     "id": "s2",
+     "in": 19.382,
+     "out": 21.646,
+     "zoom": 1.06,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    }
+   ],
+   "captions": {
+    "mode": "words",
+    "size": "l",
+    "position": "lower",
+    "events": [
+     {
+      "start": 0.08,
+      "end": 2.13,
+      "text": "Hoy os enseñamos\ncómo preparamos",
+      "words": [
+       {
+        "start": 0.08,
+        "end": 0.328,
+        "word": "Hoy",
+        "source_start": 2.758
+       },
+       {
+        "start": 0.328,
+        "end": 0.515,
+        "word": "os",
+        "source_start": 3.006
+       },
+       {
+        "start": 0.515,
+        "end": 1.136,
+        "word": "enseñamos",
+        "source_start": 3.193
+       },
+       {
+        "start": 1.136,
+        "end": 1.447,
+        "word": "cómo",
+        "source_start": 3.814
+       },
+       {
+        "start": 1.447,
+        "end": 2.13,
+        "word": "preparamos",
+        "source_start": 4.125
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 2.13,
+      "end": 3.683,
+      "text": "la carián\ndesde el canal",
+      "words": [
+       {
+        "start": 2.13,
+        "end": 2.316,
+        "word": "la",
+        "source_start": 4.808
+       },
+       {
+        "start": 2.316,
+        "end": 2.751,
+        "word": "carián",
+        "source_start": 4.994
+       },
+       {
+        "start": 2.751,
+        "end": 3.124,
+        "word": "desde",
+        "source_start": 5.429
+       },
+       {
+        "start": 3.124,
+        "end": 3.31,
+        "word": "el",
+        "source_start": 5.802
+       },
+       {
+        "start": 3.31,
+        "end": 3.683,
+        "word": "canal",
+        "source_start": 5.988
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 3.683,
+      "end": 4.428,
+      "text": "tratamiento.",
+      "words": [
+       {
+        "start": 3.683,
+        "end": 4.428,
+        "word": "tratamiento.",
+        "source_start": 6.361
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 5.36,
+      "end": 7.143,
+      "text": "primero,\nlimpiamos todas",
+      "words": [
+       {
+        "start": 5.36,
+        "end": 5.954,
+        "word": "primero,",
+        "source_start": 8.038
+       },
+       {
+        "start": 5.954,
+        "end": 6.697,
+        "word": "limpiamos",
+        "source_start": 8.632
+       },
+       {
+        "start": 6.697,
+        "end": 7.143,
+        "word": "todas",
+        "source_start": 9.375
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 7.143,
+      "end": 8.332,
+      "text": "las superficies",
+      "words": [
+       {
+        "start": 7.143,
+        "end": 7.44,
+        "word": "las",
+        "source_start": 9.821
+       },
+       {
+        "start": 7.44,
+        "end": 8.332,
+        "word": "superficies",
+        "source_start": 10.118
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 9.36,
+      "end": 10.936,
+      "text": "Después\ncalentamos las",
+      "words": [
+       {
+        "start": 9.36,
+        "end": 9.908,
+        "word": "Después",
+        "source_start": 12.038
+       },
+       {
+        "start": 9.908,
+        "end": 10.662,
+        "word": "calentamos",
+        "source_start": 12.586
+       },
+       {
+        "start": 10.662,
+        "end": 10.936,
+        "word": "las",
+        "source_start": 13.34
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 10.936,
+      "end": 13.196,
+      "text": "toallas para que\nel cliente esté",
+      "words": [
+       {
+        "start": 10.936,
+        "end": 11.484,
+        "word": "toallas",
+        "source_start": 13.614
+       },
+       {
+        "start": 11.484,
+        "end": 11.826,
+        "word": "para",
+        "source_start": 14.162
+       },
+       {
+        "start": 11.826,
+        "end": 12.1,
+        "word": "que",
+        "source_start": 14.504
+       },
+       {
+        "start": 12.1,
+        "end": 12.306,
+        "word": "el",
+        "source_start": 14.778
+       },
+       {
+        "start": 12.306,
+        "end": 12.854,
+        "word": "cliente",
+        "source_start": 14.984
+       },
+       {
+        "start": 12.854,
+        "end": 13.196,
+        "word": "esté",
+        "source_start": 15.532
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 13.196,
+      "end": 13.896,
+      "text": "cómodo.",
+      "words": [
+       {
+        "start": 13.196,
+        "end": 13.676,
+        "word": "cómodo.",
+        "source_start": 15.874
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 13.896,
+      "end": 15.94,
+      "text": "¿Y sabéis cuál\nes el secreto?",
+      "words": [
+       {
+        "start": 13.896,
+        "end": 14.042,
+        "word": "¿Y",
+        "source_start": 19.462
+       },
+       {
+        "start": 14.042,
+        "end": 14.553,
+        "word": "sabéis",
+        "source_start": 19.608
+       },
+       {
+        "start": 14.553,
+        "end": 14.918,
+        "word": "cuál",
+        "source_start": 20.119
+       },
+       {
+        "start": 14.918,
+        "end": 15.137,
+        "word": "es",
+        "source_start": 20.484
+       },
+       {
+        "start": 15.137,
+        "end": 15.356,
+        "word": "el",
+        "source_start": 20.703
+       },
+       {
+        "start": 15.356,
+        "end": 15.94,
+        "word": "secreto?",
+        "source_start": 20.922
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     }
+    ]
+   },
+   "overlays": [],
+   "audio": {
+    "keep_original": true,
+    "target_lufs": -16,
+    "true_peak_max": -1.0,
+    "music": null,
+    "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+   },
+   "loop": false,
+   "duration": 16.08,
+   "score": {
+    "hook": 17,
+    "story": 20,
+    "authenticity": 12,
+    "utility": 13,
+    "rhythm": 15,
+    "brand": 6,
+    "total": 83,
+    "meaning": "puntuació editorial, no probabilitat de viralitat"
+   },
+   "provenance": {
+    "transcript_rows": [
+     1,
+     4
+    ],
+    "source_range": [
+     2.758,
+     21.506
+    ],
+    "text": "Hoy os enseñamos cómo preparamos la carián desde el canal tratamiento. primero, limpiamos todas las superficies Después calentamos las toallas para que el cliente esté cómodo. ¿Y sabéis cuál es el secreto?",
+    "notes": [
+     "arrenca amb pregunta/ganxo",
+     "té remat",
+     "reacció/riure probable al final"
+    ]
+   },
+   "risks": [],
+   "requires": [
+    "team_consent"
+   ],
+   "explanation": "Fragment 2.8–21.5s del bruto. Reaccions/riures detectats: humor quotidià. Per què: arrenca amb pregunta/ganxo; té remat; reacció/riure probable al final. Puntuació editorial 83/100 (no és predicció de viralitat).",
+   "automatic_publish": false,
+   "editorial_review_required": true,
+   "hook_overlay_suggestion": "Hoy os enseñamos cómo preparamos la carián desde el canal tratamiento.",
+   "title": "1. Hoy os enseñamos cómo preparamos la carián desde"
+  },
+  {
+   "schema": "blau.edl/4",
+   "id": "6af5974a5113",
+   "version": 1,
+   "style": "tacho_humor",
+   "style_label": "Humor cotidiano",
+   "language": "es",
+   "grade": "punchy",
+   "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "fps_reason": "fps nativo del bruto"
+   },
+   "source": {
+    "duration": 30.72898,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "hdr": false
+   },
+   "segments": [
+    {
+     "id": "s1",
+     "in": 21.75,
+     "out": 23.758,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    },
+    {
+     "id": "s2",
+     "in": 24.886,
+     "out": 28.462,
+     "zoom": 1.06,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    }
+   ],
+   "captions": {
+    "mode": "words",
+    "size": "l",
+    "position": "lower",
+    "events": [
+     {
+      "start": 0.08,
+      "end": 1.868,
+      "text": "La música y\nla luz suave.",
+      "words": [
+       {
+        "start": 0.08,
+        "end": 0.295,
+        "word": "La",
+        "source_start": 21.83
+       },
+       {
+        "start": 0.295,
+        "end": 0.795,
+        "word": "música",
+        "source_start": 22.045
+       },
+       {
+        "start": 0.795,
+        "end": 0.938,
+        "word": "y",
+        "source_start": 22.545
+       },
+       {
+        "start": 0.938,
+        "end": 1.153,
+        "word": "la",
+        "source_start": 22.688
+       },
+       {
+        "start": 1.153,
+        "end": 1.439,
+        "word": "luz",
+        "source_start": 22.903
+       },
+       {
+        "start": 1.439,
+        "end": 1.868,
+        "word": "suave.",
+        "source_start": 23.189
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 2.088,
+      "end": 4.707,
+      "text": "Y nunca, nunca,\nolvidamos el café",
+      "words": [
+       {
+        "start": 2.088,
+        "end": 2.252,
+        "word": "Y",
+        "source_start": 24.966
+       },
+       {
+        "start": 2.252,
+        "end": 2.743,
+        "word": "nunca,",
+        "source_start": 25.13
+       },
+       {
+        "start": 2.743,
+        "end": 3.234,
+        "word": "nunca,",
+        "source_start": 25.621
+       },
+       {
+        "start": 3.234,
+        "end": 4.052,
+        "word": "olvidamos",
+        "source_start": 26.112
+       },
+       {
+        "start": 4.052,
+        "end": 4.298,
+        "word": "el",
+        "source_start": 26.93
+       },
+       {
+        "start": 4.298,
+        "end": 4.707,
+        "word": "café",
+        "source_start": 27.176
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 4.707,
+      "end": 5.444,
+      "text": "de Marta.",
+      "words": [
+       {
+        "start": 4.707,
+        "end": 4.953,
+        "word": "de",
+        "source_start": 27.585
+       },
+       {
+        "start": 4.953,
+        "end": 5.444,
+        "word": "Marta.",
+        "source_start": 27.831
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     }
+    ]
+   },
+   "overlays": [],
+   "audio": {
+    "keep_original": true,
+    "target_lufs": -16,
+    "true_peak_max": -1.0,
+    "music": null,
+    "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+   },
+   "loop": false,
+   "duration": 5.584,
+   "score": {
+    "hook": 9,
+    "story": 17,
+    "authenticity": 12,
+    "utility": 4,
+    "rhythm": 12,
+    "brand": 4,
+    "total": 58,
+    "meaning": "puntuació editorial, no probabilitat de viralitat"
+   },
+   "provenance": {
+    "transcript_rows": [
+     5,
+     6
+    ],
+    "source_range": [
+     21.83,
+     28.322
+    ],
+    "text": "La música y la luz suave. Y nunca, nunca, olvidamos el café de Marta.",
+    "notes": [
+     "reacció/riure probable al final"
+    ]
+   },
+   "risks": [],
+   "requires": [
+    "team_consent"
+   ],
+   "explanation": "Fragment 21.8–28.3s del bruto. Reaccions/riures detectats: humor quotidià. Per què: reacció/riure probable al final. Puntuació editorial 58/100 (no és predicció de viralitat).",
+   "automatic_publish": false,
+   "editorial_review_required": true,
+   "hook_overlay_suggestion": "La música y la luz suave.",
+   "title": "2. La música y la luz suave."
+  }
+ ]
+}

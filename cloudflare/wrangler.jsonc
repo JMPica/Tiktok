@@ -2,15 +2,26 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "blau-tiktok-v3",
   "main": "./src/index.js",
-  "compatibility_date": "2026-10-28",
+  "compatibility_date": "2026-10-01",
   "workers_dev": true,
+  // Sin URLs de preview por versión: evitaría hostnames no cubiertos por la política de Access.
+  "preview_urls": false,
   "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
   "d1_databases": [{ "binding": "DB", "database_name": "blau-tiktok-v3", "database_id": "REPLACE_WITH_D1_DATABASE_ID" }],
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "blau-tiktok-private" }],
+  // Limpieza diaria: subidas abandonadas, variantes a medias, trabajos sin agente. Cron Triggers entran en el plan Free.
+  "triggers": { "crons": ["17 3 * * *"] },
+  "observability": { "enabled": true },
   "vars": {
     "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_TEAM.cloudflareaccess.com",
     "ACCESS_AUD": "REPLACE_WITH_APPLICATION_AUD",
+    // Uno o varios correos (separados por coma) con rol propietaria/Advanced.
     "OWNER_EMAIL": "REPLACE_WITH_OWNER_EMAIL",
-    "MAX_UPLOAD_BYTES": "1073741824"
+    // Opcional pero recomendado: correos del equipo. Si se rellena, nadie fuera de la lista entra aunque Access lo deje pasar.
+    "TEAM_EMAILS": "",
+    "MAX_UPLOAD_BYTES": "4294967296",
+    "UPLOADS_PER_HOUR": "40",
+    // 0 = no borrar nunca automáticamente. Los originales NUNCA se borran solos.
+    "REJECTED_RETENTION_DAYS": "0"
   }
 }

@@ -1,0 +1,248 @@
+{
+ "date": "2026-10-28T20:09:08+0000",
+ "status": "passed",
+ "seconds": 56.8,
+ "platform": "linux",
+ "runtime": "wrangler dev (workerd) + D1/R2 locales + agente Python local",
+ "input": {
+  "file": "e2e_ca.mov",
+  "bytes": 62127987
+ },
+ "checks": [
+  {
+   "check": "T01 sin sesión Access => 401",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T01 correo fuera del equipo => 403",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T01 token de otra aplicación (aud) => 401",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T01 token caducado => 401",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T02 roles owner/editor",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "agente sin token => 401",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "estáticos servidos",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "CSRF: mutación desde otro origen => 403",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "magic bytes: no-vídeo rechazado",
+   "status": "passed",
+   "detail": "{\"error\":\"El fitxer no sembla un vídeo MP4/MOV real\"}"
+  },
+  {
+   "check": "subida multipart con varias partes",
+   "status": "passed",
+   "detail": "8 partes de 8 MiB"
+  },
+  {
+   "check": "T04 reanudar: el servidor recuerda las partes subidas",
+   "status": "passed",
+   "detail": "[1, 3, 4, 5, 6, 7, 8]"
+  },
+  {
+   "check": "finalizar con partes pendientes => 422",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "finalizar subida",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "aislamiento: otra persona no ve la subida",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T19 doble envío no duplica el trabajo",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T05 sin ordenador encendido el trabajo queda en cola",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "agente procesa y termina",
+   "status": "passed",
+   "detail": "done en 40s · None"
+  },
+  {
+   "check": "T09 0..N propuestas por mérito",
+   "status": "passed",
+   "detail": "2 propuestas: 1. Ves prezes calfamres tu va llores, per què el cl; 2. A Ui Ui senceria em compre parem la carina l'ans"
+  },
+  {
+   "check": "QC medido aprobado",
+   "status": "passed",
+   "detail": "[{'check': 'resolución', 'status': 'pass', 'detail': '1080x1920'}, {'check': 'códec', 'status': 'pass', 'detail': 'h264/aac'}, {'check': 'decodificación completa', 'status': 'pass', 'detail': 'sin errores'}, {'check': 'duración', 'status': 'pass', 'detail': '8.90s (esperado 8.83s)'}, {'check': 'fps', 'status': 'pass', 'detail': '30/1 · fps nativo del bruto'}, {'check': 'audio', 'status': 'pass', '"
+  },
+  {
+   "check": "T12 1080x1920 H.264/AAC fps nativo",
+   "status": "passed",
+   "detail": "30/1"
+  },
+  {
+   "check": "T13 -16 LUFS ±2 y pico ≤ -1 dBTP",
+   "status": "passed",
+   "detail": "-16 LUFS / -1.5 dBTP"
+  },
+  {
+   "check": "EDL con timecodes del bruto y procedencia",
+   "status": "passed",
+   "detail": "[{'id': 's1', 'in': 11.894, 'out': 16.43, 'zoom': 1, 'x': 0.5, 'y': 0.5, 'push_in': 0, 'framing': 'center'}, {'id': 's2', 'in': 19.35, 'out': 23.662, 'zoom': 1.04, 'x': 0.5, 'y': 0.5, 'push_in': 0, 'framing': 'center'}]"
+  },
+  {
+   "check": "T08 nunca los primeros 18 s a ciegas",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T18 descarga = sha256 informado",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "preview Range 206 (Safari iOS)",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "HEAD de preview con Accept-Ranges",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "portada JPEG",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "sin sesión no hay vídeo",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T17 editora no puede aprobar",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T17 hash distinto => 409",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T15 sin checklist de consentimiento/claims => 422",
+   "status": "passed",
+   "detail": "{\"error\":\"Falta confirmar: claims_review, team_consent, client_consent, captions_reviewed\"}"
+  },
+  {
+   "check": "T17 propietaria aprueba hash exacto, sin publicar",
+   "status": "passed",
+   "detail": "{\"status\":\"approved\",\"sha256\":\"15c68a9926da31f766bc70c2989967994ce3f0e6edeb30b29e0636c3a4545fce\",\"published\":false}"
+  },
+  {
+   "check": "T16 corrección de texto => versión nueva con hash nuevo",
+   "status": "passed",
+   "detail": "done None en 6s"
+  },
+  {
+   "check": "versión enlazada a la anterior",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "editora no puede usar el editor Advanced",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T06 subtítulo corregido a mano entra en la nueva versión",
+   "status": "passed",
+   "detail": "None"
+  },
+  {
+   "check": "cron de mantenimiento se ejecuta",
+   "status": "passed",
+   "detail": "200"
+  },
+  {
+   "check": "mantenimiento registrado en auditoría",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "auditoría registra subida/aprobación/correcciones",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "editora no ve auditoría",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "análisis y transcripción visibles (Advanced)",
+   "status": "passed",
+   "detail": "sherpa-onnx:whisper"
+  },
+  {
+   "check": "liberar R2: borrar solo el original conserva las versiones",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "sin original no se piden versiones nuevas",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T23 borrado RGPD del original y versiones",
+   "status": "passed",
+   "detail": "{\"deleted\":true,\"variants\":4,\"jobs\":3}"
+  },
+  {
+   "check": "tras borrar, la preview ya no existe",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "tras borrar, el trabajo ya no existe",
+   "status": "passed",
+   "detail": ""
+  }
+ ],
+ "not_covered": [
+  "Cloudflare Access real en tu cuenta",
+  "Safari iPhone físico",
+  "R2/D1 remotos"
+ ]
+}

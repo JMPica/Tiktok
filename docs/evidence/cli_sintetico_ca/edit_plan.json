@@ -1,0 +1,548 @@
+{
+ "style_requested": "auto",
+ "style": "educativo",
+ "style_reason": "diàleg explicatiu: format consell/mite",
+ "automatic_publish": false,
+ "editorial_review_required": true,
+ "caption_review_required": true,
+ "claims_checked": false,
+ "selection": "multimodal_signals+speech",
+ "semantic_vision": "no disponible: només senyals d’imatge i so",
+ "status": "drafts",
+ "candidates": [
+  {
+   "schema": "blau.edl/4",
+   "id": "11eb258962b1",
+   "version": 1,
+   "style": "educativo",
+   "style_label": "Mito o consejo",
+   "language": "ca",
+   "grade": "natural",
+   "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "fps_reason": "fps nativo del bruto"
+   },
+   "source": {
+    "duration": 30.475011,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "hdr": false
+   },
+   "segments": [
+    {
+     "id": "s1",
+     "in": 11.894,
+     "out": 16.43,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    },
+    {
+     "id": "s2",
+     "in": 19.35,
+     "out": 23.662,
+     "zoom": 1.04,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    }
+   ],
+   "captions": {
+    "mode": "phrase",
+    "size": "m",
+    "position": "lower",
+    "events": [
+     {
+      "start": 0.08,
+      "end": 1.794,
+      "text": "Ves prezes\ncalfamres tu va",
+      "words": [
+       {
+        "start": 0.08,
+        "end": 0.334,
+        "word": "Ves",
+        "source_start": 11.974
+       },
+       {
+        "start": 0.334,
+        "end": 0.778,
+        "word": "prezes",
+        "source_start": 12.228
+       },
+       {
+        "start": 0.778,
+        "end": 1.413,
+        "word": "calfamres",
+        "source_start": 12.672
+       },
+       {
+        "start": 1.413,
+        "end": 1.603,
+        "word": "tu",
+        "source_start": 13.307
+       },
+       {
+        "start": 1.603,
+        "end": 1.794,
+        "word": "va",
+        "source_start": 13.497
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 1.794,
+      "end": 3.888,
+      "text": "llores, per què\nel client estigui",
+      "words": [
+       {
+        "start": 1.794,
+        "end": 2.238,
+        "word": "llores,",
+        "source_start": 13.688
+       },
+       {
+        "start": 2.238,
+        "end": 2.492,
+        "word": "per",
+        "source_start": 14.132
+       },
+       {
+        "start": 2.492,
+        "end": 2.746,
+        "word": "què",
+        "source_start": 14.386
+       },
+       {
+        "start": 2.746,
+        "end": 2.936,
+        "word": "el",
+        "source_start": 14.64
+       },
+       {
+        "start": 2.936,
+        "end": 3.38,
+        "word": "client",
+        "source_start": 14.83
+       },
+       {
+        "start": 3.38,
+        "end": 3.888,
+        "word": "estigui",
+        "source_start": 15.274
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 3.888,
+      "end": 4.588,
+      "text": "com una?",
+      "words": [
+       {
+        "start": 3.888,
+        "end": 4.142,
+        "word": "com",
+        "source_start": 15.782
+       },
+       {
+        "start": 4.142,
+        "end": 4.396,
+        "word": "una?",
+        "source_start": 16.036
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 4.616,
+      "end": 6.889,
+      "text": "I sabeu qui\nés el secret.",
+      "words": [
+       {
+        "start": 4.616,
+        "end": 4.798,
+        "word": "I",
+        "source_start": 19.43
+       },
+       {
+        "start": 4.798,
+        "end": 5.343,
+        "word": "sabeu",
+        "source_start": 19.612
+       },
+       {
+        "start": 5.343,
+        "end": 5.707,
+        "word": "qui",
+        "source_start": 20.157
+       },
+       {
+        "start": 5.707,
+        "end": 5.98,
+        "word": "és",
+        "source_start": 20.521
+       },
+       {
+        "start": 5.98,
+        "end": 6.253,
+        "word": "el",
+        "source_start": 20.794
+       },
+       {
+        "start": 6.253,
+        "end": 6.889,
+        "word": "secret.",
+        "source_start": 21.067
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 6.889,
+      "end": 8.708,
+      "text": "La música\ni la llum.",
+      "words": [
+       {
+        "start": 6.889,
+        "end": 7.162,
+        "word": "La",
+        "source_start": 21.703
+       },
+       {
+        "start": 7.162,
+        "end": 7.799,
+        "word": "música",
+        "source_start": 21.976
+       },
+       {
+        "start": 7.799,
+        "end": 7.981,
+        "word": "i",
+        "source_start": 22.613
+       },
+       {
+        "start": 7.981,
+        "end": 8.253,
+        "word": "la",
+        "source_start": 22.795
+       },
+       {
+        "start": 8.253,
+        "end": 8.708,
+        "word": "llum.",
+        "source_start": 23.067
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     }
+    ]
+   },
+   "overlays": [],
+   "audio": {
+    "keep_original": true,
+    "target_lufs": -16,
+    "true_peak_max": -1.0,
+    "music": null,
+    "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+   },
+   "loop": false,
+   "duration": 8.848,
+   "score": {
+    "hook": 17,
+    "story": 20,
+    "authenticity": 12,
+    "utility": 10,
+    "rhythm": 12,
+    "brand": 4,
+    "total": 75,
+    "meaning": "puntuació editorial, no probabilitat de viralitat"
+   },
+   "provenance": {
+    "transcript_rows": [
+     2,
+     3
+    ],
+    "source_range": [
+     11.974,
+     23.522
+    ],
+    "text": "Ves prezes calfamres tu va llores, per què el client estigui com una? I sabeu qui és el secret. La música i la llum.",
+    "notes": [
+     "arrenca amb pregunta/ganxo",
+     "té remat",
+     "reacció/riure probable al final"
+    ]
+   },
+   "risks": [],
+   "requires": [
+    "claims_review",
+    "team_consent"
+   ],
+   "explanation": "Fragment 12.0–23.5s del bruto. Diàleg explicatiu: format consell/mite. Per què: arrenca amb pregunta/ganxo; té remat; reacció/riure probable al final. Puntuació editorial 75/100 (no és predicció de viralitat).",
+   "automatic_publish": false,
+   "editorial_review_required": true,
+   "hook_overlay_suggestion": "Ves prezes calfamres tu va llores, per què el client estigui com una?",
+   "title": "1. Ves prezes calfamres tu va llores, per què el cl"
+  },
+  {
+   "schema": "blau.edl/4",
+   "id": "45112611abac",
+   "version": 1,
+   "style": "educativo",
+   "style_label": "Mito o consejo",
+   "language": "ca",
+   "grade": "natural",
+   "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "fps_reason": "fps nativo del bruto"
+   },
+   "source": {
+    "duration": 30.475011,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "hdr": false
+   },
+   "segments": [
+    {
+     "id": "s1",
+     "in": 2.934,
+     "out": 7.438,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    },
+    {
+     "id": "s2",
+     "in": 8.086,
+     "out": 11.086,
+     "zoom": 1.04,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    }
+   ],
+   "captions": {
+    "mode": "phrase",
+    "size": "m",
+    "position": "lower",
+    "events": [
+     {
+      "start": 0.08,
+      "end": 2.289,
+      "text": "A Ui Ui senceria\nem compre parem",
+      "words": [
+       {
+        "start": 0.08,
+        "end": 0.214,
+        "word": "A",
+        "source_start": 3.014
+       },
+       {
+        "start": 0.214,
+        "end": 0.415,
+        "word": "Ui",
+        "source_start": 3.148
+       },
+       {
+        "start": 0.415,
+        "end": 0.616,
+        "word": "Ui",
+        "source_start": 3.349
+       },
+       {
+        "start": 0.616,
+        "end": 1.218,
+        "word": "senceria",
+        "source_start": 3.55
+       },
+       {
+        "start": 1.218,
+        "end": 1.419,
+        "word": "em",
+        "source_start": 4.152
+       },
+       {
+        "start": 1.419,
+        "end": 1.887,
+        "word": "compre",
+        "source_start": 4.353
+       },
+       {
+        "start": 1.887,
+        "end": 2.289,
+        "word": "parem",
+        "source_start": 4.821
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 2.289,
+      "end": 4.73,
+      "text": "la carina l'ans\nla cara t'acat I",
+      "words": [
+       {
+        "start": 2.289,
+        "end": 2.49,
+        "word": "la",
+        "source_start": 5.223
+       },
+       {
+        "start": 2.49,
+        "end": 2.958,
+        "word": "carina",
+        "source_start": 5.424
+       },
+       {
+        "start": 2.958,
+        "end": 3.36,
+        "word": "l'ans",
+        "source_start": 5.892
+       },
+       {
+        "start": 3.36,
+        "end": 3.561,
+        "word": "la",
+        "source_start": 6.294
+       },
+       {
+        "start": 3.561,
+        "end": 3.895,
+        "word": "cara",
+        "source_start": 6.495
+       },
+       {
+        "start": 3.895,
+        "end": 4.364,
+        "word": "t'acat",
+        "source_start": 6.829
+       },
+       {
+        "start": 4.584,
+        "end": 4.73,
+        "word": "I",
+        "source_start": 8.166
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 4.73,
+      "end": 6.486,
+      "text": "a mi, la tenen\ntotes les",
+      "words": [
+       {
+        "start": 4.73,
+        "end": 4.877,
+        "word": "a",
+        "source_start": 8.312
+       },
+       {
+        "start": 4.877,
+        "end": 5.096,
+        "word": "mi,",
+        "source_start": 8.459
+       },
+       {
+        "start": 5.096,
+        "end": 5.316,
+        "word": "la",
+        "source_start": 8.678
+       },
+       {
+        "start": 5.316,
+        "end": 5.755,
+        "word": "tenen",
+        "source_start": 8.898
+       },
+       {
+        "start": 5.755,
+        "end": 6.193,
+        "word": "totes",
+        "source_start": 9.337
+       },
+       {
+        "start": 6.193,
+        "end": 6.486,
+        "word": "les",
+        "source_start": 9.775
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 6.486,
+      "end": 7.364,
+      "text": "superfícies.",
+      "words": [
+       {
+        "start": 6.486,
+        "end": 7.364,
+        "word": "superfícies.",
+        "source_start": 10.068
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     }
+    ]
+   },
+   "overlays": [],
+   "audio": {
+    "keep_original": true,
+    "target_lufs": -16,
+    "true_peak_max": -1.0,
+    "music": null,
+    "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+   },
+   "loop": false,
+   "duration": 7.504,
+   "score": {
+    "hook": 9,
+    "story": 17,
+    "authenticity": 12,
+    "utility": 4,
+    "rhythm": 12,
+    "brand": 4,
+    "total": 58,
+    "meaning": "puntuació editorial, no probabilitat de viralitat"
+   },
+   "provenance": {
+    "transcript_rows": [
+     0,
+     1
+    ],
+    "source_range": [
+     3.014,
+     10.946
+    ],
+    "text": "A Ui Ui senceria em compre parem la carina l'ans la cara t'acat I a mi, la tenen totes les superfícies.",
+    "notes": [
+     "reacció/riure probable al final"
+    ]
+   },
+   "risks": [],
+   "requires": [
+    "claims_review",
+    "team_consent"
+   ],
+   "explanation": "Fragment 3.0–10.9s del bruto. Diàleg explicatiu: format consell/mite. Per què: reacció/riure probable al final. Puntuació editorial 58/100 (no és predicció de viralitat).",
+   "automatic_publish": false,
+   "editorial_review_required": true,
+   "hook_overlay_suggestion": "A Ui Ui senceria em compre parem la carina l'ans la cara t'acat",
+   "title": "2. A Ui Ui senceria em compre parem la carina l'ans"
+  }
+ ]
+}

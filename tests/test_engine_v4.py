@@ -142,3 +142,20 @@ def test_pipeline_candidate_has_hash_poster_and_qc(tmp_path):
     res = render_candidate(src, an['meta'], p['candidates'][0], tmp_path)
     assert len(res['sha256']) == 64 and res['poster'].is_file() and res['qc']['status'] == 'pass'
     assert res['sha256'] == QC.sha256(res['path'])
+
+
+def test_output_fps_rules():
+    assert output_fps({'fps': '25/1', 'vfr': False})[0] == '25/1'
+    assert output_fps({'fps': '30000/1001', 'vfr': False})[0] == '30000/1001'
+    fps, why = output_fps({'fps': '2397/80', 'vfr': True})  # iPhone VFR ~29.96
+    assert fps == '30000/1001' and 'VFR' in why
+    assert output_fps({'fps': '120/1', 'vfr': False})[0] == '60/1'
+
+
+def test_caption_lines_fit_safe_width():
+    from creative_engine.captions import MAX_LINE_CHARS, chunk
+    words = [{'start': i * 0.3, 'end': i * 0.3 + 0.25, 'word': w} for i, w in
+             enumerate('Després escalfem les tovalloles perquè el client estigui còmode i relaxat'.split())]
+    for ev in chunk(words):
+        assert all(len(line) <= MAX_LINE_CHARS for line in ev['text'].split('\n') if ' ' in line)
+        assert ev['text'].count('\n') <= 1
