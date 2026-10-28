@@ -49,6 +49,12 @@ def test_security_upload_and_approval(env):
     duplicate=client.post(f'/v3/uploads/{uid}/renders',headers=editor,json={'mode':'automatic'})
     assert duplicate.json()['id']==rid and duplicate.json()['reused'] is True
     assert worker.process_next() is True
+    # V4: automático sin plan editorial => needs_review, nunca los primeros 18 s.
+    blind=client.get(f'/v3/renders/{rid}',headers=editor).json()
+    assert blind['status']=='needs_review' and blind['preview_path'] is None,blind
+    r=client.post(f'/v3/uploads/{uid}/renders',headers=editor,json={'mode':'automatic','segments':[{'in':0.2,'out':1.6}]})
+    rid=r.json()['id']
+    assert worker.process_next() is True
     status=client.get(f'/v3/renders/{rid}',headers=editor).json()
     assert status['status']=='needs_approval',status
     assert status['qc']['decode_ok'] and status['qc']['original_has_audio']

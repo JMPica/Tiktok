@@ -5,43 +5,24 @@ from pathlib import Path
 from server.core import ROOT,connect,init_db,probe,hash_file
 
 
-def ffmpeg_render(source:Path,target:Path, metadata:dict, segments:list[dict]|None):
-    """Deterministic offline render; no external uploads or paid calls."""
-    target.parent.mkdir(parents=True,exist_ok=True)
-    duration=metadata['duration']
+def ffmpeg_render(source:Path,target:Path, metadata:dict, segments:list[dict]|None, captions:list[dict]|None=None):
+    """Render determinista heredado V3 -> motor V4 (creative_engine.render). Sin recorte ciego.
+
+    V4: ``segments=None`` ya NO produce los primeros 18 s; es un error explícito.
+    """
     if segments is None:
-        # Baseline only: not an AI-selected highlight. Preserve real footage; don't invent stories.
-        segments=[{'in':0.0,'out':min(duration,18.0)}]
+        raise ValueError('V4: sin segmentos no se monta nada (prohibido el recorte fijo de 18 s)')
     if not segments:raise ValueError('An empty edit plan is not renderable')
-    paths=[]
-    from fractions import Fraction
-    try: fps=float(Fraction(metadata['fps']))
-    except Exception:fps=25.0
-    fps=max(1,min(fps,60))
-    for i,s in enumerate(segments):
-        a=float(s['in']);b=float(s['out']);p=target.parent/(target.stem+f'-clip{i}.mp4')
-        # No blind HDR->SDR conversion: require appropriate zscale and tonemap filters.
-        if metadata['hdr']:
-            filters=subprocess.run(['ffmpeg','-hide_banner','-filters'],capture_output=True,text=True,check=True).stdout
-            if 'zscale' not in filters or 'tonemap' not in filters:raise ValueError('HDR requires zscale and tonemap')
-            vf='zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,'
-        else:vf=''
-        vf+='scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,format=yuv420p'
-        cmd=['ffmpeg','-hide_banner','-nostdin','-loglevel','error','-y','-ss',str(a),'-t',str(b-a),'-i',str(source)]
-        if not metadata['audio']:
-            cmd+=['-f','lavfi','-t',str(b-a),'-i','anullsrc=r=48000:cl=stereo']
-        cmd+=['-vf',vf,'-r',str(fps),'-c:v','libx264','-preset','veryfast','-crf','22',
-              '-pix_fmt','yuv420p','-c:a','aac','-b:a','160k','-ar','48000',
-              '-af','loudnorm=I=-16:TP=-1.5:LRA=11' if metadata['audio'] else 'volume=0',
-              '-map','0:v:0','-map','0:a:0' if metadata['audio'] else '1:a:0',
-              '-shortest','-movflags','+faststart',str(p)]
-        subprocess.run(cmd,check=True,capture_output=True,text=True,timeout=600)
-        paths.append(p)
-    txt=target.with_suffix('.txt')
-    txt.write_text(''.join('file '+"'"+str(p).replace("'","'\\''")+"'"+'\n' for p in paths),encoding='utf8')
-    subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y','-f','concat','-safe','0','-i',str(txt),'-c','copy','-movflags','+faststart',str(target)],check=True,capture_output=True,text=True,timeout=600)
-    for p in paths:p.unlink(missing_ok=True)
-    txt.unlink(missing_ok=True)
+    from creative_engine.media import probe as v4probe
+    from creative_engine.render import render
+    meta=v4probe(source)
+    events=[{'start':float(c['start']),'end':float(c['end']),'text':str(c['text']),'words':[],'type':'edited'} for c in (captions or [])]
+    edl={'segments':[{'id':f's{i}','in':float(x['in']),'out':float(x['out'])} for i,x in enumerate(segments)],
+         'captions':{'mode':'phrase' if events else 'none','events':events},'grade':'natural'}
+    work=target.parent/(target.stem+'-work')
+    try:return render(edl,source,meta,target,work)
+    finally:
+        import shutil;shutil.rmtree(work,ignore_errors=True)
 
 
 def _ass_time(sec):
@@ -85,8 +66,12 @@ def process_next():
     try:
         with connect() as d:u=d.execute('SELECT * FROM uploads WHERE id=?',(r['upload_id'],)).fetchone()
         meta=json.loads(u['metadata']);plan=json.loads(r['plan'])
-        ffmpeg_render(Path(u['path']),target,meta,plan.get('segments'))
-        apply_captions(target,plan.get('captions') or [])
+        if not plan.get('segments'):
+            # V4: el servidor local V3 no decide cortes. La selección editorial la hace creative_engine (agente).
+            with connect() as d:d.execute('UPDATE renders SET status=?,error=?,updated=? WHERE id=?',
+                ('needs_review','V4: sin plan de montaje no se recorta nada; usa el agente V4 o indica segmentos',int(time.time()),rid))
+            return True
+        ffmpeg_render(Path(u['path']),target,meta,plan.get('segments'),plan.get('captions') or [])
         rendered=probe(target)
         if rendered['width']!=1080 or rendered['height']!=1920:raise ValueError('Invalid render resolution')
         if rendered['duration']<0.3 or not rendered['audio']:raise ValueError('Invalid render audio/duration')
@@ -95,7 +80,7 @@ def process_next():
         digest=hash_file(target)
         qc={'decode_ok':True,'width':rendered['width'],'height':rendered['height'],
             'duration':rendered['duration'],'audio_present':True,'original_has_audio':meta['audio'],
-            'frame_rate':rendered['fps'],'source_segments':plan.get('segments') or 'automatic_baseline',
+            'frame_rate':rendered['fps'],'source_segments':plan.get('segments'),
             'generative_effects':'disabled','claims_review':'human_required',
             'editorial_review':'pending','caption_review':'pending','embedded_caption_count':len(plan.get('captions') or [])}
         with connect() as d:d.execute('UPDATE renders SET status=?,path=?,sha256=?,qc=?,updated=? WHERE id=?',

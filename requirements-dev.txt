@@ -1,0 +1,7 @@
+-r requirements-ai-local.txt
+# Solo desarrollo/tests (servidor V3 heredado y pruebas).
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+pydantic>=2,<3
+pytest>=8,<10
+httpx>=0.27,<1

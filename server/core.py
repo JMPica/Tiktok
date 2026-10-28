@@ -15,7 +15,7 @@ CHUNK = 4 * 1024 * 1024
 MAX_BYTES = int(os.environ.get('STUDIO_MAX_UPLOAD_BYTES', str(2 * 1024 ** 3)))
 JWT_SECRET = os.environ.get('STUDIO_JWT_SECRET', '')
 ORIGIN = os.environ.get('STUDIO_ORIGIN', 'https://blau-de-mar-tiktok-studio.titus10.chatgpt.site')
-STATUS = ('uploaded','queued','processing','needs_approval','approved','rejected','failed')
+STATUS = ('uploaded','queued','processing','needs_review','needs_approval','approved','rejected','failed')
 
 
 def connect():
@@ -220,7 +220,8 @@ def new_render(uid:str,body:RenderRequest,identity=Depends(user)):
                 if not 0<=a<b<=meta['duration']+0.001 or b-a<0.1:raise HTTPException(422,'Invalid segment times')
         if body.captions:
             if len(body.captions)>250:raise HTTPException(422,'Too many captions')
-            output_seconds=sum(float(t['out'])-float(t['in']) for t in segments) if segments else min(meta['duration'],18)
+            if not segments:raise HTTPException(422,'Captions require explicit segments')
+            output_seconds=sum(float(t['out'])-float(t['in']) for t in segments)
             for caption in body.captions:
                 try: cs,ce=float(caption['start']),float(caption['end']);ct=caption['text']
                 except (KeyError,TypeError,ValueError):raise HTTPException(422,'Captions require numeric start/end and text')

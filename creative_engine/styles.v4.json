@@ -1,5 +1,5 @@
 {
-  "schema_version": "4.0.0",
+  "schema_version": "4.1.0",
   "release_date": "2026-10-28",
   "project": "Blau de Mar TikTok Studio V4",
   "editorial_mode": "quality_over_quantity",
@@ -14,7 +14,22 @@
         "max": 3.6
       },
       "story_arc": "auto",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          12,
+          45
+        ],
+        "max_len": 75,
+        "max_pause": 0.55,
+        "grade": "natural",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "tacho_humano",
@@ -26,7 +41,22 @@
         "max": 4.5
       },
       "story_arc": "hook_context_payoff",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          18,
+          45
+        ],
+        "max_len": 70,
+        "max_pause": 0.6,
+        "grade": "natural",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "tacho_humor",
@@ -38,7 +68,23 @@
         "max": 2.5
       },
       "story_arc": "setup_twist",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          8,
+          30
+        ],
+        "max_len": 45,
+        "max_pause": 0.9,
+        "grade": "punchy",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0.06,
+        "loop": false,
+        "requires": [],
+        "comedy_pauses": true
+      }
     },
     {
       "id": "backstage",
@@ -50,7 +96,22 @@
         "max": 4.2
       },
       "story_arc": "day_story",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          12,
+          40
+        ],
+        "max_len": 60,
+        "max_pause": 0.6,
+        "grade": "natural",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "microvlog",
@@ -62,7 +123,22 @@
         "max": 3.4
       },
       "story_arc": "day_story",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          15,
+          45
+        ],
+        "max_len": 60,
+        "max_pause": 0.45,
+        "grade": "natural",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "pov",
@@ -74,7 +150,23 @@
         "max": 2.0
       },
       "story_arc": "setup_twist",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          6,
+          20
+        ],
+        "max_len": 30,
+        "max_pause": 0.4,
+        "grade": "punchy",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0.05,
+        "loop": false,
+        "requires": [],
+        "hook_text": true
+      }
     },
     {
       "id": "fast_cuts",
@@ -86,7 +178,22 @@
         "max": 1.8
       },
       "story_arc": "hook_payoff",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          8,
+          25
+        ],
+        "max_len": 35,
+        "max_pause": 0.2,
+        "grade": "punchy",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0.08,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "clean_talking",
@@ -98,7 +205,22 @@
         "max": 5.0
       },
       "story_arc": "hook_context_payoff",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          20,
+          60
+        ],
+        "max_len": 90,
+        "max_pause": 0.75,
+        "grade": "natural",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "educativo",
@@ -110,7 +232,25 @@
         "max": 4.0
       },
       "story_arc": "question_answer",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          20,
+          55
+        ],
+        "max_len": 80,
+        "max_pause": 0.5,
+        "grade": "natural",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0.04,
+        "loop": false,
+        "requires": [
+          "claims_review"
+        ],
+        "hook_text": true
+      }
     },
     {
       "id": "respuesta_comentario",
@@ -122,7 +262,24 @@
         "max": 3.8
       },
       "story_arc": "question_answer",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          15,
+          50
+        ],
+        "max_len": 75,
+        "max_pause": 0.5,
+        "grade": "natural",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [
+          "comment_text"
+        ]
+      }
     },
     {
       "id": "premium",
@@ -134,7 +291,22 @@
         "max": 5.0
       },
       "story_arc": "sensory_story",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          10,
+          30
+        ],
+        "max_len": 40,
+        "max_pause": 1.2,
+        "grade": "premium",
+        "captions": "phrase",
+        "push_in": 0.05,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "asmr",
@@ -146,7 +318,22 @@
         "max": 6.0
       },
       "story_arc": "sensory_story",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "none",
+        "ideal": [
+          12,
+          40
+        ],
+        "max_len": 60,
+        "max_pause": 2.0,
+        "grade": "premium",
+        "captions": "none",
+        "push_in": 0.03,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      }
     },
     {
       "id": "cinematic",
@@ -158,7 +345,24 @@
         "max": 4.6
       },
       "story_arc": "sensory_story",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          10,
+          30
+        ],
+        "max_len": 40,
+        "max_pause": 1.0,
+        "grade": "premium",
+        "captions": "phrase",
+        "push_in": 0.06,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [
+          "licensed_music"
+        ]
+      }
     },
     {
       "id": "before_after",
@@ -170,7 +374,25 @@
         "max": 3.3
       },
       "story_arc": "evidence",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          8,
+          25
+        ],
+        "max_len": 35,
+        "max_pause": 0.5,
+        "grade": "none",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [
+          "client_consent",
+          "before_after_evidence"
+        ]
+      }
     },
     {
       "id": "reveal",
@@ -182,7 +404,23 @@
         "max": 2.6
       },
       "story_arc": "hook_payoff",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          8,
+          25
+        ],
+        "max_len": 35,
+        "max_pause": 0.4,
+        "grade": "punchy",
+        "captions": "words",
+        "push_in": 0.04,
+        "punch_zoom": 0.05,
+        "loop": false,
+        "requires": [],
+        "hook_text": true
+      }
     },
     {
       "id": "loop",
@@ -194,7 +432,23 @@
         "max": 2.5
       },
       "story_arc": "setup_twist",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          6,
+          20
+        ],
+        "max_len": 30,
+        "max_pause": 0.6,
+        "grade": "punchy",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0.05,
+        "loop": true,
+        "requires": [],
+        "comedy_pauses": true
+      }
     },
     {
       "id": "trend_adaptation",
@@ -206,7 +460,25 @@
         "max": 2.8
       },
       "story_arc": "hook_payoff",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          8,
+          25
+        ],
+        "max_len": 35,
+        "max_pause": 0.35,
+        "grade": "punchy",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0.05,
+        "loop": false,
+        "requires": [
+          "trend_source",
+          "licensed_music"
+        ]
+      }
     },
     {
       "id": "service_conversion",
@@ -218,7 +490,25 @@
         "max": 4.0
       },
       "story_arc": "question_answer",
-      "automated_state": "preset_specification"
+      "automated_state": "render_recipe",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          20,
+          50
+        ],
+        "max_len": 70,
+        "max_pause": 0.5,
+        "grade": "natural",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [
+          "claims_review"
+        ],
+        "cta": true
+      }
     }
   ],
   "global_rules": {
@@ -231,6 +521,8 @@
     "no_tiktok_autopublish": true,
     "costly_integrations_default": false,
     "approval_per_output_sha256": true,
-    "original_audio_retained_if_dialogue": true
-  }
+    "original_audio_retained_if_dialogue": true,
+    "maximum_results_default": 4
+  },
+  "recipe_note": "Cada perfil es una receta de render parametrizada (pausas, ritmo, color, subtítulos, zoom, bucle, requisitos). No son 18 algoritmos visuales distintos ni efectos generativos."
 }

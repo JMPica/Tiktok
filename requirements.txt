@@ -1,5 +1,4 @@
-fastapi>=0.115,<1
-uvicorn>=0.30,<1
-pydantic>=2,<3
-pytest>=8,<10
-httpx>=0.27,<1
+# Agente local V4 (Windows/macOS/Linux). Sin Docker. FFmpeg aparte (con libass, zscale y tonemap).
+requests>=2.32,<3
+numpy>=1.26,<3
+opencv-python-headless>=4.9,<5
