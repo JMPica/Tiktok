@@ -71,11 +71,11 @@ def validate_edl(edl: dict, meta: dict) -> list[dict]:
 def _segment_filters(i: int, seg: dict, meta: dict, fps: Fraction, grade: str, n_frames: int) -> tuple[str, str]:
     d = n_frames / fps
     cw, ch, x0, y0 = crop_geometry(meta, seg.get('zoom', 1.0), seg.get('x', 0.5), seg.get('y', 0.5))
-    v = [f'crop={cw}:{ch}:{x0}:{y0}']
+    v = [f'crop={cw}:{ch}:{x0}:{y0}', f'scale={OUT_W}:{OUT_H}:flags=lanczos']
     tm = tonemap_filter(meta)
     if tm:
+        # Tonemap tras reducir a 1080x1920: mismo resultado visual, ~4x menos trabajo con brutos 4K.
         v.append(tm.rstrip(','))
-    v.append(f'scale={OUT_W}:{OUT_H}:flags=lanczos')
     push = float(seg.get('push_in') or 0)
     if push > 0:
         expr = f'(1+{push:.4f}*t/{float(d):.4f})'

@@ -17,12 +17,12 @@ D1/R2 locales + agente + FFmpeg + navegador Chromium con viewport iPhone) · `de
 | Corrección en texto y edición Advanced | tested_e2e_local + UI | parser de reglas ca/es; Ollama opcional no probado |
 | Access JWT (firma, aud, iss, exp), roles, allowlist | tested_e2e_local | con emisor JWKS local; **Access real no probado** |
 | Subida reanudable, reintentos, pausa, varios ficheros | tested_e2e_local + UI | Safari iPhone real no probado |
-| Reintentos/lease/latido, no duplicar trabajos | tested_e2e_local (duplicado) | caída del PC a mitad: lógica implementada, no simulada |
+| Reintentos/lease/latido, no duplicar trabajos | tested_e2e_local | incluye agente que muere a mitad y recuperación |
 | Borrado RGPD / borrar solo original / auditoría / cron | tested_e2e_local | |
 | Windows/macOS scripts | implemented | sin probar en equipos reales |
-| Despliegue Cloudflare | **no** | requiere tu login (ver `CLOUDFLARE_PASOS.md`) |
+| Despliegue Cloudflare | **parcial** | D1 `blau-tiktok-v3` creada con esquema (región ENAM); **R2 sin activar** en la cuenta (lo activa la propietaria); falta Access |
 | Publicación TikTok, analítica post-publicación (P6) | no implementado | a propósito: sin API autorizada |
-| Visión semántica (acciones, emoción, mejor chiste) | no implementado | hook `semantic_vision` preparado; necesita modelo local potente |
+| Visión semántica (acciones, emoción, posible clienta/menor) | implemented + tested_unit (servidor de prueba) | opcional con Ollama local; sin modelo real probado |
 | Música licenciada / sound design | no implementado | solo audio original; no se añade música |
 
 ## Brechas principales y siguiente paso

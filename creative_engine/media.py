@@ -115,10 +115,11 @@ def tonemap_filter(meta: dict) -> str:
     """Cadena HDR (HLG/PQ, también Dolby Vision 8.4 compatible HLG) -> SDR BT.709. '' si SDR."""
     if not meta.get('hdr'):
         return ''
-    npl = 203 if meta.get('color_transfer') == 'arib-std-b67' else 100
+    # Calibrado midiendo contra la referencia SDR de un HLG sintético: hable/203 nits oscurecía (MAE 68),
+    # mobius/100 nits conserva medios tonos y comprime luces altas (MAE 27). Validar con MOV real del iPhone.
     tin = meta.get('color_transfer')
-    return (f'zscale=tin={tin}:pin=bt2020:min=bt2020nc:t=linear:npl={npl},format=gbrpf32le,'
-            'zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,')
+    return (f'zscale=tin={tin}:pin=bt2020:min=bt2020nc:t=linear:npl=100,format=gbrpf32le,'
+            'zscale=p=bt709,tonemap=tonemap=mobius:desat=0,zscale=t=bt709:m=bt709:r=tv,')
 
 
 def ffmpeg_has_filters(*names: str) -> list[str]:

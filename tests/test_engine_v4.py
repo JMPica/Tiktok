@@ -153,9 +153,101 @@ def test_output_fps_rules():
 
 
 def test_caption_lines_fit_safe_width():
-    from creative_engine.captions import MAX_LINE_CHARS, chunk
+    from creative_engine.captions import caption_report, chunk
     words = [{'start': i * 0.3, 'end': i * 0.3 + 0.25, 'word': w} for i, w in
-             enumerate('Després escalfem les tovalloles perquè el client estigui còmode i relaxat'.split())]
-    for ev in chunk(words):
-        assert all(len(line) <= MAX_LINE_CHARS for line in ev['text'].split('\n') if ' ' in line)
-        assert ev['text'].count('\n') <= 1
+             enumerate('Després escalfem les tovalloles perquè el client estigui còmode i relaxat des del primer minut'.split())]
+    for size in ('m', 'l'):
+        events = chunk(words, size)
+        assert all(ev['text'].count('\n') <= 1 for ev in events)
+        rep = caption_report({'mode': 'phrase', 'size': size, 'position': 'lower', 'events': events})
+        assert not [i for i in rep['issues'] if 'ancha' in i], rep['issues']
+
+
+def _fake_ollama(reply: dict):
+    """Servidor HTTP local que responde como Ollama /api/generate (solo para probar el cliente)."""
+    import http.server
+    import json as _json
+    import threading
+
+    seen = []
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_POST(self):
+            body = _json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            seen.append(body)
+            out = _json.dumps({'response': _json.dumps(reply)}).encode()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(out)
+
+        def log_message(self, *a):
+            pass
+    srv = http.server.ThreadingHTTPServer(('127.0.0.1', 0), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv, seen
+
+
+def test_semantic_vision_feeds_director_and_flags_client(tmp_path, monkeypatch):
+    from creative_engine.vision_llm import describe_shots
+    srv, seen = _fake_ollama({'descripcion': 'Esteticista prepara la cabina', 'accion': 'preparar', 'personas': 1,
+                              'emocion': 'alegria', 'calidad': 4, 'posible_cliente': True, 'posible_menor': False})
+    monkeypatch.setenv('BLAU_VISION_MODEL', 'fake-vl')
+    monkeypatch.setenv('BLAU_OLLAMA_URL', f'http://127.0.0.1:{srv.server_address[1]}')
+    src = make(tmp_path / 'in.mp4', 16, '30')
+    an = analyze(src)
+    an['semantic_vision'] = describe_shots(src, an, tmp_path / 'kf')
+    assert seen and seen[0]['model'] == 'fake-vl' and seen[0]['images'], 'debe enviar un fotograma real'
+    assert an['semantic_vision']['shots'][0]['descripcion'].startswith('Esteticista')
+    rows = [{'start': 1.0, 'end': 4.5, 'text': 'Sabeu per què la cabina sempre està calenta?'},
+            {'start': 4.8, 'end': 8.5, 'text': 'Perquè el confort és el primer pas del tractament.'},
+            {'start': 8.8, 'end': 12.0, 'text': 'I per això ho preparem tot abans, és la clau!'}]
+    p = build_plan(rows, an['meta']['duration'], 'tacho_humano', 'ca', analysis=an, meta=an['meta'])
+    c = p['candidates'][0]
+    assert any('es veu' in n for n in c['provenance']['notes'])
+    assert any('clienta' in r for r in c['risks'])
+    assert 'fake-vl' in p['semantic_vision']
+    srv.shutdown()
+
+
+def test_semantic_vision_unavailable_is_explicit(tmp_path, monkeypatch):
+    from creative_engine.vision_llm import describe_shots
+    monkeypatch.setenv('BLAU_VISION_MODEL', 'missing')
+    monkeypatch.setenv('BLAU_OLLAMA_URL', 'http://127.0.0.1:9')  # nadie escucha
+    monkeypatch.setenv('BLAU_VISION_TIMEOUT', '3')
+    src = make(tmp_path / 'in.mp4', 3)
+    an = analyze(src)
+    sem = describe_shots(src, an, tmp_path / 'kf')
+    assert sem['error'] and sem['model'] == 'missing'
+
+
+def test_dark_footage_is_vetoed(tmp_path):
+    src = tmp_path / 'dark.mp4'
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=720x1280:rate=30:duration=14',
+                    '-f', 'lavfi', '-i', 'sine=frequency=330:beep_factor=4:sample_rate=48000:duration=14',
+                    '-vf', 'eq=brightness=-0.9', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac',
+                    str(src)], check=True)
+    an = analyze(src)
+    rows = [{'start': 1.0, 'end': 4.5, 'text': 'Sabeu per què la cabina sempre està calenta?'},
+            {'start': 4.8, 'end': 8.5, 'text': 'Perquè el confort és el primer pas del tractament.'},
+            {'start': 8.8, 'end': 12.0, 'text': 'I per això ho preparem tot abans, és la clau!'}]
+    p = build_plan(rows, an['meta']['duration'], 'tacho_humano', 'ca', analysis=an, meta=an['meta'])
+    assert p['status'] == 'needs_review' and 'fosca' in p['reason']
+
+
+def test_hdr_tonemap_keeps_brightness_close_to_reference(tmp_path):
+    """El HLG se fabrica desde un patrón SDR conocido: la salida no debe oscurecerse (antes: -48 % de brillo)."""
+    import numpy as np
+    src = make(tmp_path / 'hdr.mov', 2, '30', size='1080x1920', hdr=True)
+    meta = probe(src)
+    out = tmp_path / 'sdr.mp4'
+    render(edl([{'in': 0.2, 'out': 1.5}]), src, meta, out, tmp_path / 'w')
+
+    def mean_rgb(path, extra=''):
+        raw = subprocess.run(['ffmpeg', '-v', 'error', '-ss', '0.5', '-i', str(path), '-frames:v', '1', '-vf',
+                              f'{extra}scale=108:192,format=rgb24', '-f', 'rawvideo', '-'], capture_output=True, check=True).stdout
+        return np.frombuffer(raw, np.uint8).astype(float).mean()
+    ref = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'testsrc2=size=1080x1920:rate=30:duration=1', '-frames:v', '1',
+                          '-vf', 'scale=108:192,format=rgb24', '-f', 'rawvideo', '-'], capture_output=True, check=True).stdout
+    ref_mean = np.frombuffer(ref, np.uint8).astype(float).mean()
+    assert abs(mean_rgb(out) - ref_mean) / ref_mean < 0.15

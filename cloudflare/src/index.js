@@ -11,7 +11,9 @@ import styleData from '../../creative_engine/styles.v4.json' with { type: 'json'
 const VERSION = '4.0.0';
 const PART = 8 * 1024 * 1024;
 const MAX_NAME = 180;
-const LEASE_MS = 30 * 60 * 1000;
+const LEASE_DEFAULT_S = 30 * 60;
+// Reserva de un treball per a l'ordinador editor; el latit la renova. Configurable per a proves (LEASE_SECONDS).
+const leaseMs = (env) => Math.max(10, Number(env.LEASE_SECONDS || LEASE_DEFAULT_S)) * 1000;
 const MAX_ATTEMPTS = 3;
 const STYLES = new Map(styleData.profiles.map((s) => [s.id, s]));
 const APPROVAL_ITEMS = ['team_consent', 'client_consent', 'claims_review', 'licensed_music', 'before_after_evidence',
@@ -361,7 +363,7 @@ async function claim(env) {
     .bind(t, t, MAX_ATTEMPTS).run();
   const agentId = randomId();
   const j = await env.DB.prepare("UPDATE jobs SET status='processing',stage='claimed',progress=1,message='L’ordinador editor ha agafat el vídeo',lease_until=?,agent_id=?,attempts=attempts+1,updated_at=? WHERE id=(SELECT id FROM jobs WHERE status='queued' OR (status='processing' AND lease_until<?) ORDER BY created_at LIMIT 1) RETURNING *")
-    .bind(t + LEASE_MS, agentId, t, t).first();
+    .bind(t + leaseMs(env), agentId, t, t).first();
   if (!j) return json({ job: null });
   // Restos de un intento anterior interrumpido: se descartan para no duplicar variantes.
   const { results: stale } = await env.DB.prepare("SELECT id,r2_key,output_multipart_id,poster_key,edl_key FROM variants WHERE job_id=? AND status='uploading'").bind(j.id).all();
@@ -380,7 +382,7 @@ async function claim(env) {
   const { results: done } = await env.DB.prepare("SELECT COUNT(*) AS n FROM variants WHERE job_id=? AND status!='uploading'").bind(j.id).all();
   return json({ job: { id: j.id, kind: j.kind, upload_id: j.upload_id, filename: u?.filename, size_bytes: u?.size_bytes, mode: j.mode,
     style: j.style || 'auto', language: j.language || 'ca', options: parse(j.options, {}), instruction: j.instruction,
-    manual_edits: parse(j.manual_edits, null), parent, analysis_available: !!u?.analysis_key, lease_until: t + LEASE_MS,
+    manual_edits: parse(j.manual_edits, null), parent, analysis_available: !!u?.analysis_key, lease_until: t + leaseMs(env),
     agent_id: agentId, attempt: j.attempts, variants_done: done[0]?.n || 0 } });
 }
 async function agentJob(req, env, id) {
@@ -396,8 +398,8 @@ async function progress(req, env, id) {
   const stage = String(b.stage || 'processing').slice(0, 30);
   const pct = Math.max(0, Math.min(99, Math.round(Number(b.progress) || 0)));
   await env.DB.prepare("UPDATE jobs SET stage=?,progress=?,message=?,lease_until=?,updated_at=? WHERE id=? AND status='processing'")
-    .bind(stage, pct, String(b.message || '').slice(0, 200), now() + LEASE_MS, now(), id).run();
-  return json({ ok: true, lease_until: now() + LEASE_MS });
+    .bind(stage, pct, String(b.message || '').slice(0, 200), now() + leaseMs(env), now(), id).run();
+  return json({ ok: true, lease_until: now() + leaseMs(env) });
 }
 async function agentSource(req, env, id) {
   const j = await agentJob(req, env, id);

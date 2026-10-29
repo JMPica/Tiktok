@@ -57,8 +57,8 @@ Ordenador Windows/Mac encendido ─► agente local: análisis imagen/sonido + W
 ## Pruebas
 ```
 pip install -r requirements-dev.txt
-python -m pytest -q tests                      # 20 pruebas (incluye render FFmpeg real)
+python -m pytest -q tests                      # 24 pruebas (incluye render FFmpeg real)
 cd cloudflare && npm install && cd ..
-python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (47 comprobaciones)
+python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (50 comprobaciones)
 node cloudflare/test/ui_e2e.mjs MI_VIDEO.mov    # interfaz con viewport iPhone (Chromium)
 ```

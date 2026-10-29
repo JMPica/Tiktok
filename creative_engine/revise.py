@@ -106,9 +106,10 @@ def _recut(edl, rows, i, j, style, meta, analysis, pace=1.0):
     cuts = cut_window(win, recipe, meta['duration'])
     edl['segments'] = frame_segments(cuts, analysis, meta, recipe)
     old = edl.get('captions') or {}
-    edl['captions'] = {'mode': old.get('mode', recipe.get('captions')), 'size': old.get('size', 'm'),
+    size = old.get('size', 'm')
+    edl['captions'] = {'mode': old.get('mode', recipe.get('captions')), 'size': size,
                        'position': old.get('position', 'lower'),
-                       'events': chunk(map_words(cuts, [w for r in win for w in r['words']]))}
+                       'events': chunk(map_words(cuts, [w for r in win for w in r['words']]), size)}
     edl['provenance']['transcript_rows'] = [i, j]
     edl['provenance']['source_range'] = [win[0]['start'], win[-1]['end']]
 

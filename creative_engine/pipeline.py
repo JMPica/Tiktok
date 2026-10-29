@@ -5,6 +5,8 @@ La usan el agente (cola Cloudflare) y la CLI. Nunca publica. Cada resultado llev
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 import traceback
 from pathlib import Path
 from typing import Callable
@@ -16,6 +18,7 @@ from creative_engine.media import probe
 from creative_engine.render import poster, render
 from creative_engine.revise import apply, apply_manual
 from creative_engine.transcribe import transcribe_local
+from creative_engine.vision_llm import describe_shots
 
 Progress = Callable[[str, int, str], None]
 
@@ -29,6 +32,9 @@ def understand(source: Path, language: str = 'ca', progress: Progress = _noop, t
     meta = probe(source)
     progress('analyzing', 10, 'Analitzant imatge i so')
     an = analyze(source, meta)
+    if os.environ.get('BLAU_VISION_MODEL'):
+        progress('analyzing', 20, 'Descrivint els plans amb el model de visió local')
+        an['semantic_vision'] = describe_shots(source, an, Path(tempfile.mkdtemp(prefix='blau-vision-')))
     if transcript is None:
         progress('transcribing', 30, 'Transcrivint el diàleg en local')
         try:

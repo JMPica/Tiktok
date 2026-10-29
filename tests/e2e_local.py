@@ -107,7 +107,8 @@ def main():
     subprocess.run([wr, 'd1', 'execute', 'blau-tiktok-v3', '--local', '--persist-to', str(tmp / 'state'), '--file', 'schema.sql', '-y'],
                    cwd=CF, env=env, check=True, capture_output=True, timeout=180)
     variables = {'ACCESS_TEAM_DOMAIN': TEAM, 'ACCESS_AUD': AUD, 'OWNER_EMAIL': OWNER, 'TEAM_EMAILS': EDITOR,
-                 'ACCESS_JWKS_URL': f'http://127.0.0.1:{jport}/certs', 'AGENT_TOKEN': agent_token}
+                 'ACCESS_JWKS_URL': f'http://127.0.0.1:{jport}/certs', 'AGENT_TOKEN': agent_token,
+                 'LEASE_SECONDS': '20'}
     cmd = [wr, 'dev', '--local', '--ip', '127.0.0.1', '--port', str(wport), '--persist-to', str(tmp / 'state'), '--show-interactive-dev-session=false', '--test-scheduled']
     for k, v in variables.items():
         cmd += ['--var', f'{k}:{v}']
@@ -268,6 +269,19 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     det3 = owner.get(f"{base}/api/variants/{ev['id']}").json() if ev else {}
     check('T06 subtítulo corregido a mano entra en la nueva versión', bool(ev) and det3['edl']['captions']['events'][0]['text'] == 'Text corregit a mà',
           je.get('error'))
+
+    # --- T05: el ordenador se apaga a mitad de un vídeo
+    crash = editor.post(f'{base}/api/uploads/{uid}/jobs', json={'style': 'tacho_humor', 'language': args.language}).json()
+    ghost = requests.post(base + '/api/agent/claim', headers={'Authorization': f'Bearer {agent_token}'}).json()['job']
+    check('T05 agente fantasma reserva el trabajo', ghost and ghost['id'] == crash['id'] and
+          editor.get(f"{base}/api/jobs/{crash['id']}").json()['status'] == 'processing')
+    time.sleep(23)  # reserva caducada: el PC "apagado" no ha enviado latido
+    code, secs = agent_once('recover')
+    jc = editor.get(f"{base}/api/jobs/{crash['id']}").json()
+    check('T05 al volver, otro agente recupera y termina el trabajo', jc['status'] in ('done', 'needs_review'), f"{jc['status']} en {secs:.0f}s")
+    late = requests.post(f"{base}/api/agent/jobs/{crash['id']}/complete", json={},
+                         headers={'Authorization': f'Bearer {agent_token}', 'X-Agent-Id': ghost['agent_id']})
+    check('T05 el agente antiguo ya no puede escribir resultados', late.status_code in (404, 409), late.status_code)
 
     # --- auditoría, cron y borrado RGPD
     sch = requests.get(base + '/__scheduled?cron=17+3+*+*+*')

@@ -15,6 +15,7 @@ import uuid
 from pathlib import Path
 
 from creative_engine import analysis as A
+from creative_engine import vision_llm as V
 from creative_engine.captions import chunk, map_words
 from creative_engine.media import output_fps
 
@@ -132,6 +133,19 @@ def score_window(rows: list[dict], i: int, j: int, language: str, analysis: dict
     if analysis and A.has_burst(analysis, b - 1.5, b + 1.0):
         auth += 4
         notes.append('reacció/riure probable al final')
+    sem = V.window_notes((analysis or {}).get('semantic_vision'), a, b)
+    sem_risks = []
+    if sem.get('available') and sem.get('seen'):
+        notes.append('es veu: ' + '; '.join(sem['seen'][:2]))
+        if sem.get('people'):
+            auth += 2
+        if sem.get('emotion'):
+            auth += 2
+            notes.append('emoció visible: ' + ', '.join(sem['emotion']))
+        if sem.get('client'):
+            sem_risks.append('pot sortir una clienta: cal el seu consentiment per escrit')
+        if sem.get('minor'):
+            sem_risks.append('pot sortir un menor: no publicar sense autorització dels tutors')
     # Utilidad (15)
     useful = min(15, 4 + 3 * _has(text, USEFUL[lang]) + (2 if re.search(r'\d', text) else 0))
     # Ritmo (15)
@@ -154,12 +168,15 @@ def score_window(rows: list[dict], i: int, j: int, language: str, analysis: dict
     low_conf = [r for r in win if (r.get('no_speech_prob') or 0) > 0.6 or (r.get('confidence') is not None and r['confidence'] < -1.2)]
     if len(low_conf) > len(win) / 2:
         veto.append('transcripció poc fiable: revisar subtítols')
+    if sem.get('available') and sem.get('quality') == 1:
+        veto.append('imatge de baixa qualitat (visió)')
     scores = {'hook': max(0, min(20, hook)), 'story': max(0, min(20, story)), 'authenticity': max(0, min(20, auth)),
               'utility': max(0, min(15, useful)), 'rhythm': max(0, min(15, rhythm)), 'brand': max(0, min(10, brand))}
     total = sum(scores.values())
     if veto:
-        total = min(total, THRESHOLD - 1) if any('desenfocada' in v or 'oscura' in v for v in veto) else total - 8
-    return {'scores': scores, 'total': int(total), 'notes': notes, 'veto': veto, 'range': [a, b], 'text': text}
+        technical = any(v in ('imatge molt desenfocada', 'imatge massa fosca', 'imatge de baixa qualitat (visió)') for v in veto)
+        total = min(total, THRESHOLD - 1) if technical else total - 8
+    return {'scores': scores, 'total': int(total), 'notes': notes, 'veto': veto, 'range': [a, b], 'text': text, 'sem_risks': sem_risks}
 
 
 # ---------------------------------------------------------------- cortes
@@ -330,6 +347,14 @@ def visual_candidates(style, styles, analysis, meta, options):
     return [{'cuts': [{'in': s['in'], 'out': s['out']} for s in best], 'total': total}], ''
 
 
+def _semantic_status(sem) -> str:
+    if not sem:
+        return 'no disponible: només senyals d’imatge i so (activa BLAU_VISION_MODEL per a visió local)'
+    if sem.get('error'):
+        return f"error del model {sem.get('model')}: {sem['error'][:120]} · s'han fet servir només senyals"
+    return f"{sem.get('model')}: {len(sem.get('shots', []))} plans descrits en local"
+
+
 def build_plan(transcript, duration, style='auto', language='ca', analysis=None, meta=None, options=None):
     """Plan editorial 0..N. Compatible con la firma V4 inicial (transcript, duration, style, language)."""
     styles = load_styles()
@@ -345,7 +370,7 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
     base = {'style_requested': style, 'style': chosen, 'style_reason': style_reason, 'automatic_publish': False,
             'editorial_review_required': True, 'caption_review_required': True, 'claims_checked': False,
             'selection': 'multimodal_signals+speech' if analysis else 'speech_only',
-            'semantic_vision': (analysis or {}).get('semantic_vision') or 'no disponible: només senyals d’imatge i so'}
+            'semantic_vision': _semantic_status((analysis or {}).get('semantic_vision'))}
     candidates = []
     if rows and recipe.get('speech') != 'none':
         picked, best = speech_candidates(rows, chosen, styles, language, analysis, meta, options, style_reason)
@@ -358,14 +383,14 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
             words = map_words(cuts, [x for r in win_rows for x in r['words']])
             mode = recipe.get('captions', 'phrase')
             face_low = analysis and A.face_stats(analysis, *w['range'])['cy'] > 0.62
-            captions = {'mode': mode, 'size': 'l' if mode == 'words' else 'm',
-                        'position': 'upper' if face_low else 'lower', 'events': chunk(words)}
+            size = 'l' if mode == 'words' else 'm'
+            captions = {'mode': mode, 'size': size, 'position': 'upper' if face_low else 'lower', 'events': chunk(words, size)}
             total = sum(c['out'] - c['in'] for c in cuts)
             overlays = []
             if options.get('comment_text') and chosen == 'respuesta_comentario':
                 overlays.append({'kind': 'comment', 'start': 0.0, 'end': min(3.5, total), 'text': options['comment_text'][:120]})
             reqs, risks = _requirements(chosen, styles, w['text'], options)
-            risks += w['veto']
+            risks += w['veto'] + w.get('sem_risks', [])
             cid = uuid.uuid4().hex[:12]
             hook_text = win_rows[0]['text']
             score = {**w['scores'], 'total': w['total'], 'meaning': 'puntuació editorial, no probabilitat de viralitat'}

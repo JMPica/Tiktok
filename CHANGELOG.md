@@ -1,4 +1,15 @@
 # Changelog
+## V4.0.1 — 2026-10-29
+- Rendimiento 4K HDR: el análisis reducía después de convertir HDR (134 s → 26 s por minuto de bruto); el render
+  convierte HDR tras escalar a 1080×1920.
+- Tonemap HDR→SDR recalibrado (mobius, 100 nits): hable/203 nits oscurecía la imagen un 48 %.
+- Corregido: el veto por imagen oscura no se aplicaba tras traducir los textos al catalán.
+- Subtítulos: líneas según tamaño de letra (16/18 caracteres) para no salir de la zona segura.
+- Visión semántica local opcional (Ollama): descripción por plano, emoción, riesgo de clienta/menor en la aprobación.
+- Reserva de trabajos configurable (`LEASE_SECONDS`) y latido adaptativo; E2E de caída del ordenador a mitad (T05).
+- Exportación de subtítulos `.srt` para acabar en CapCut; evaluación de herramientas externas (`docs/HERRAMIENTAS_EXTERNAS.md`).
+- Despliegue iniciado: D1 creada con el esquema V4.
+
 ## V4.0.0 — 2026-10-28 (implementación, probada en local, no desplegada)
 - **P0**: eliminado el recorte fijo de 18 s en todos los caminos; render en una sola codificación (antes concat `-c copy`
   + segunda codificación para subtítulos); preview con HTTP Range (Safari iOS no reproducía sin él); errores de

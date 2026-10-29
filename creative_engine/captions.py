@@ -9,6 +9,7 @@ FONT = 'Poppins ExtraBold'
 FONT_SEMI = 'Poppins SemiBold'
 SAFE_TOP, SAFE_BOTTOM, SAFE_LEFT, SAFE_RIGHT = 220, 1290, 90, 930
 MAX_LINE_CHARS = 17
+CHAR_WIDTH = 0.62  # ancho medio de un carácter de Poppins ExtraBold respecto al cuerpo
 MAX_EVENT_SECONDS = 3.2
 SIZES = {'m': 72, 'l': 84}
 POSITIONS = {'lower': (540, 1240, 2), 'upper': (540, 360, 8), 'middle': (540, 980, 5)}
@@ -44,21 +45,28 @@ def _wrap(text: str, limit: int = MAX_LINE_CHARS) -> str:
     return best
 
 
-def chunk(words: list[dict], max_chars: int = MAX_LINE_CHARS * 2, gap: float = 0.35) -> list[dict]:
+def line_limit(size: str = 'm') -> int:
+    """Caracteres por línea que caben en la zona segura con ese tamaño de letra."""
+    return int((SAFE_RIGHT - SAFE_LEFT) / (SIZES.get(size, SIZES['m']) * CHAR_WIDTH))
+
+
+def chunk(words: list[dict], size: str = 'm', gap: float = 0.35) -> list[dict]:
     """Agrupa palabras en eventos de <=2 líneas, cortando en pausas y puntuación."""
+    limit = line_limit(size)
+    max_chars = limit * 2
     events, cur = [], []
 
     def flush():
         if cur:
             text = ' '.join(w['word'] for w in cur)
-            events.append({'start': cur[0]['start'], 'end': cur[-1]['end'], 'text': _wrap(text),
+            events.append({'start': cur[0]['start'], 'end': cur[-1]['end'], 'text': _wrap(text, limit),
                            'words': [dict(w) for w in cur], 'type': 'transcript_auto_unverified'})
             cur.clear()
 
     for w in words:
         if cur:
             candidate = ' '.join(x['word'] for x in cur) + ' ' + w['word']
-            too_wide = max(len(line) for line in _wrap(candidate).split('\n')) > MAX_LINE_CHARS
+            too_wide = max(len(line) for line in _wrap(candidate, limit).split('\n')) > limit
             if (w['start'] - cur[-1]['end'] > gap or len(candidate) > max_chars or too_wide
                     or w['end'] - cur[0]['start'] > MAX_EVENT_SECONDS or cur[-1]['word'][-1:] in '.?!'):
                 flush()
@@ -122,7 +130,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                     for j, ww in enumerate(words):
                         token = _clean(ww['word'])
                         parts.append(f'{{\\c{acc}}}{token}{{\\c&H00FFFFFF&}}' if j == k else token)
-                    body = _wrap(' '.join(p for p in [ww['word'] for ww in words]))
+                    body = _wrap(' '.join(ww['word'] for ww in words), line_limit(captions.get('size', 'm')))
                     # Reconstruye saltos de línea del texto envuelto sobre las piezas coloreadas.
                     first_line = len(body.split('\n')[0].split()) if '\n' in body else None
                     if first_line:
@@ -132,7 +140,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                                  f'cap,,0,0,0,,{{\\pos({x},{y})}}{joined}')
             else:
                 lines.append(f'Dialogue: 0,{_ass_time(ev["start"])},{_ass_time(ev["end"])},cap,,0,0,0,,'
-                             f'{{\\pos({x},{y})}}{_clean(_wrap(text.replace(chr(10), " ")))}')
+                             f'{{\\pos({x},{y})}}{_clean(_wrap(text.replace(chr(10), " "), line_limit(captions.get('size', 'm'))))}')
     for ov in overlays or []:
         style = 'bubble' if ov.get('kind') == 'comment' else 'hook'
         oy = 300 if captions.get('position', 'lower') != 'upper' else 1100
@@ -146,7 +154,7 @@ def caption_report(captions: dict, overlays: list[dict] | None = None) -> dict:
     issues = []
     for ev in captions.get('events', []) if captions.get('mode') != 'none' else []:
         for line in str(ev['text']).split('\n'):
-            width = len(line) * size * 0.62
+            width = len(line) * size * CHAR_WIDTH
             if width > SAFE_RIGHT - SAFE_LEFT:
                 issues.append(f'línea demasiado ancha ({len(line)} car.): «{line[:30]}»')
         if ev['end'] - ev['start'] < 0.5:

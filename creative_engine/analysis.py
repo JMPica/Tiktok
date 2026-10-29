@@ -25,7 +25,8 @@ AUDIO_HOP = 0.1
 
 def _frames(video: Path, meta: dict, fps: float = ANALYSIS_FPS, width: int = ANALYSIS_W):
     h = int(round(width * meta['height'] / meta['width'] / 2) * 2)
-    vf = f'{tonemap_filter(meta)}fps={fps},scale={width}:{h}:flags=area,format=gray'
+    # Primero reducir (fps y tamaño) y después convertir HDR: el tonemap en 4K a 30 fps era el cuello de botella.
+    vf = f'fps={fps},scale={width}:{h}:flags=area,{tonemap_filter(meta)}format=gray'
     proc = subprocess.Popen(['ffmpeg', '-hide_banner', '-nostdin', '-v', 'error', '-i', str(video), '-an', '-vf', vf,
                              '-f', 'rawvideo', '-pix_fmt', 'gray', '-'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     size = width * h

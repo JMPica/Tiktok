@@ -112,7 +112,8 @@ class Agent:
             print('  (no s’ha pogut enviar el progrés:', exc, ')', flush=True)
 
     def _heartbeat(self):
-        while not self._beat_stop.wait(240):
+        lease = max(30.0, (self.job.get('lease_until', 0) / 1000) - time.time())
+        while not self._beat_stop.wait(max(5.0, min(240.0, lease / 3))):
             try:
                 st, pct, msg = self.stage
                 self.api('POST', f"/api/agent/jobs/{self.job['id']}/progress", json={'stage': st, 'progress': pct, 'message': msg}, retries=1)

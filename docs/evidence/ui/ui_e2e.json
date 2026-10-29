@@ -1,5 +1,5 @@
 {
- "date": "2026-10-28T20:06:50.647Z",
+ "date": "2026-10-29T17:08:21.535Z",
  "status": "passed",
  "browser": "Chromium (viewport iPhone 13), no Safari real",
  "checks": [
@@ -31,7 +31,7 @@
   {
    "check": "agent local processa el vídeo",
    "status": "passed",
-   "detail": "ntrol de qualitat fet\n  [ 93%] Pujant proposta 1 de 2\n  → proposta 1 pujada (8.8 MB) · needs_approval\n  [ 96%] Pujant proposta 2 de 2\n  → proposta 2 pujada (7.4 MB) · needs_approval\n[56b0b92f] acabat\n"
+   "detail": "ntrol de qualitat fet\n  [ 93%] Pujant proposta 1 de 2\n  → proposta 1 pujada (8.8 MB) · needs_approval\n  [ 96%] Pujant proposta 2 de 2\n  → proposta 2 pujada (7.3 MB) · needs_approval\n[428366b9] acabat\n"
   },
   {
    "check": "propostes visibles amb vídeo i explicació",

@@ -1,7 +1,7 @@
 {
- "date": "2026-10-29T16:40:26+0000",
+ "date": "2026-10-29T17:07:12+0000",
  "status": "passed",
- "seconds": 111.0,
+ "seconds": 106.8,
  "platform": "linux",
  "runtime": "wrangler dev (workerd) + D1/R2 locales + agente Python local",
  "input": {
@@ -92,7 +92,7 @@
   {
    "check": "agente procesa y termina",
    "status": "passed",
-   "detail": "done en 83s · None"
+   "detail": "done en 41s · None"
   },
   {
    "check": "T09 0..N propuestas por mérito",
@@ -195,6 +195,21 @@
    "detail": "None"
   },
   {
+   "check": "T05 agente fantasma reserva el trabajo",
+   "status": "passed",
+   "detail": ""
+  },
+  {
+   "check": "T05 al volver, otro agente recupera y termina el trabajo",
+   "status": "passed",
+   "detail": "done en 22s"
+  },
+  {
+   "check": "T05 el agente antiguo ya no puede escribir resultados",
+   "status": "passed",
+   "detail": "404"
+  },
+  {
    "check": "cron de mantenimiento se ejecuta",
    "status": "passed",
    "detail": "200"
@@ -232,7 +247,7 @@
   {
    "check": "T23 borrado RGPD del original y versiones",
    "status": "passed",
-   "detail": "{\"deleted\":true,\"variants\":4,\"jobs\":3}"
+   "detail": "{\"deleted\":true,\"variants\":6,\"jobs\":4}"
   },
   {
    "check": "tras borrar, la preview ya no existe",
