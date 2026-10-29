@@ -219,6 +219,7 @@ function variantCard(v) {
   if (v.approved_at) card.append(el('div', { class: 'small', text: `Aprovat per ${v.approved_by} · ${fmtTime(v.approved_at)} · sha256 ${v.sha256.slice(0, 12)}…` }));
   const actions = el('div', { class: 'actions' });
   if (v.has_preview) actions.append(el('button', { class: 'secondary', type: 'button', text: 'Descarregar MP4', onclick: () => window.location.assign(`/api/variants/${v.id}/download`) }));
+  if (v.has_preview) actions.append(el('button', { class: 'secondary', type: 'button', text: 'Subtítols .srt (CapCut)', onclick: () => window.location.assign(`/api/variants/${v.id}/subtitles.srt`) }));
   if (v.status === 'needs_approval' && me.role === 'owner') actions.append(el('button', { type: 'button', text: 'Aprovar', onclick: () => approve(v) }));
   if (['needs_approval', 'needs_review'].includes(v.status)) actions.append(el('button', { class: 'danger', type: 'button', text: 'Descartar', onclick: () => rejectV(v) }));
   card.append(actions);

@@ -232,6 +232,8 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     check('preview Range 206 (Safari iOS)', rr.status_code == 206 and len(rr.content) == 2 and rr.headers['Content-Range'].endswith('/' + str(len(full.content))))
     hd = editor.head(f"{base}/api/variants/{v['id']}/preview")
     check('HEAD de preview con Accept-Ranges', hd.status_code == 200 and hd.headers.get('Accept-Ranges') == 'bytes')
+    srt = editor.get(f"{base}/api/variants/{v['id']}/subtitles.srt")
+    check('subtítulos .srt para CapCut', srt.ok and ' --> ' in srt.text and srt.text.startswith('1\n'), srt.text[:60])
     check('portada JPEG', editor.get(f"{base}/api/variants/{v['id']}/poster").content[:2] == b'\xff\xd8')
     check('sin sesión no hay vídeo', requests.get(f"{base}/api/variants/{v['id']}/preview").status_code == 401)
 

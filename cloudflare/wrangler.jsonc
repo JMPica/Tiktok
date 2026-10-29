@@ -7,7 +7,7 @@
   // Sin URLs de preview por versión: evitaría hostnames no cubiertos por la política de Access.
   "preview_urls": false,
   "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
-  "d1_databases": [{ "binding": "DB", "database_name": "blau-tiktok-v3", "database_id": "REPLACE_WITH_D1_DATABASE_ID" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "blau-tiktok-v3", "database_id": "0ca77d5d-7f0e-4a43-a5f8-7a04aa04be3c" }],
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "blau-tiktok-private" }],
   // Limpieza diaria: subidas abandonadas, variantes a medias, trabajos sin agente. Cron Triggers entran en el plan Free.
   "triggers": { "crons": ["17 3 * * *"] },

@@ -4,7 +4,7 @@ Entorno de prueba: Linux x86_64, Python 3.13, FFmpeg 6.1.1, Node 22, wrangler 4.
 con D1/R2 locales), Chromium (Playwright) con viewport iPhone 13. Material: vídeos **sintéticos** (patrón de color +
 voz espeak-ng en catalán y castellano) — no hay material propio consentido en el repositorio.
 
-Evidencias: `docs/evidence/e2e_local_ca.json` (46 comprobaciones), `docs/evidence/ui/` (13 comprobaciones + capturas),
+Evidencias: `docs/evidence/e2e_local_ca.json` (47 comprobaciones), `docs/evidence/ui/` (13 comprobaciones + capturas),
 `docs/evidence/cli_sintetico_ca|es/` (edit_plan, análisis, QC y portadas), `docs/evidence/cli_sin_voz_edit_plan.json`,
 `pytest -q tests` (20 pruebas).
 

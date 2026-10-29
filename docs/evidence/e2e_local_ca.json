@@ -1,7 +1,7 @@
 {
- "date": "2026-10-28T20:09:08+0000",
+ "date": "2026-10-29T16:40:26+0000",
  "status": "passed",
- "seconds": 56.8,
+ "seconds": 111.0,
  "platform": "linux",
  "runtime": "wrangler dev (workerd) + D1/R2 locales + agente Python local",
  "input": {
@@ -92,7 +92,7 @@
   {
    "check": "agente procesa y termina",
    "status": "passed",
-   "detail": "done en 40s · None"
+   "detail": "done en 83s · None"
   },
   {
    "check": "T09 0..N propuestas por mérito",
@@ -138,6 +138,11 @@
    "check": "HEAD de preview con Accept-Ranges",
    "status": "passed",
    "detail": ""
+  },
+  {
+   "check": "subtítulos .srt para CapCut",
+   "status": "passed",
+   "detail": "1\n00:00:00,080 --> 00:00:01,794\nVes prezes\ncalfamres tu va\n\n"
   },
   {
    "check": "portada JPEG",

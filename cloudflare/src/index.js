@@ -245,6 +245,22 @@ async function variantDetail(env, user, id) {
   const edlObj = v.edl_key ? await env.BUCKET.get(v.edl_key) : null;
   return json({ ...publicVariant(v, true), edl: edlObj ? await edlObj.json() : null });
 }
+function srtTime(t) {
+  const ms = Math.max(0, Math.round(Number(t) * 1000));
+  const p = (n, w = 2) => String(n).padStart(w, '0');
+  return `${p(Math.floor(ms / 3600000))}:${p(Math.floor(ms / 60000) % 60)}:${p(Math.floor(ms / 1000) % 60)},${p(ms % 1000, 3)}`;
+}
+async function variantSrt(env, user, id) {
+  // Subtítols del muntatge en SRT: per acabar a CapCut/Premiere sense tornar a transcriure.
+  const v = await getVariant(env, id); assertCanSee(v, user);
+  const edlObj = v.edl_key ? await env.BUCKET.get(v.edl_key) : null;
+  if (!edlObj) fail(404, 'Sense EDL');
+  const edl = await edlObj.json();
+  const events = edl.captions?.events || [];
+  const body = events.map((e, i) => `${i + 1}\n${srtTime(e.start)} --> ${srtTime(e.end)}\n${String(e.text).replace(/\r/g, '')}\n`).join('\n');
+  return new Response(body, { headers: { 'Content-Type': 'application/x-subrip; charset=utf-8', 'Cache-Control': 'private, no-store',
+    'Content-Disposition': `attachment; filename="blau-${id.slice(0, 8)}-v${v.version}.srt"` } });
+}
 async function approve(req, env, user, id) {
   requireOwnerRole(user);
   const v = await getVariant(env, id); assertCanSee(v, user);
@@ -558,10 +574,11 @@ async function router(req, env) {
     if (m === 'GET' && !x[2]) return jobDetail(env, user, x[1]);
     if (m === 'POST' && x[2] === 'retry') return retryJob(env, user, x[1]);
   }
-  x = p.match(/^\/api\/variants\/([0-9a-f]{32})(?:\/(preview|download|poster|approve|reject|revise|edit))?$/);
+  x = p.match(/^\/api\/variants\/([0-9a-f]{32})(?:\/(preview|download|poster|approve|reject|revise|edit|subtitles\.srt))?$/);
   if (x) {
     const id = x[1], action = x[2];
     if (m === 'GET' && !action) return variantDetail(env, user, id);
+    if (m === 'GET' && action === 'subtitles.srt') return variantSrt(env, user, id);
     if (['GET', 'HEAD'].includes(m) && ['preview', 'download', 'poster'].includes(action)) {
       const v = await getVariant(env, id); assertCanSee(v, user);
       if (action === 'poster') { if (!v.poster_key) fail(404, 'Sense portada'); return serveObject(req, env, v.poster_key, { type: 'image/jpeg' }); }
