@@ -27,3 +27,4 @@ venv/
 /data/
 .wrangler/
 docs/evidence/**/*.mp4
+cloudflare/src/static.generated.js

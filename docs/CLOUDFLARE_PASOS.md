@@ -3,6 +3,10 @@
 Todo esto se hace **una vez** desde un ordenador con Node 20+. Nada aquí activa pagos; R2 sí puede cobrar
 si superas su cuota gratuita (ver «Costes»). Si un paso pide tarjeta o un plan de pago, **para**.
 
+## 0. Nota
+La web (`public/`) se empaqueta dentro del Worker en cada `wrangler dev/deploy` (`scripts/build-static.mjs`), con cabeceras
+de seguridad (CSP, sin iframes). No se usa Workers Assets.
+
 ## 1. Recursos
 ```bash
 cd cloudflare
@@ -40,8 +44,9 @@ npx wrangler secret put AGENT_TOKEN
 ## 5. Variables y despliegue final
 En `wrangler.jsonc` → `vars`:
 - `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD`: del paso 4.
-- `OWNER_EMAIL`: tu correo (rol propietaria/Advanced; admite varios separados por coma).
-- `TEAM_EMAILS`: correos del equipo (doble barrera: aunque Access deje pasar a alguien, el Worker lo rechaza si no está).
+- Correos como **secretos** (no quedan en git): `npx wrangler secret put OWNER_EMAIL` (tu correo; admite varios
+  separados por coma) y `npx wrangler secret put TEAM_EMAILS` (equipo; doble barrera: aunque Access deje pasar a
+  alguien, el Worker lo rechaza si no está en la lista).
 - `REJECTED_RETENTION_DAYS`: 0 = nunca borrar automáticamente. Los originales **nunca** se borran solos.
 
 `npx wrangler deploy`. El cron diario (`17 3 * * *`) limpia subidas abandonadas y trabajos atascados.

@@ -1,7 +1,7 @@
 {
- "date": "2026-10-29T17:07:12+0000",
+ "date": "2026-10-29T17:42:09+0000",
  "status": "passed",
- "seconds": 106.8,
+ "seconds": 98.7,
  "platform": "linux",
  "runtime": "wrangler dev (workerd) + D1/R2 locales + agente Python local",
  "input": {
@@ -92,7 +92,7 @@
   {
    "check": "agente procesa y termina",
    "status": "passed",
-   "detail": "done en 41s · None"
+   "detail": "done en 38s · None"
   },
   {
    "check": "T09 0..N propuestas por mérito",
@@ -202,7 +202,7 @@
   {
    "check": "T05 al volver, otro agente recupera y termina el trabajo",
    "status": "passed",
-   "detail": "done en 22s"
+   "detail": "done en 21s"
   },
   {
    "check": "T05 el agente antiguo ya no puede escribir resultados",

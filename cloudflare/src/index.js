@@ -7,6 +7,7 @@
  */
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import styleData from '../../creative_engine/styles.v4.json' with { type: 'json' };
+import STATIC from './static.generated.js';
 
 const VERSION = '4.0.0';
 const PART = 8 * 1024 * 1024;
@@ -626,13 +627,26 @@ export async function maintenance(env) {
   return report;
 }
 
+const SECURITY_HEADERS = {
+  'Content-Security-Policy': "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+  'X-Frame-Options': 'DENY', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+};
+function serveStatic(req, pathname) {
+  if (!['GET', 'HEAD'].includes(req.method)) return json({ error: 'Mètode no permès' }, 405);
+  const file = STATIC[pathname];
+  if (!file) return new Response('No trobat', { status: 404, headers: SECURITY_HEADERS });
+  return new Response(req.method === 'HEAD' ? null : file.body, { headers: { 'Content-Type': file.type,
+    'Cache-Control': pathname === '/' || pathname.endsWith('.html') ? 'no-cache' : 'private, max-age=300', ...SECURITY_HEADERS } });
+}
+
 export default {
   async fetch(req, env) {
     try {
       const { pathname } = new URL(req.url);
       if (pathname.startsWith('/api/')) return await router(req, env);
-      // Los estáticos quedan protegidos por la aplicación de Cloudflare Access sobre todo el hostname.
-      return await env.ASSETS.fetch(req);
+      // Web estática empaquetada; además la aplicación de Cloudflare Access protege todo el hostname.
+      return serveStatic(req, pathname);
     } catch (e) {
       if (e instanceof HttpError) return json({ error: e.message }, e.status);
       console.error('worker_error', e?.stack || String(e));

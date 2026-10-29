@@ -6,7 +6,8 @@
   "workers_dev": true,
   // Sin URLs de preview por versión: evitaría hostnames no cubiertos por la política de Access.
   "preview_urls": false,
-  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
+  // La web (public/) se empaqueta dentro del Worker en cada build: sin Workers Assets.
+  "build": { "command": "node scripts/build-static.mjs" },
   "d1_databases": [{ "binding": "DB", "database_name": "blau-tiktok-v3", "database_id": "0ca77d5d-7f0e-4a43-a5f8-7a04aa04be3c" }],
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "blau-tiktok-private" }],
   // Limpieza diaria: subidas abandonadas, variantes a medias, trabajos sin agente. Cron Triggers entran en el plan Free.
@@ -15,10 +16,8 @@
   "vars": {
     "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_TEAM.cloudflareaccess.com",
     "ACCESS_AUD": "REPLACE_WITH_APPLICATION_AUD",
-    // Uno o varios correos (separados por coma) con rol propietaria/Advanced.
-    "OWNER_EMAIL": "REPLACE_WITH_OWNER_EMAIL",
-    // Opcional pero recomendado: correos del equipo. Si se rellena, nadie fuera de la lista entra aunque Access lo deje pasar.
-    "TEAM_EMAILS": "",
+    // OWNER_EMAIL (propietaria/Advanced) y TEAM_EMAILS (equipo) van como SECRETOS para no publicar correos en git:
+    //   npx wrangler secret put OWNER_EMAIL   ·   npx wrangler secret put TEAM_EMAILS   (separados por coma)
     "MAX_UPLOAD_BYTES": "4294967296",
     "UPLOADS_PER_HOUR": "40",
     // 0 = no borrar nunca automáticamente. Los originales NUNCA se borran solos.

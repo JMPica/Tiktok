@@ -20,7 +20,7 @@ D1/R2 locales + agente + FFmpeg + navegador Chromium con viewport iPhone) · `de
 | Reintentos/lease/latido, no duplicar trabajos | tested_e2e_local | incluye agente que muere a mitad y recuperación |
 | Borrado RGPD / borrar solo original / auditoría / cron | tested_e2e_local | |
 | Windows/macOS scripts | implemented | sin probar en equipos reales |
-| Despliegue Cloudflare | **parcial** | D1 `blau-tiktok-v3` creada con esquema (región ENAM); **R2 sin activar** en la cuenta (lo activa la propietaria); falta Access |
+| Despliegue Cloudflare | **deployed (sin Access)** | Worker `blau-tiktok-v3.chef-133bfe.workers.dev` (29-10-2026), D1 con esquema, R2 privado WEUR (r2.dev desactivado), cron. API cerrada (503) hasta configurar Access |
 | Publicación TikTok, analítica post-publicación (P6) | no implementado | a propósito: sin API autorizada |
 | Visión semántica (acciones, emoción, posible clienta/menor) | implemented + tested_unit (servidor de prueba) | opcional con Ollama local; sin modelo real probado |
 | Música licenciada / sound design | no implementado | solo audio original; no se añade música |
