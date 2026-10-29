@@ -14,8 +14,8 @@
   "triggers": { "crons": ["17 3 * * *"] },
   "observability": { "enabled": true },
   "vars": {
-    "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_TEAM.cloudflareaccess.com",
-    "ACCESS_AUD": "REPLACE_WITH_APPLICATION_AUD",
+    "ACCESS_TEAM_DOMAIN": "chef-titus.cloudflareaccess.com",
+    "ACCESS_AUD": "a5c3b3409fc2b6b6221e9b59967ac6b59cec1b7ae11cf67a11d0bea1103a298d",
     // OWNER_EMAIL (propietaria/Advanced) y TEAM_EMAILS (equipo) van como SECRETOS para no publicar correos en git:
     //   npx wrangler secret put OWNER_EMAIL   ·   npx wrangler secret put TEAM_EMAILS   (separados por coma)
     "MAX_UPLOAD_BYTES": "4294967296",

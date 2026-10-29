@@ -10,7 +10,7 @@ Evidencias: `docs/evidence/e2e_local_ca.json` (47 comprobaciones), `docs/evidenc
 
 | ID | Prueba | Estado | Evidencia / qué falta |
 |---|---|---|---|
-| T01 | Solo correos autorizados; outsider denegado | **passed (local)** / pendiente Access real | sin sesión 401, correo fuera de lista 403, aud ajena 401, token caducado 401 |
+| T01 | Solo correos autorizados; outsider denegado | **passed (local)** + Access real desplegado: anónimo => login (302) en `/`, `/api/*`, `/app.js`; pendiente login real | sin sesión 401, correo fuera de lista 403, aud ajena 401, token caducado 401 |
 | T02 | Dos miembros con roles correctos | **passed (local)** / pendiente iPhone | owner/editor por JWT; UI: equipo sin «Aprovar» ni Advanced |
 | T03 | Subida MOV por partes con % medido | **passed (local, Chromium)** | MOV 62 MB, 8 partes de 8 MiB, barra con % y MB/s. **Pendiente**: Safari iPhone, 4K HDR real |
 | T04 | Reanudar sin re-subir partes | **passed (local)** | servidor devuelve partes [1,3..8]; finalizar con huecos => 422 |
