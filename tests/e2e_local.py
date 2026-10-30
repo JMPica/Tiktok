@@ -56,15 +56,37 @@ class Issuer:
         sig = self.key.sign(f'{head}.{body}'.encode(), padding.PKCS1v15(), hashes.SHA256())
         return f'{head}.{body}.{b64u(sig)}'
 
+    def gh_token(self, repo='JMPica/Tiktok', workflow='editor.yml', aud='blau-tiktok-studio'):
+        """Imita el token OIDC que GitHub Actions emet per a un flux."""
+        head = b64u(json.dumps({'alg': 'RS256', 'kid': 'e2e', 'typ': 'JWT'}).encode())
+        body = b64u(json.dumps({'iss': 'https://token.actions.githubusercontent.com', 'aud': aud, 'repository': repo,
+                                'job_workflow_ref': f'{repo}/.github/workflows/{workflow}@refs/heads/main',
+                                'iat': int(time.time()), 'exp': int(time.time()) + 300, 'sub': f'repo:{repo}'}).encode())
+        sig = self.key.sign(f'{head}.{body}'.encode(), padding.PKCS1v15(), hashes.SHA256())
+        return f'{head}.{body}.{b64u(sig)}'
+
     def serve(self, port):
+        """JWKS (Access i GitHub), emissor OIDC per al runner i una API de GitHub falsa que registra els avisos."""
         jwks = json.dumps(self.jwks).encode()
+        issuer = self
+        self.port, self.dispatches = port, []
 
         class H(http.server.BaseHTTPRequestHandler):
-            def do_GET(self):
-                self.send_response(200)
+            def _send(self, code, body=b''):
+                self.send_response(code)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
-                self.wfile.write(jwks)
+                self.wfile.write(body)
+
+            def do_GET(self):
+                if self.path.startswith('/oidc') and self.headers.get('Authorization') == 'Bearer runner' and 'audience=blau-tiktok-studio' in self.path:
+                    return self._send(200, json.dumps({'value': issuer.gh_token()}).encode())
+                self._send(200, jwks)
+
+            def do_POST(self):
+                body = self.rfile.read(int(self.headers.get('Content-Length') or 0))
+                issuer.dispatches.append({'path': self.path, 'auth': self.headers.get('Authorization'), 'body': json.loads(body or b'{}')})
+                self._send(204)
 
             def log_message(self, *a):
                 pass
@@ -108,7 +130,9 @@ def main():
                    cwd=CF, env=env, check=True, capture_output=True, timeout=180)
     variables = {'ACCESS_TEAM_DOMAIN': TEAM, 'ACCESS_AUD': AUD, 'OWNER_EMAIL': OWNER, 'TEAM_EMAILS': EDITOR,
                  'ACCESS_JWKS_URL': f'http://127.0.0.1:{jport}/certs', 'AGENT_TOKEN': agent_token,
-                 'LEASE_SECONDS': '20'}
+                 'LEASE_SECONDS': '20', 'GITHUB_REPO': 'JMPica/Tiktok', 'GITHUB_REF': 'main',
+                 'GITHUB_OIDC_JWKS_URL': f'http://127.0.0.1:{jport}/certs', 'GITHUB_DISPATCH_TOKEN': 'e2e-dispatch',
+                 'GITHUB_API_URL': f'http://127.0.0.1:{jport}'}
     cmd = [wr, 'dev', '--local', '--ip', '127.0.0.1', '--port', str(wport), '--persist-to', str(tmp / 'state'), '--show-interactive-dev-session=false', '--test-scheduled']
     for k, v in variables.items():
         cmd += ['--var', f'{k}:{v}']
@@ -158,12 +182,17 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
         return x
     owner, editor = s(OWNER), s(EDITOR)
 
-    def agent_once(label):
+    def agent_once(label, cloud=False):
         env = {**os.environ, 'STUDIO_PUBLIC_URL': base, 'STUDIO_ALLOW_INSECURE_LOCALHOST': '1', 'STUDIO_AGENT_TOKEN': agent_token,
                'BLAU_DEFAULT_LANGUAGE': args.language, 'BLAU_X264_PRESET': os.environ.get('BLAU_X264_PRESET', 'veryfast'),
                'STUDIO_POLL_SECONDS': '5', 'PYTHONPATH': str(ROOT)}
+        if cloud:  # com a GitHub Actions: sense clau compartida, amb OIDC, buidant la cua
+            del env['STUDIO_AGENT_TOKEN']
+            env.update({'ACTIONS_ID_TOKEN_REQUEST_URL': f'http://127.0.0.1:{issuer.port}/oidc?x=1',
+                        'ACTIONS_ID_TOKEN_REQUEST_TOKEN': 'runner', 'GITHUB_ACTIONS': 'true'})
         t = time.time()
-        r = subprocess.run([sys.executable, '-m', 'local_worker.agent', '--once'], cwd=ROOT, env=env, capture_output=True, text=True, timeout=3600)
+        r = subprocess.run([sys.executable, '-m', 'local_worker.agent', '--drain' if cloud else '--once'], cwd=ROOT, env=env,
+                           capture_output=True, text=True, timeout=3600)
         (tmp / f'agent-{label}.log').write_text(r.stdout + r.stderr)
         print(r.stdout[-1500:], r.stderr[-800:], flush=True)
         return r.returncode, time.time() - t
@@ -206,8 +235,18 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     check('T19 doble envío no duplica el trabajo', dup.get('reused') and dup['id'] == job['id'])
     check('T05 sin ordenador encendido el trabajo queda en cola', editor.get(f"{base}/api/jobs/{job['id']}").json()['status'] == 'queued')
 
-    # --- agente: análisis + director + render + QC + subida
-    code, secs = agent_once('produce')
+    # --- editor al núvol: avís a GitHub i autenticació OIDC
+    time.sleep(1.5)
+    d = [x for x in issuer.dispatches if x['path'] == '/repos/JMPica/Tiktok/actions/workflows/editor.yml/dispatches']
+    check('nou vídeo => avís a GitHub Actions', bool(d) and d[0]['auth'] == 'Bearer e2e-dispatch' and d[0]['body']['ref'] == 'main', d[:1])
+    for repo, wf, why in (('altre/repo', 'editor.yml', 'un altre repositori'), ('JMPica/Tiktok', 'malicious.yml', 'un altre flux')):
+        r = requests.post(base + '/api/agent/claim', headers={'Authorization': 'Bearer ' + issuer.gh_token(repo, wf)})
+        check(f'OIDC de {why} => 401', r.status_code == 401, r.status_code)
+    check('OIDC amb audiència equivocada => 401', requests.post(base + '/api/agent/claim',
+          headers={'Authorization': 'Bearer ' + issuer.gh_token(aud='altra')}).status_code == 401)
+
+    # --- agente al núvol (OIDC, --drain): análisis + director + render + QC + subida
+    code, secs = agent_once('produce', cloud=True)
     j = editor.get(f"{base}/api/jobs/{job['id']}").json()
     check('agente procesa y termina', code == 0 and j['status'] in ('done', 'needs_review'), f"{j['status']} en {secs:.0f}s · {j.get('error')}")
     if j['status'] != 'done':

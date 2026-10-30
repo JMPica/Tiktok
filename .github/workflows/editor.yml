@@ -1,0 +1,51 @@
+# Editor al núvol de Blau de Mar: buida la cua d'edició i s'apaga. 0 € amb els minuts gratuïts de GitHub
+# (repositori PRIVAT). L'engega el Worker de Cloudflare quan algú puja un vídeo o demana un canvi.
+# Requereix els secrets del repositori CF_ACCESS_CLIENT_ID i CF_ACCESS_CLIENT_SECRET (Service Token d'Access).
+# No hi ha clau d'agent: el Worker verifica el token OIDC que GitHub emet per a aquest flux concret.
+name: editor
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Motiu (l'omple el Worker)
+        required: false
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: blau-editor
+  cancel-in-progress: false
+jobs:
+  edit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      STUDIO_PUBLIC_URL: https://blau-tiktok-v3.chef-133bfe.workers.dev
+      CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+      CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+      BLAU_WHISPER_MODEL: ${{ vars.BLAU_WHISPER_MODEL || 'small' }}
+      BLAU_X264_PRESET: ${{ vars.BLAU_X264_PRESET || 'faster' }}
+      HF_HUB_DISABLE_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-ai-local.txt
+      - name: FFmpeg
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
+          ffmpeg -hide_banner -filters | grep -E ' (zscale|tonemap|ass|ebur128) ' | wc -l
+      - name: Dependències
+        run: pip install -q -r requirements-ai-local.txt
+      - name: Model de transcripció (memòria cau)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-${{ env.BLAU_WHISPER_MODEL }}-v1
+      - name: Autoprova ràpida
+        run: python -m local_worker.selftest
+      - name: Editar la cua
+        # Sortida mínima als registres: cap nom de fitxer ni text de transcripció.
+        run: python -u -m local_worker.agent --drain

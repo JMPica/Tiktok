@@ -19,7 +19,8 @@ D1/R2 locales + agente + FFmpeg + navegador Chromium con viewport iPhone) · `de
 | Subida reanudable, reintentos, pausa, varios ficheros | tested_e2e_local + UI | Safari iPhone real no probado |
 | Reintentos/lease/latido, no duplicar trabajos | tested_e2e_local | incluye agente que muere a mitad y recuperación |
 | Borrado RGPD / borrar solo original / auditoría / cron | tested_e2e_local | |
-| Windows/macOS scripts | implemented | sin probar en equipos reales |
+| Editor al núvol (GitHub Actions + OIDC) | tested_e2e_local + Worker deployed | falta: repo privat, secrets i token d'activació (la propietària) i primera execució real |
+| Windows/macOS scripts | implemented | opcionals; sense provar en equips reals |
 | Despliegue Cloudflare | **deployed** | Worker `blau-tiktok-v3.chef-133bfe.workers.dev` (29-10-2026), D1, R2 privado WEUR (r2.dev desactivado), cron; Access `chef-titus` con código por correo, solo correo de la propietaria + Service Auth para el agente. Verificado: sin sesión toda ruta redirige al login |
 | Publicación TikTok, analítica post-publicación (P6) | no implementado | a propósito: sin API autorizada |
 | Visión semántica (acciones, emoción, posible clienta/menor) | implemented + tested_unit (servidor de prueba) | opcional con Ollama local; sin modelo real probado |

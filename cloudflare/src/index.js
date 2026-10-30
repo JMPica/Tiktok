@@ -76,10 +76,53 @@ async function who(req, env) {
 }
 function requireOwnerRole(user) { if (user.role !== 'owner') fail(403, 'Només la propietària pot fer això'); }
 function assertCanSee(row, user) { if (!row || (user.role !== 'owner' && row.owner !== user.email)) fail(404, 'No trobat'); }
-function requireAgent(req, env) {
+// Editor al núvol (GitHub Actions): s'identifica amb un token OIDC signat per GitHub, sense secret compartit.
+const GH_OIDC_ISSUER = 'https://token.actions.githubusercontent.com';
+const GH_OIDC_AUDIENCE = 'blau-tiktok-studio';
+async function githubIdentity(token, env) {
+  const repo = String(env.GITHUB_REPO || '');
+  if (!repo) return null;
+  const local = String(env.GITHUB_OIDC_JWKS_URL || '');  // només localhost (proves E2E)
+  const url = /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(local) ? local : `${GH_OIDC_ISSUER}/.well-known/jwks`;
+  let jwks = jwksCache.get(url);
+  if (!jwks) { jwks = createRemoteJWKSet(new URL(url)); jwksCache.set(url, jwks); }
+  try {
+    const { payload } = await jwtVerify(token, jwks, { issuer: GH_OIDC_ISSUER, audience: GH_OIDC_AUDIENCE });
+    const wf = String(payload.job_workflow_ref || '');
+    if (payload.repository !== repo || !wf.startsWith(`${repo}/.github/workflows/editor.yml@`)) return null;
+    return 'github-actions';
+  } catch { return null; }
+}
+async function requireAgent(req, env) {
   const s = req.headers.get('Authorization') ?? '';
-  if (!env.AGENT_TOKEN || String(env.AGENT_TOKEN).length < 32 || !s.startsWith('Bearer ') || !timingSafeEqual(s.slice(7), env.AGENT_TOKEN))
-    fail(401, 'Agent no autoritzat');
+  if (!s.startsWith('Bearer ')) fail(401, 'Agent no autoritzat');
+  const token = s.slice(7);
+  if (env.AGENT_TOKEN && String(env.AGENT_TOKEN).length >= 32 && timingSafeEqual(token, env.AGENT_TOKEN)) return 'pc';
+  if (token.split('.').length === 3 && await githubIdentity(token, env)) return 'github-actions';
+  fail(401, 'Agent no autoritzat');
+}
+
+// Avisa l'editor al núvol que hi ha feina. Sense configuració (GITHUB_REPO + GITHUB_DISPATCH_TOKEN) no fa res.
+async function wakeCloudEditor(env, reason) {
+  if (!env.GITHUB_REPO || !env.GITHUB_DISPATCH_TOKEN) return { skipped: true };
+  const local = String(env.GITHUB_API_URL || '');
+  const api = /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(local) ? local : 'https://api.github.com';
+  try {
+    const r = await fetch(`${api}/repos/${env.GITHUB_REPO}/actions/workflows/editor.yml/dispatches`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.GITHUB_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'blau-tiktok-studio', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ref: env.GITHUB_REF || 'main', inputs: { reason: String(reason).slice(0, 60) } }),
+    });
+    if (!r.ok) console.error('cloud_editor_dispatch', r.status, (await r.text()).slice(0, 200));
+    return { status: r.status };
+  } catch (e) { console.error('cloud_editor_dispatch', String(e)); return { error: true }; }
+}
+async function wakeIfQueued(env) {
+  // Només feina de les últimes 24 h: si alguna cosa falla sempre, no gastem minuts de GitHub indefinidament.
+  const q = await env.DB.prepare("SELECT COUNT(*) AS n FROM jobs WHERE (status='queued' OR (status='processing' AND lease_until<?)) AND updated_at>?")
+    .bind(now(), now() - 86400000).first();
+  return q.n ? wakeCloudEditor(env, `cron:${q.n}`) : { idle: true };
 }
 
 // ------------------------------------------------------------------ R2 privado con Range (Safari iOS lo exige)
@@ -516,7 +559,7 @@ async function failJob(req, env, id) {
 
 // ------------------------------------------------------------------ router
 async function agentRouter(req, env, p, m) {
-  requireAgent(req, env);
+  await requireAgent(req, env);
   if (m === 'POST' && p === '/api/agent/claim') return claim(env);
   let x = p.match(/^\/api\/agent\/jobs\/([0-9a-f]{32})\/(progress|source|analysis|variants|complete|fail)$/);
   if (x) {
@@ -538,7 +581,11 @@ async function agentRouter(req, env, p, m) {
   fail(404, 'Ruta d’agent desconeguda');
 }
 
-async function router(req, env) {
+function wake(ctx, env, response) {
+  if (ctx?.waitUntil && response.status < 300) ctx.waitUntil(wakeCloudEditor(env, 'job'));
+  return response;
+}
+async function router(req, env, ctx) {
   const u = new URL(req.url), p = u.pathname, m = req.method;
   if (p === '/api/health') return json({ status: 'ok', version: VERSION, paid_ai: false, autopublish: false });
   if (p.startsWith('/api/agent/')) return agentRouter(req, env, p, m);
@@ -568,14 +615,14 @@ async function router(req, env) {
     if (m === 'DELETE' && !action) return deleteUpload(env, user, id, u.searchParams.get('keep_renders') === '1');
     if (m === 'PUT' && action?.startsWith('parts/')) return uploadPart(req, env, user, id, Number(x[3]));
     if (m === 'POST' && action === 'finalize') return finalizeUpload(env, user, id);
-    if (m === 'POST' && (action === 'render' || action === 'jobs')) return createJob(req, env, user, id);
+    if (m === 'POST' && (action === 'render' || action === 'jobs')) return wake(ctx, env, await createJob(req, env, user, id));
     if (m === 'GET' && action === 'analysis') return uploadAnalysis(env, user, id);
   }
   if (m === 'GET' && p === '/api/jobs') return listJobs(env, user);
   x = p.match(/^\/api\/jobs\/([0-9a-f]{32})(?:\/(retry))?$/);
   if (x) {
     if (m === 'GET' && !x[2]) return jobDetail(env, user, x[1]);
-    if (m === 'POST' && x[2] === 'retry') return retryJob(env, user, x[1]);
+    if (m === 'POST' && x[2] === 'retry') return wake(ctx, env, await retryJob(env, user, x[1]));
   }
   x = p.match(/^\/api\/variants\/([0-9a-f]{32})(?:\/(preview|download|poster|approve|reject|revise|edit|subtitles\.srt))?$/);
   if (x) {
@@ -590,8 +637,8 @@ async function router(req, env) {
     }
     if (m === 'POST' && action === 'approve') return approve(req, env, user, id);
     if (m === 'POST' && action === 'reject') return reject(req, env, user, id);
-    if (m === 'POST' && action === 'revise') return revise(req, env, user, id, false);
-    if (m === 'POST' && action === 'edit') return revise(req, env, user, id, true);
+    if (m === 'POST' && action === 'revise') return wake(ctx, env, await revise(req, env, user, id, false));
+    if (m === 'POST' && action === 'edit') return wake(ctx, env, await revise(req, env, user, id, true));
   }
   fail(404, 'No trobat');
 }
@@ -641,10 +688,10 @@ function serveStatic(req, pathname) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     try {
       const { pathname } = new URL(req.url);
-      if (pathname.startsWith('/api/')) return await router(req, env);
+      if (pathname.startsWith('/api/')) return await router(req, env, ctx);
       // Web estática empaquetada; además la aplicación de Cloudflare Access protege todo el hostname.
       return serveStatic(req, pathname);
     } catch (e) {
@@ -654,6 +701,7 @@ export default {
     }
   },
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(maintenance(env));
+    // Diari: neteja. Cada 20 min: si hi ha feina pendent i cap avís ha arribat, torna a despertar l'editor al núvol.
+    ctx.waitUntil(event.cron === '17 3 * * *' ? maintenance(env) : wakeIfQueued(env));
   },
 };

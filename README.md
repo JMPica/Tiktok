@@ -12,11 +12,11 @@ ni probado en un iPhone/Windows/Mac reales: ver `docs/CHECKLIST_ACEPTACION.md`.
 ```
 iPhone Safari ─► Cloudflare Access ─► Worker (API + web)  ─► D1 (estado) + R2 privado (vídeos)
                                          ▲  HTTPS saliente (Service Token + AGENT_TOKEN)
-Ordenador Windows/Mac encendido ─► agente local: análisis imagen/sonido + Whisper ca/es
+Editor al núvol (GitHub Actions, 0 €) o ordenador Windows/Mac ─► agente: análisis imagen/sonido + Whisper ca/es
                                   ─► director 0..N ─► render FFmpeg ─► QC ─► sube propuestas
 ```
 - Sin Docker, sin Railway, sin servidor de pago, sin Claude Code en ejecución. Coste objetivo 0 €/mes.
-- El vídeo se procesa SOLO en tu ordenador. No se envía a servicios de IA externos.
+- El vídeo se procesa en el editor al núvol de GitHub (temporal, `docs/EDITOR_NUVOL.md`) o en tu ordenador. No se envía a servicios de IA externos.
 
 ## Qué hace el editor (motor `creative_engine/`)
 1. **Entiende el material**: ffprobe (rotación, VFR, HDR), cambios de plano, movimiento, nitidez, oscuridad,
@@ -59,6 +59,6 @@ Ordenador Windows/Mac encendido ─► agente local: análisis imagen/sonido + W
 pip install -r requirements-dev.txt
 python -m pytest -q tests                      # 24 pruebas (incluye render FFmpeg real)
 cd cloudflare && npm install && cd ..
-python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (50 comprobaciones)
+python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (54 comprobaciones)
 node cloudflare/test/ui_e2e.mjs MI_VIDEO.mov    # interfaz con viewport iPhone (Chromium)
 ```

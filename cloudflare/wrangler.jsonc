@@ -11,7 +11,7 @@
   "d1_databases": [{ "binding": "DB", "database_name": "blau-tiktok-v3", "database_id": "0ca77d5d-7f0e-4a43-a5f8-7a04aa04be3c" }],
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "blau-tiktok-private" }],
   // Limpieza diaria: subidas abandonadas, variantes a medias, trabajos sin agente. Cron Triggers entran en el plan Free.
-  "triggers": { "crons": ["17 3 * * *"] },
+  "triggers": { "crons": ["17 3 * * *", "*/20 * * * *"] },
   "observability": { "enabled": true },
   "vars": {
     "ACCESS_TEAM_DOMAIN": "chef-titus.cloudflareaccess.com",
@@ -21,6 +21,9 @@
     "MAX_UPLOAD_BYTES": "4294967296",
     "UPLOADS_PER_HOUR": "40",
     // 0 = no borrar nunca automáticamente. Los originales NUNCA se borran solos.
-    "REJECTED_RETENTION_DAYS": "0"
+    "REJECTED_RETENTION_DAYS": "0",
+    // Editor al núvol (GitHub Actions). El token per engegar-lo és el secret GITHUB_DISPATCH_TOKEN.
+    "GITHUB_REPO": "JMPica/Tiktok",
+    "GITHUB_REF": "claude/new-session-88n8s2"
   }
 }

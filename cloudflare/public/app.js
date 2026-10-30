@@ -3,7 +3,7 @@
 const $ = (id) => document.getElementById(id);
 const PART = 8 * 1024 * 1024;
 const STATUS = {
-  queued: ['En cua · s’editarà quan l’ordinador estigui encès', ''], processing: ['Editant', ''],
+  queued: ['En cua · l’editor arrencarà en breu', ''], processing: ['Editant', ''],
   done: ['Propostes llestes', 'ok'], needs_review: ['Cal revisar el material', 'warn'], failed: ['Error', 'bad'],
   needs_approval: ['Per aprovar', ''], approved: ['Aprovat', 'ok'], rejected: ['Descartat', 'bad'], uploading: ['Pujant', ''],
 };

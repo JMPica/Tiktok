@@ -1,7 +1,7 @@
 {
- "date": "2026-10-29T17:42:09+0000",
+ "date": "2026-10-30T14:08:53+0000",
  "status": "passed",
- "seconds": 98.7,
+ "seconds": 157.1,
  "platform": "linux",
  "runtime": "wrangler dev (workerd) + D1/R2 locales + agente Python local",
  "input": {
@@ -90,9 +90,29 @@
    "detail": ""
   },
   {
+   "check": "nou vídeo => avís a GitHub Actions",
+   "status": "passed",
+   "detail": "[{'path': '/repos/JMPica/Tiktok/actions/workflows/editor.yml/dispatches', 'auth': 'Bearer e2e-dispatch', 'body': {'ref': 'main', 'inputs': {'reason': 'job'}}}]"
+  },
+  {
+   "check": "OIDC de un altre repositori => 401",
+   "status": "passed",
+   "detail": "401"
+  },
+  {
+   "check": "OIDC de un altre flux => 401",
+   "status": "passed",
+   "detail": "401"
+  },
+  {
+   "check": "OIDC amb audiència equivocada => 401",
+   "status": "passed",
+   "detail": ""
+  },
+  {
    "check": "agente procesa y termina",
    "status": "passed",
-   "detail": "done en 38s · None"
+   "detail": "done en 84s · None"
   },
   {
    "check": "T09 0..N propuestas por mérito",
@@ -177,7 +197,7 @@
   {
    "check": "T16 corrección de texto => versión nueva con hash nuevo",
    "status": "passed",
-   "detail": "done None en 6s"
+   "detail": "done None en 7s"
   },
   {
    "check": "versión enlazada a la anterior",
@@ -202,7 +222,7 @@
   {
    "check": "T05 al volver, otro agente recupera y termina el trabajo",
    "status": "passed",
-   "detail": "done en 21s"
+   "detail": "done en 23s"
   },
   {
    "check": "T05 el agente antiguo ya no puede escribir resultados",

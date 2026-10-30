@@ -55,6 +55,23 @@ class KeepAwake:
             pass
 
 
+def github_oidc_provider(env):
+    """Token OIDC de GitHub Actions (permissions: id-token: write), renovat abans que caduqui."""
+    url, bearer = env.get('ACTIONS_ID_TOKEN_REQUEST_URL'), env.get('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
+    if not (url and bearer):
+        return None
+    cache = {'token': None, 'at': 0.0}
+
+    def get():
+        if cache['token'] and time.time() - cache['at'] < 240:
+            return cache['token']
+        r = requests.get(url + '&audience=blau-tiktok-studio', headers={'Authorization': f'Bearer {bearer}'}, timeout=30)
+        r.raise_for_status()
+        cache['token'], cache['at'] = r.json()['value'], time.time()
+        return cache['token']
+    return get
+
+
 class JobGone(Exception):
     """El trabajo se ha borrado/reasignado en el servidor: se abandona sin reportar."""
 
@@ -65,13 +82,17 @@ class Agent:
         insecure_ok = env.get('STUDIO_ALLOW_INSECURE_LOCALHOST') == '1' and self.base.startswith(('http://127.0.0.1', 'http://localhost'))
         token = env.get('STUDIO_AGENT_TOKEN', '')
         cid, secret = env.get('CF_ACCESS_CLIENT_ID', ''), env.get('CF_ACCESS_CLIENT_SECRET', '')
-        if not (self.base.startswith('https://') or insecure_ok) or not token or (not insecure_ok and not (cid and secret)):
-            raise SystemExit('Falten STUDIO_PUBLIC_URL (https), STUDIO_AGENT_TOKEN o el Service Token de Cloudflare Access.')
+        # A GitHub Actions no hi ha secret compartit: el runner demana un token OIDC signat per GitHub.
+        self.oidc = None if token else github_oidc_provider(env)
+        if not (self.base.startswith('https://') or insecure_ok) or not (token or self.oidc) or (not insecure_ok and not (cid and secret)):
+            raise SystemExit('Falten STUDIO_PUBLIC_URL (https), STUDIO_AGENT_TOKEN (o OIDC de GitHub) o el Service Token de Cloudflare Access.')
         self.poll = max(5 if insecure_ok else 10, int(env.get('STUDIO_POLL_SECONDS', '30')))
         self.language = env.get('BLAU_DEFAULT_LANGUAGE', 'ca')
         self.workroot = Path(env.get('BLAU_WORK_DIR') or tempfile.gettempdir())
         self.s = requests.Session()
-        self.s.headers.update({'Authorization': f'Bearer {token}', 'User-Agent': f'blau-agent/{VERSION}'})
+        self.s.headers.update({'User-Agent': f'blau-agent/{VERSION}'})
+        if token:
+            self.s.headers['Authorization'] = f'Bearer {token}'
         if cid and secret:
             self.s.headers.update({'CF-Access-Client-Id': cid, 'CF-Access-Client-Secret': secret})
         self.job = None
@@ -82,6 +103,8 @@ class Agent:
     def api(self, method, path, retries=4, **kw):
         timeout = kw.pop('timeout', 120)
         headers = kw.pop('headers', {})
+        if self.oidc:
+            headers['Authorization'] = 'Bearer ' + self.oidc()
         if self.job:
             headers['X-Agent-Id'] = self.job['agent_id']
         for attempt in range(retries):
@@ -233,7 +256,8 @@ class Agent:
         self.upload_variant(out['result'], parent.get('idx', 0))
         self.api('POST', f"/api/agent/jobs/{job['id']}/complete", json={'summary': {'applied': out['applied']}})
 
-    def loop(self, once=False):
+    def loop(self, once=False, drain=False):
+        """once: un treball i surt. drain: buida la cua i surt (GitHub Actions)."""
         require_tools()
         print(f'Blau de Mar · agent V{VERSION} · sense ports d’entrada · IA de pagament desactivada', flush=True)
         while True:
@@ -243,16 +267,18 @@ class Agent:
                 return
             except Exception as exc:
                 print('Connexió amb el servei:', exc, flush=True)
-                if once:
+                if once or drain:
                     raise
                 time.sleep(min(self.poll * 2, 120))
                 continue
             if not job:
-                if once:
+                if once or drain:
                     return
                 time.sleep(self.poll)
                 continue
-            print(f"[{job['id'][:8]}] {job['kind']} · {job.get('filename')} · estil {job.get('style')}", flush=True)
+            # A GitHub Actions no s'escriu el nom del fitxer als registres.
+            name = '' if os.environ.get('GITHUB_ACTIONS') else f" · {job.get('filename')}"
+            print(f"[{job['id'][:8]}] {job['kind']}{name} · estil {job.get('style')}", flush=True)
             try:
                 with KeepAwake():
                     self.process(job)
@@ -273,7 +299,7 @@ class Agent:
 
 
 def main():
-    Agent().loop(once='--once' in sys.argv)
+    Agent().loop(once='--once' in sys.argv, drain='--drain' in sys.argv)
 
 
 if __name__ == '__main__':

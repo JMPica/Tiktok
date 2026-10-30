@@ -1,4 +1,10 @@
 # Changelog
+## V4.1.0 — 2026-10-30
+- **Editor al núvol (GitHub Actions)**: el Worker engega el flux `editor.yml` a cada pujada/correcció i cada 20 min si
+  queda feina; el runner s'autentica amb OIDC de GitHub (sense clau compartida) i buida la cua (`--drain`). 0 € amb
+  repositori privat. Guia: `docs/EDITOR_NUVOL.md`. E2E: 54 comprovacions (avís, OIDC vàlid i rebutjos).
+- Desplegat a Cloudflare amb Access (`chef-titus`, codi per correu), web empaquetada amb CSP.
+
 ## V4.0.1 — 2026-10-29
 - Rendimiento 4K HDR: el análisis reducía después de convertir HDR (134 s → 26 s por minuto de bruto); el render
   convierte HDR tras escalar a 1080×1920.
