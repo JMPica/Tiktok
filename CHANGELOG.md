@@ -1,4 +1,9 @@
 # Changelog
+## V4.1.1 — 2026-10-31
+- Preses repetides: si una frase es comença i es torna a dir, el director es queda amb l'última presa completa
+  (en estils d'humor es conserva una repetició sencera). Les correccions fan servir les mateixes files.
+- Avaluació de la guia «Deja de editar tus reels» a `docs/HERRAMIENTAS_EXTERNAS.md`.
+
 ## V4.1.0 — 2026-10-30
 - **Editor al núvol (GitHub Actions)**: el Worker engega el flux `editor.yml` a cada pujada/correcció i cada 20 min si
   queda feina; el runner s'autentica amb OIDC de GitHub (sense clau compartida) i buida la cua (`--drain`). 0 € amb

@@ -12,7 +12,7 @@ import re
 import urllib.request
 
 from creative_engine.captions import chunk, map_words
-from creative_engine.director import cut_window, frame_segments, load_styles, validate_transcript
+from creative_engine.director import cut_window, frame_segments, load_styles, usable_rows
 
 HELP = ('Puc entendre: «més curt», «més llarg», «més divertit», «més ràpid/lent», «sense subtítols», '
         '«subtítols a dalt/més grans», «treu el principi/final», «comença al segon 12», «estil premium/educatiu/…», '
@@ -120,7 +120,8 @@ def apply(edl: dict, instruction: str, transcript: list[dict] | None, meta: dict
     new['version'] = int(edl.get('version', 1)) + 1
     new['parent_id'] = edl.get('id')
     styles = load_styles()
-    rows = validate_transcript(transcript or [], meta['duration']) if transcript else []
+    keep = bool((edl.get('provenance') or {}).get('keep_full_repeats'))
+    rows = usable_rows(transcript or [], meta['duration'], keep)[0] if transcript else []
     rng = (edl.get('provenance') or {}).get('transcript_rows')
     i, j = (rng if rng and rows else (None, None))
     style, pace, done = new['style'], 1.0, []

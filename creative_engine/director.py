@@ -12,6 +12,7 @@ import json
 import math
 import re
 import uuid
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from creative_engine import analysis as A
@@ -71,6 +72,44 @@ def validate_transcript(rows: list[dict], duration: float) -> list[dict]:
         out.append({'start': a, 'end': min(b, duration), 'text': t, 'words': words,
                     'confidence': r.get('avg_logprob'), 'no_speech_prob': r.get('no_speech_prob')})
     return sorted(out, key=lambda x: x['start'])
+
+
+# ---------------------------------------------------------------- preses repetides
+COMEDY_REPEAT_STYLES = ('tacho_humor', 'loop')
+
+
+def _norm_words(text: str) -> list[str]:
+    return re.sub(r"[^\w\s']", ' ', text.lower()).split()
+
+
+def _is_retake(prev: dict, cur: dict, keep_full_repeats: bool) -> bool:
+    """prev és una presa descartable si cur la torna a començar (o la repeteix sencera)."""
+    p, c = _norm_words(prev['text']), _norm_words(cur['text'])
+    if len(p) < 2 or cur['start'] - prev['end'] > 8:
+        return False
+    head = min(3, len(p))
+    restarted = c[:head] == p[:head]
+    complete_prev = prev['text'].rstrip()[-1:] in '.?!…'
+    similar = SequenceMatcher(None, p, c).ratio()
+    if restarted and (not complete_prev or len(p) < len(c)):
+        return True  # començament tallat o frase ampliada: ens quedem amb l'última
+    if similar >= 0.75:
+        return not keep_full_repeats  # repetició sencera: en humor pot ser el gag, es conserva
+    return False
+
+
+def drop_retakes(rows: list[dict], keep_full_repeats: bool = False) -> tuple[list[dict], list[dict]]:
+    """Com a l'edició manual: si una frase es comença i es torna a dir, ens quedem amb l'última presa completa."""
+    kept, dropped = [], []
+    for r in rows:
+        while kept and _is_retake(kept[-1], r, keep_full_repeats):
+            dropped.append(kept.pop())
+        kept.append(r)
+    return kept, sorted(dropped, key=lambda x: x['start'])
+
+
+def usable_rows(transcript: list[dict], duration: float, keep_full_repeats: bool = False) -> tuple[list[dict], list[dict]]:
+    return drop_retakes(validate_transcript(transcript, duration), keep_full_repeats)
 
 
 # ---------------------------------------------------------------- puntuación
@@ -364,13 +403,15 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
         raise ValueError('Unsupported language')
     options = options or {}
     meta = meta or (analysis or {}).get('meta') or {'duration': duration, 'width': 1080, 'height': 1920, 'fps': '30/1'}
-    rows = validate_transcript(transcript, duration)
+    keep_repeats = style in COMEDY_REPEAT_STYLES
+    rows, retakes = usable_rows(transcript, duration, keep_repeats)
     chosen, style_reason = resolve_style(style, rows, analysis, duration)
     recipe = styles[chosen]['render']
     base = {'style_requested': style, 'style': chosen, 'style_reason': style_reason, 'automatic_publish': False,
             'editorial_review_required': True, 'caption_review_required': True, 'claims_checked': False,
             'selection': 'multimodal_signals+speech' if analysis else 'speech_only',
-            'semantic_vision': _semantic_status((analysis or {}).get('semantic_vision'))}
+            'semantic_vision': _semantic_status((analysis or {}).get('semantic_vision')),
+            'retakes_removed': [{'start': r['start'], 'end': r['end'], 'text': r['text'][:80]} for r in retakes]}
     candidates = []
     if rows and recipe.get('speech') != 'none':
         picked, best = speech_candidates(rows, chosen, styles, language, analysis, meta, options, style_reason)
@@ -394,8 +435,12 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
             cid = uuid.uuid4().hex[:12]
             hook_text = win_rows[0]['text']
             score = {**w['scores'], 'total': w['total'], 'meaning': 'puntuació editorial, no probabilitat de viralitat'}
+            dropped_here = [r for r in retakes if w['range'][0] - 8 <= r['start'] <= w['range'][1]]
+            if dropped_here:
+                w['notes'].insert(0, f"{len(dropped_here)} presa(es) repetida(es) descartada(es), es queda l’última")
             prov = {'transcript_rows': [w['i'], w['j']], 'source_range': [round(x, 3) for x in w['range']],
-                    'text': w['text'][:1200], 'notes': w['notes']}
+                    'text': w['text'][:1200], 'notes': w['notes'], 'keep_full_repeats': keep_repeats,
+                    'retakes_removed': [[round(r['start'], 2), round(r['end'], 2)] for r in dropped_here]}
             edl = _edl(cid, chosen, styles, language, segs, captions, overlays, meta, score, prov, risks, reqs,
                        _explain(w, style_reason, w['scores'], w['notes'], language))
             edl['hook_overlay_suggestion'] = hook_text[:74]

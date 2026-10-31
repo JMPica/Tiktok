@@ -44,3 +44,24 @@ autenticidad (persona real, historia real) por encima del efecto.
 - **Higgsfield** (conector disponible en esta sesión: generación, música de tendencia, publicación en TikTok):
   sigue **desactivado** por las reglas del proyecto (créditos de pago, sin publicación automática). Su
   «predictor de viralidad» contradice la regla de no vender viralidad.
+
+## Guia «Deja de editar tus reels» (TUMADRE, @tumadreanna) — revisada el 31-10-2026
+Mètode: Claude Cowork (app d'escriptori, pla de pagament) treballant sobre carpetes locals (1 Brutos / 2 Mi estilo /
+3 Listos) amb eines obertes: reels-montage (connector per a Claude Code, MIT; talla pauses i preses, subtítols per
+paraula, Remotion), HyperFrames (HeyGen, Apache 2.0: gràfics en HTML renderitzats amb Chrome sense interfície + FFmpeg),
+«Media Use» (mòdul de HyperFrames per obtenir música/efectes; la llicència de cada àudio depèn del proveïdor),
+Remotion (segons la guia, gratuït per a individus; equips de 4 o més persones necessiten llicència) i yt-dlp.
+
+Comparació amb l'estudi de Blau de Mar:
+| Idea de la guia | Estat aquí |
+|---|---|
+| Treure silencis i muletes, subtítols paraula a paraula, 1080×1920, control abans d'entregar, versions _v1/_v2 | Ja fet (automàtic, sense ordinador, amb QC mesurat i hash) |
+| Quedar-se amb l'última presa quan es repeteix una frase | **Afegit avui** (`drop_retakes`); en estils d'humor es conserva la repetició sencera (pot ser el gag) |
+| Fitxa d'estil apresa de 3–6 vídeos de referència + entrevista | Pendent: proposta «Aprèn l'estil» a Advanced (mesurar ritme de talls, durada, sonoritat dels vídeos de referència) |
+| Guió per moments i aprovació dels talls abans d'editar | Parcial: l'explicació i l'EDL es veuen després del render; es pot afegir un «guió» previ |
+| Animacions (Remotion/HyperFrames), text darrere la persona (rembg), música lliure de drets | Pendent i opcional: més cost de càlcul; Remotion pot requerir llicència per a un equip; música només amb llicència verificada |
+| −14 LUFS | Aquí −16 LUFS (encàrrec original); es pot canviar si ho preferiu |
+| Un sol usuari a l'ordinador, gasta ús de Claude a cada vídeo | Aquí: equip des de l'iPhone, edició automàtica a 0 € i sense Claude en funcionament |
+
+Conclusió: la guia és una bona via **manual i premium** per a peces especials (la propietària amb Cowork). Per al dia a
+dia de l'equip, l'estudi automàtic n'incorpora les regles útils sense dependre d'un ordinador ni de l'ús de Claude.
