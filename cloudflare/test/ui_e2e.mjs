@@ -64,6 +64,9 @@ try {
   await page.setInputFiles('#videoInput', video);
   await page.click('#upload');
   check('cal confirmar consentiment abans de pujar', (await page.locator('#alert').textContent()).includes('permís'));
+  await page.locator('details.brief summary').click();
+  await page.fill('#briefSeconds', '12');
+  await page.fill('#briefCta', 'Reserva la teva hora');
   await page.check('#consent');
   await page.click('#upload');
   await page.getByText('A la cua d’edició').waitFor({ timeout: 300000 });
@@ -76,6 +79,11 @@ try {
   await page.locator('.variant').first().waitFor();
   const nVariants = await page.locator('.variant').count();
   check('propostes visibles amb vídeo i explicació', nVariants >= 1 && (await page.locator('.variant video').count()) >= 1, `${nVariants} propostes`);
+  await page.locator('.variant details.story summary').first().click();
+  await page.locator('.variant .storyrows li').first().waitFor();
+  const story = await page.locator('.variant .storyrows').first().textContent();
+  check('guió per moments visible, amb origen i tancament escrit per la persona', story.includes('de l’original') && story.includes('Reserva la teva hora'), story.slice(0, 160));
+  await page.screenshot({ path: path.join(shots, '08_guio_per_moments.jpg'), fullPage: true, type: 'jpeg', quality: 70 });
   check('l’equip no veu el botó Aprovar', (await page.getByRole('button', { name: 'Aprovar' }).count()) === 0);
   await page.screenshot({ path: path.join(shots, '03_propostes_equip.jpg'), fullPage: true, type: 'jpeg', quality: 70 });
   await page.locator('.variant textarea').first().fill('més curt');

@@ -66,6 +66,9 @@ def parse(instruction: str) -> list[dict]:
     if m:
         sec = int(m.group(4)) * 60 + int(m.group(5)) if m.group(5) and ':' in t[m.start():m.end()] else float(m.group(4))
         ops.append({'op': 'start_at', 'seconds': float(sec)})
+    m = re.search(r'(?:de|a|en|dur\w*|m[aà]xim\w*|com a molt|como mucho)\s+(\d{1,3})\s*(?:s|seg\w*)\b', t)
+    if m and 6 <= int(m.group(1)) <= 180 and not any(o['op'] == 'start_at' for o in ops):
+        ops.append({'op': 'max_seconds', 'seconds': float(m.group(1))})
     for word, style in STYLE_WORDS.items():
         if re.search(r'\b' + re.escape(word) + r'\b', t) and not any(o['op'] == 'style' for o in ops):
             ops.append({'op': 'style', 'style': style})
@@ -94,9 +97,24 @@ def _ollama(instruction: str) -> list[dict]:
             ops = json.loads(json.loads(r.read())['response']).get('ops', [])
     except (OSError, ValueError, KeyError):
         return []
-    allowed = {'shorter', 'longer', 'style', 'pace', 'captions', 'drop_first', 'drop_last', 'start_at', 'replace_text'}
+    allowed = {'max_seconds', 'shorter', 'longer', 'style', 'pace', 'captions', 'drop_first', 'drop_last', 'start_at', 'replace_text'}
     styles = load_styles()
     return [o for o in ops if isinstance(o, dict) and o.get('op') in allowed and (o['op'] != 'style' or o.get('style') in styles)]
+
+
+def _refit_overlays(edl):
+    """Tras cambiar la duración: el cierre (CTA) sigue al final y ningún rótulo queda fuera del montaje."""
+    total = edl['duration']
+    kept = []
+    for ov in edl.get('overlays') or []:
+        if ov.get('kind') == 'cta':
+            ov['start'], ov['end'] = round(max(0.0, total - min(3.0, total / 2)), 3), total
+        else:
+            ov['end'] = min(ov['end'], total)
+        if ov['end'] > ov['start']:
+            kept.append(ov)
+    if 'overlays' in edl:
+        edl['overlays'] = kept
 
 
 def _recut(edl, rows, i, j, style, meta, analysis, pace=1.0):
@@ -153,6 +171,19 @@ def apply(edl: dict, instruction: str, transcript: list[dict] | None, meta: dict
             else:
                 raise NotUnderstood('Ja és el mínim fragment amb sentit; no es pot escurçar sense tallar frases.')
             done.append('més curt')
+        elif kind == 'max_seconds':
+            limit = float(op['seconds'])
+            if i is not None:
+                while j > i and rows[j]['end'] - rows[i]['start'] > limit:
+                    j -= 1
+                if rows[j]['end'] - rows[i]['start'] > limit:
+                    raise NotUnderstood(f'La primera frase ja dura més de {limit:.0f} s; no es pot escurçar sense tallar-la.')
+            else:
+                while len(new['segments']) > 1 and sum(s['out'] - s['in'] for s in new['segments']) > limit:
+                    new['segments'] = new['segments'][:-1]
+                if sum(s['out'] - s['in'] for s in new['segments']) > limit:
+                    raise NotUnderstood(f'Un sol pla ja dura més de {limit:.0f} s; cal l’editor Advanced per retallar-lo.')
+            done.append(f'màxim {limit:.0f} s')
         elif kind == 'longer':
             if i is None or j >= len(rows) - 1:
                 raise NotUnderstood('No hi ha més material parlat després d’aquest fragment.')
@@ -185,7 +216,7 @@ def apply(edl: dict, instruction: str, transcript: list[dict] | None, meta: dict
                 if op.get(key):
                     cap[key] = op[key]
             done.append('subtítols: ' + ', '.join(f'{k}={op[k]}' for k in ('mode', 'position', 'size') if op.get(k)))
-    if i is not None and (any(o['op'] in ('shorter', 'longer', 'drop_first', 'drop_last', 'start_at', 'pace', 'style') for o in ops)):
+    if i is not None and (any(o['op'] in ('max_seconds', 'shorter', 'longer', 'drop_first', 'drop_last', 'start_at', 'pace', 'style') for o in ops)):
         _recut(new, rows, i, j, style, meta, analysis, pace)
     for op in ops:
         if op['op'] == 'replace_text':
@@ -199,6 +230,7 @@ def apply(edl: dict, instruction: str, transcript: list[dict] | None, meta: dict
                 raise NotUnderstood(f'No trobo «{op["old"]}» als subtítols.')
             done.append(f'subtítol corregit: «{op["old"]}» → «{op["new"]}»')
     new['duration'] = round(sum(s['out'] - s['in'] for s in new['segments']), 3)
+    _refit_overlays(new)
     new['revision'] = {'instruction': instruction[:500], 'applied': done}
     new['explanation'] = (edl.get('explanation', '') + f' · Versió {new["version"]}: ' + '; '.join(done)).strip()
     return new, done
@@ -233,5 +265,6 @@ def apply_manual(edl: dict, edits: dict, meta: dict) -> dict:
     if 'caption_mode' in edits:
         new.setdefault('captions', {})['mode'] = edits['caption_mode']
     new['duration'] = round(sum(s['out'] - s['in'] for s in new['segments']), 3)
+    _refit_overlays(new)
     new['revision'] = {'instruction': 'edició manual (Advanced)', 'applied': list(edits)}
     return new

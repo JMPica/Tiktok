@@ -32,6 +32,14 @@ GRADES = {
 MAX_OUTPUT_SECONDS = 180
 
 
+def target_lufs(edl: dict) -> float:
+    """Sonoritat objectiu de l'EDL (per marca); -16 LUFS si no s'indica. Limitada a un rang raonable."""
+    try:
+        return max(-24.0, min(-12.0, float((edl.get('audio') or {}).get('target_lufs', -16))))
+    except (TypeError, ValueError):
+        return -16.0
+
+
 def max_zoom(meta: dict) -> float:
     short = min(meta['width'], meta['height'])
     return 1.5 if short >= 2160 else 1.1 if short >= 1080 else 1.0
@@ -120,7 +128,7 @@ def _measure_loudness(edl, source, meta, fps, cwd) -> dict | None:
     if not meta.get('audio'):
         return None
     inputs, graph, _ = _build(edl, source, meta, fps, audio_only=True)
-    graph.append('[ac]loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json[ao]')
+    graph.append(f'[ac]loudnorm=I={target_lufs(edl):g}:TP=-1.5:LRA=11:print_format=json[ao]')
     r = run(['ffmpeg', '-hide_banner', '-nostdin', '-nostats', *inputs, '-filter_complex', ';'.join(graph),
              '-map', '[ao]', '-f', 'null', '-'], cwd=cwd, timeout=1800)
     if r.returncode:
@@ -153,7 +161,7 @@ def render(edl: dict, source: Path, meta: dict, target: Path, workdir: Path) -> 
     # Rutas relativas (cwd=workdir): evita el escapado de rutas de Windows dentro del filtro.
     graph.append('[vc]ass=subs.ass:fontsdir=fonts[vo]')
     if loud:
-        graph.append(f"[ac]loudnorm=I=-16:TP=-1.5:LRA=11:measured_I={loud['input_i']}:measured_TP={loud['input_tp']}:"
+        graph.append(f"[ac]loudnorm=I={target_lufs(edl):g}:TP=-1.5:LRA=11:measured_I={loud['input_i']}:measured_TP={loud['input_tp']}:"
                      f"measured_LRA={loud['input_lra']}:measured_thresh={loud['input_thresh']}:offset={loud['target_offset']}:"
                      'linear=true,aresample=48000[ao]')
     else:

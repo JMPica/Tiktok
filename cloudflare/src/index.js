@@ -239,6 +239,16 @@ function jobOptions(b) {
   const o = {};
   if (b.comment_text) o.comment_text = String(b.comment_text).slice(0, 200);
   if (b.trend_source?.url) o.trend_source = { url: String(b.trend_source.url).slice(0, 400), date: String(b.trend_source.date || '').slice(0, 20) };
+  // Encàrrec del vídeo (guia de referència): tema, públic, objectiu, durada màxima i tancament escrit per la persona.
+  const br = b.brief && typeof b.brief === 'object' ? b.brief : null;
+  if (br) {
+    const brief = {};
+    for (const [k, max] of [['topic', 160], ['audience', 120], ['cta', 60]]) if (String(br[k] || '').trim()) brief[k] = String(br[k]).trim().slice(0, max);
+    if (['reach', 'engagement', 'leads', 'sales'].includes(br.goal)) brief.goal = br.goal;
+    const sec = Number(br.max_seconds);
+    if (Number.isFinite(sec) && sec >= 6 && sec <= 180) brief.max_seconds = Math.round(sec);
+    if (Object.keys(brief).length) o.brief = brief;
+  }
   const n = Number(b.max_candidates || 4);
   o.max_candidates = Number.isInteger(n) && n >= 1 && n <= 8 ? n : 4;
   return o;

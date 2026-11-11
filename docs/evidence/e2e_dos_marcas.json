@@ -1,7 +1,7 @@
 {
- "date": "2026-11-11T18:10:15+0000",
+ "date": "2026-11-11T18:25:06+0000",
  "status": "passed",
- "seconds": 157.2,
+ "seconds": 155.8,
  "platform": "linux",
  "runtime": "wrangler dev (workerd) + D1/R2 locales + agente Python local",
  "input": {
@@ -222,7 +222,7 @@
   {
    "check": "T05 al volver, otro agente recupera y termina el trabajo",
    "status": "passed",
-   "detail": "done en 22s"
+   "detail": "done en 21s"
   },
   {
    "check": "T05 el agente antiguo ya no puede escribir resultados",
@@ -282,22 +282,37 @@
   {
    "check": "M07 agente procesa el vídeo de Top House",
    "status": "passed",
-   "detail": "done en 63s · None"
+   "detail": "done en 64s · None"
   },
   {
    "check": "M07 el trabajo usa un preset de Top House",
    "status": "passed",
-   "detail": "{'brand': 'top_house', 'style': 'top_owner_expert', 'style_reason': 'diàleg explicatiu: format expert/consell', 'selection': 'multimodal_signals+speech', 'semantic_vision': 'no disponible: només senyals d’imatge i so (activa BLAU_VISION_MODEL per a visió local)', 'transcript_error': None, 'candidates': 2, 'render_errors': []}"
+   "detail": "{'brand': 'top_house', 'style': 'top_owner_expert', 'style_reason': 'diàleg explicatiu: format expert/consell', 'selection': 'multimodal_signals+speech', 'semantic_vision': 'no disponible: només senyals d’imatge i so (activa BLAU_VISION_MODEL per a visió local)', 'transcript_error': None, 'candidates': 4, 'render_errors': []}"
   },
   {
    "check": "M08 EDL de Top House lleva su marca, su aspecto y su permiso de inmueble",
    "status": "passed",
-   "detail": "{'id': 'top_house', 'name': 'Top House', 'style_schema': 'brand_style_v1', 'style_version': '1.0.0', 'accent': '#E8D9B5', 'caption_font': 'Poppins SemiBold', 'caption_size': 64, 'visual_status': 'provisional'}"
+   "detail": "{'id': 'top_house', 'name': 'Top House', 'style_schema': 'brand_style_v1', 'style_version': '1.1.0', 'accent': '#E8D9B5', 'caption_font': 'Poppins SemiBold', 'caption_size': 64, 'visual_status': 'provisional'}"
+  },
+  {
+   "check": "G01 encargo del vídeo: duración máxima y cierre escrito por la persona",
+   "status": "passed",
+   "detail": "7.344"
+  },
+  {
+   "check": "G02 guion por momentos trazable al original",
+   "status": "passed",
+   "detail": "[{'n': 1, 'start': 0, 'end': 3.22, 'source_in': 12.79, 'source_out': 16.01, 'says': 'Elles fotos no expliquen com es viu a la casa.', 'subtitles': True, 'on_screen': [], 'effect': 'cap', 'tool': 'FFmpeg'}]"
+  },
+  {
+   "check": "G03 QC comprueba los 2 primeros segundos sin sonido",
+   "status": "passed",
+   "detail": "[{'check': 'primeros 2 s sin sonido', 'status': 'pass', 'detail': 'hay texto en pantalla antes del segundo 2'}]"
   },
   {
    "check": "M09 descarga Top House = sha256 y nombre de su marca",
    "status": "passed",
-   "detail": "attachment; filename=\"tophouse-3d8e6a47-v1.mp4\""
+   "detail": "attachment; filename=\"tophouse-4bf13f55-v1.mp4\""
   },
   {
    "check": "M05 Blau no puede descargar la versión de Top House => 404",

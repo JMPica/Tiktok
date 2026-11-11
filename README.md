@@ -62,8 +62,8 @@ Editor al núvol (GitHub Actions, 0 €) o ordenador Windows/Mac ─► agente: 
 ## Pruebas
 ```
 pip install -r requirements-dev.txt
-python -m pytest -q tests                      # 38 pruebas (incluye render FFmpeg real)
+python -m pytest -q tests                      # 43 pruebas (incluye render FFmpeg real)
 cd cloudflare && npm install && cd ..
-python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (72 comprobaciones; --top-video para la segunda marca)
+python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (75 comprobaciones; --top-video para la segunda marca)
 node cloudflare/test/ui_e2e.mjs MI_VIDEO.mov    # interfaz con viewport iPhone (Chromium)
 ```

@@ -60,11 +60,11 @@ briefing para no romper datos existentes; la correspondencia está en `docs/adr/
 
 | Prueba | Comando | Resultado |
 |---|---|---|
-| Unitarias + render real | `python -m pytest -q tests` | **38 passed** (72 s) |
+| Unitarias + render real | `python -m pytest -q tests` | **43 passed** (92 s) |
 | Pipeline CLI, marca Blau | `python -m creative_engine.cli fixture_blau.mp4 --brand blau_de_mar --render` | 2 MP4, QC pass, 36 s |
 | Pipeline CLI, marca Top House | `python -m creative_engine.cli fixture_top.mp4 --brand top_house --render` | 2 MP4, QC pass, 67 s |
-| E2E Worker local + agente + FFmpeg | `python tests/e2e_local.py --video … --top-video …` | **72/72 passed** (157 s) · `docs/evidence/e2e_dos_marcas.json` |
-| Interfaz, viewport iPhone 13 | `node cloudflare/test/ui_e2e.mjs …` | **16/16 passed** · `docs/evidence/ui/` |
+| E2E Worker local + agente + FFmpeg | `python tests/e2e_local.py --video … --top-video …` | **75/75 passed** · `docs/evidence/e2e_dos_marcas.json` |
+| Interfaz, viewport iPhone 13 | `node cloudflare/test/ui_e2e.mjs …` | **17/17 passed** · `docs/evidence/ui/` |
 
 Los vídeos de entrada son **fixtures sintéticos** (`tests/make_fixture.py`: carta de ajuste + voz espeak-ng en catalán).
 Sirven para demostrar que el sistema corta, subtitula, renderiza, versiona y descarga de verdad. **No son las pruebas de
@@ -109,8 +109,8 @@ transcripción dudosa necesita calibrarse con material real.
    Para `TOP_PROPERTY` (visita sin voz) elige planos nítidos en orden; no sabe qué estancia es.
 6. **Sin música ni motion graphics**: solo audio original y subtítulos. HyperFrames/Remotion siguen sin integrar.
 7. **Un solo rol de propietaria** para ambas marcas; si cada empresa necesita su aprobadora, hay que añadirlo.
-8. **Sonoridad fija a −16 LUFS** para las dos marcas; el briefing pide no tratarla como verdad única: falta hacerla
-   configurable por marca.
+8. **Sonoridad**: ya es configurable por marca (`audio.target_lufs`), pero ambas siguen en −16 LUFS; la guía usa −14.
+   Falta tu decisión.
 9. `MANIFEST_SHA256.json` es del kit importado y ya no refleja el árbol actual.
 
 ## 7. Backlog (no frena el editor)
@@ -118,3 +118,42 @@ transcripción dudosa necesita calibrarse con material real.
 - Fase 2: brand kit real, sonoridad por marca, storyboard previo al render en la interfaz, evaluación práctica de HyperFrames.
 - Fase 3: analizar las 6 referencias cuando haya red o exportaciones; generador de guiones y shot lists por marca.
 - Fase 4: métricas autorizadas y detector de outliers contra la mediana de cada cuenta (`insufficient_data` hasta entonces).
+
+## 8. ZIP «TIKTOK_STUDIO_CHATGPT_CODIGO_Y_MATERIALES_PARA_CLAUDE» (recibido el 11-11-2026)
+
+Inventario hecho extrayendo el ZIP en una carpeta aislada y comparando cada fichero por hash con el historial de git.
+
+| Contenido | Resultado de la comparación |
+|---|---|
+| `codigo_v4_preparado/` (76 ficheros) | **Idéntico byte a byte** al primer commit de este repo (`85955df`). Es el punto del que partió todo lo posterior; no contiene nada que no esté ya aquí. |
+| `scripts_originales_chatgpt/` | `analyze video.py`, `render edl.py` y el prompt son idénticos a `legacy/`. |
+| `paquetes_historicos_chatgpt/` (7 ZIP) | El paquete V4 y el de integración V3 ya están íntegros en el repo. Los otros cinco son versiones V3 **anteriores** del mismo Worker, agente y guías (Worker de 14 KB frente a los 50 KB actuales). No se integra nada: sería retroceder. |
+| `00_BRIEF_MAESTRO_11NOV2026.md` | Idéntico al briefing ya ejecutado. |
+| `referencias/Deja_de_editar_tus_reels_TUMADRE.pdf` | **Material nuevo.** Leído entero (11 páginas). De él salen los cambios de V4.3.0. |
+| `00_LEER_PRIMERO.md`, `MANIFEST_ENTREGA.json` | Confirman que **el código del Site publicado no se ha podido exportar** (`live_site_source_exported: false`). |
+
+### Lo que esto aclara
+Hay **dos sistemas distintos** y no deben confundirse:
+1. El **Site de ChatGPT** (`blau-de-mar-tiktok-studio.titus10.chatgpt.site`, versión 11 según su índice). Su código
+   fuente no está en este ZIP ni en ningún sitio al que yo llegue. No sé qué hace hoy ni qué versión sirve.
+2. El **estudio de este repositorio**, desplegado aparte en Cloudflare (`blau-tiktok-v3…workers.dev`) el 29-10-2026.
+   Es el único que puedo auditar, probar y mejorar.
+
+Consecuencia: no puedo «integrar en el Site» ni comparar contra su fuente. Si se quiere conservar el Site, hace falta
+que ChatGPT Work exporte su código (la petición exacta está en `01_PASOS_CLAUDE_CODE.md` del ZIP). Si no, el camino
+es que el estudio de Cloudflare lo sustituya cuando pase las pruebas con clips reales, con tu confirmación.
+
+### Guía de @tumadreanna frente al estudio (tras leer el PDF)
+| La guía pide | Estado |
+|---|---|
+| Carpetas Brutos / Mi estilo / Listos, versiones `_v1`, `_v2` sin borrar la anterior | Hecho (R2 por marca, versiones enlazadas, original intacto) |
+| Quitar silencios, muletillas y quedarse con la última toma completa | Hecho |
+| Subtítulos palabra a palabra, 1080×1920 | Hecho |
+| Guion por momentos con lista de cortes | **Hecho hoy** (se muestra con cada versión). La guía lo pide *antes* de editar y con visto bueno; aquí se renderiza primero y se revisa después. Pendiente si lo quieres como paso previo |
+| Cuatro líneas por vídeo: tema, para quién, objetivo, duración, cierre | **Hecho hoy** (encargo opcional al subir). Tema, público y objetivo se guardan con la versión pero todavía no cambian la selección |
+| En 2 s se entiende sin sonido | **Hecho hoy** como aviso de QC (comprueba que hay texto en pantalla, no que se entienda) |
+| Corregir hablando («en el segundo 14 repito la frase…», «subtítulos arriba») | Parcial: frases reconocidas por reglas; «quédate con la segunda vez» ya lo hace solo el director; no hay «quita la mitad de las animaciones» porque no hay animaciones |
+| Ficha de estilo aprendida de 3–6 vídeos + entrevista | No hecho: la ficha por marca existe (`brands.v1.json`) pero escrita a mano y con valores provisionales |
+| Animaciones (Remotion/HyperFrames), texto detrás de la persona (rembg), música y efectos (Media Use), −14 LUFS | No hecho. Sin música ni animaciones; sonoridad configurable pero en −16 |
+| Que nada tape la cara ni las manos | Parcial: los subtítulos suben si la cara está baja; no se detectan manos |
+| Verlo entero en el móvil antes de publicar | Corresponde a la persona; la aprobación exige confirmarlo en la lista |

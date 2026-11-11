@@ -133,3 +133,72 @@ def test_invalid_edl_is_never_rendered(tmp_path):
     an = analyze(src)
     with pytest.raises(ValueError, match='EDL no válido'):
         render_candidate(src, an['meta'], {'id': 'x', 'segments': [{'in': 0, 'out': 2}]}, tmp_path / 'w')
+
+
+# ------------------------------------------------------------ encargo por vídeo, guion y sonoridad (guía de referencia)
+LONG = OWNER + [{'start': 15.0, 'end': 19.0, 'text': 'I després cal preparar bé la casa abans de fer les fotos.'},
+                {'start': 19.3, 'end': 23.5, 'text': 'Per això sempre fem una visita prèvia amb el propietari, és la clau!'}]
+
+
+def test_brief_max_seconds_and_cta_are_respected():
+    free = build_plan(LONG, 30, 'top_owner_expert', 'ca', brand='top_house')['candidates'][0]
+    p = build_plan(LONG, 30, 'top_owner_expert', 'ca', brand='top_house',
+                   options={'brief': {'max_seconds': 14, 'cta': 'Demana una valoració', 'topic': 'pisos que no es venen', 'goal': 'leads'}})
+    c = p['candidates'][0]
+    assert free['duration'] > 14 >= c['duration']
+    cta = [o for o in c['overlays'] if o.get('kind') == 'cta']
+    assert cta and cta[0]['text'] == 'Demana una valoració' and abs(cta[0]['end'] - c['duration']) < 0.01
+    assert c['brief']['goal'] == 'leads' and p['brief']['max_seconds'] == 14
+    assert edl_schema.errors(c, 30) == []
+
+
+def test_brief_ignores_garbage_and_never_invents_cta():
+    c = build_plan(OWNER, 20, 'top_owner_expert', 'ca', brand='top_house',
+                   options={'brief': {'max_seconds': 'molt', 'goal': 'viral', 'cta': '  '}})['candidates'][0]
+    assert c['brief'] == {} and not [o for o in c['overlays'] if o.get('kind') == 'cta']
+
+
+def test_revision_to_a_duration_keeps_whole_sentences_and_moves_cta():
+    meta = {'duration': 30, 'width': 1080, 'height': 1920, 'fps': '30/1'}
+    c = build_plan(LONG, 30, 'top_owner_expert', 'ca', brand='top_house', options={'brief': {'cta': 'Escriu-nos'}})['candidates'][0]
+    new, done = apply(c, 'Fes una versió de 13 s', LONG, meta, None)
+    assert new['duration'] <= 13.5 < c['duration'] and any('màxim 13' in d for d in done)
+    assert new['captions']['events'][-1]['text'].rstrip().endswith(('?', '.', '!'))
+    cta = [o for o in new['overlays'] if o.get('kind') == 'cta'][0]
+    assert abs(cta['end'] - new['duration']) < 0.01
+    short, _ = apply(c, 'Fes una versió de 6 s', LONG, meta, None)
+    assert short['provenance']['transcript_rows'][0] == short['provenance']['transcript_rows'][1]  # queda una frase entera
+    from creative_engine.revise import NotUnderstood
+    slow = [{'start': 1.0, 'end': 9.5, 'text': 'Saps per què alguns pisos porten molts mesos als portals sense vendre’s mai?'}] + LONG[1:]
+    slow[1] = {**slow[1], 'start': 9.8, 'end': 13.0}
+    slow[2] = {**slow[2], 'start': 13.2, 'end': 14.8}
+    c2 = build_plan(slow, 30, 'top_owner_expert', 'ca', brand='top_house')['candidates'][0]
+    with pytest.raises(NotUnderstood):
+        apply(c2, 'Fes una versió de 6 s', slow, meta, None)  # la primera frase ya dura más: se dice, no se corta
+
+
+def test_storyboard_traces_every_moment_to_the_source():
+    from creative_engine import storyboard
+    c = build_plan(OWNER, 20, 'top_owner_expert', 'ca', brand='top_house', options={'brief': {'cta': 'Escriu-nos'}})['candidates'][0]
+    rows = storyboard.build(c)
+    assert len(rows) == len(c['segments']) and rows[0]['start'] == 0
+    assert abs(rows[-1]['end'] - c['duration']) < 0.02
+    assert all(r['source_out'] > r['source_in'] for r in rows) and any('valoració' in r['says'] for r in rows)
+    assert 'Escriu-nos' in rows[-1]['on_screen'] and '| Original |' in storyboard.as_markdown(c)
+
+
+def test_loudness_target_follows_the_edl_and_first_two_seconds_are_checked(tmp_path):
+    src = make(tmp_path / 'in.mp4', 16, '30')
+    an = analyze(src)
+    edl = build_plan(STORY_A, an['meta']['duration'], 'blau_expert', 'ca', analysis=an, meta=an['meta'])['candidates'][0]
+    assert edl['audio']['target_lufs'] == -16
+    edl['audio']['target_lufs'] = -14
+    r = render_candidate(src, an['meta'], edl, tmp_path / 'w')
+    checks = {c['check']: c for c in r['qc']['checks']}
+    assert abs(r['qc']['measured']['integrated_lufs'] + 14) <= 1.0 and 'objetivo -14' in checks['sonoridad']['detail']
+    assert checks['primeros 2 s sin sonido']['status'] == 'pass' and r['edl']['storyboard']
+    edl2 = copy.deepcopy(edl)
+    edl2['id'], edl2['captions'] = 'sense-text', {'mode': 'none', 'events': []}
+    r2 = render_candidate(src, an['meta'], edl2, tmp_path / 'w2')
+    assert {c['check']: c for c in r2['qc']['checks']}['primeros 2 s sin sonido']['status'] == 'warn'
+    assert r2['qc']['status'] == 'pass'  # aviso, no bloqueo: un vídeo sensorial sin texto es legítimo

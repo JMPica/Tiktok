@@ -13,7 +13,7 @@ from typing import Callable
 
 from creative_engine import qc as QC
 from creative_engine.analysis import analyze
-from creative_engine import edl_schema
+from creative_engine import edl_schema, storyboard
 from creative_engine.director import build_plan
 from creative_engine.media import probe
 from creative_engine.render import poster, render
@@ -47,6 +47,7 @@ def understand(source: Path, language: str = 'ca', progress: Progress = _noop, t
 
 def render_candidate(source: Path, meta: dict, edl: dict, workdir: Path) -> dict:
     edl_schema.assert_valid(edl, meta['duration'])  # nada se renderiza con un EDL fuera de esquema
+    edl['storyboard'] = storyboard.build(edl)  # guion por momentos, siempre coherente con esta versión
     out = workdir / f"{edl['id']}-v{edl.get('version', 1)}.mp4"
     info = render(edl, source, meta, out, workdir / ('work-' + edl['id']))
     report = QC.check(out, edl, meta, info)

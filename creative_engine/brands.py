@@ -57,3 +57,7 @@ def edl_brand(brand: dict) -> dict:
     return {'id': brand['id'], 'name': brand['name'], 'style_schema': _data()['schema'], 'style_version': _data()['version'],
             'accent': v['accent'], 'caption_font': v.get('caption_font'), 'caption_size': v.get('caption_size'),
             'visual_status': v.get('status', 'provisional')}
+
+
+def target_lufs(brand: dict) -> float:
+    return float((brand.get('audio') or {}).get('target_lufs', -16))

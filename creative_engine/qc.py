@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 
 from creative_engine.captions import caption_report
+from creative_engine.render import target_lufs
 from creative_engine.media import probe, run
 
 
@@ -69,7 +70,8 @@ def check(video: Path, edl: dict, source_meta: dict, render_info: dict) -> dict:
         add('audio', 'fail', 'export mudo: el audio está en silencio' + ('' if source_meta.get('audio') else ' (el bruto no tiene audio)'))
     else:
         add('audio', 'pass', 'audio presente')
-        add('sonoridad', 'pass' if abs(il + 16) <= 2 else 'warn' if abs(il + 16) <= 4 else 'fail', f'{il:.1f} LUFS (objetivo -16)')
+        goal = target_lufs(edl)
+        add('sonoridad', 'pass' if abs(il - goal) <= 2 else 'warn' if abs(il - goal) <= 4 else 'fail', f'{il:.1f} LUFS (objetivo {goal:g})')
         add('pico real', 'pass' if tp is not None and tp <= -0.95 else 'fail', f'{tp:.2f} dBTP (máximo -1)')
     br = black_ratio(video, m['duration'])
     add('negros', 'pass' if br < 0.05 else 'warn', f'{br * 100:.1f}% del metraje en negro')
@@ -79,6 +81,12 @@ def check(video: Path, edl: dict, source_meta: dict, render_info: dict) -> dict:
         add('resolución de origen', 'warn', f"bruto {source_meta['width']}x{source_meta['height']}: se ha ampliado, se verá blando")
     cap = caption_report(edl.get('captions') or {}, edl.get('overlays'))
     add('subtítulos', 'warn' if cap['issues'] else 'pass', '; '.join(cap['issues'][:4]) or f"{cap['events']} subtítulos · pendientes de revisión humana")
+    # Guía de referencia: en los 2 primeros segundos debe entenderse de qué va, incluso sin sonido.
+    caps = edl.get('captions') or {}
+    early = [e for e in (caps.get('events') or []) if caps.get('mode', 'none') != 'none' and e['start'] < 2.0]
+    early += [o for o in (edl.get('overlays') or []) if o['start'] < 2.0]
+    add('primeros 2 s sin sonido', 'pass' if early else 'warn',
+        'hay texto en pantalla antes del segundo 2' if early else 'ningún texto en pantalla antes del segundo 2: sin sonido no se entiende de qué va')
     status = 'fail' if any(c['status'] == 'fail' for c in checks) else 'pass'
     return {'status': status, 'checks': checks, 'measured': {**m, **loud, 'black_ratio': br},
             'captions': cap, 'decode_ok': not errs, 'audio_present': bool(m['audio'] and il not in (None, float('-inf')) and il >= -50),

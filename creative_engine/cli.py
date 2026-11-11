@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 from creative_engine import brands as B
+from creative_engine import storyboard
 from creative_engine import pipeline as P
 from creative_engine.director import build_plan, load_styles
 
@@ -23,6 +24,8 @@ def main():
     p.add_argument('--style', default='auto', choices=sorted(load_styles()))
     p.add_argument('--language', default='ca', choices=['ca', 'es'])
     p.add_argument('--brand', default=B.default_brand(), choices=B.brand_ids())
+    p.add_argument('--max-seconds', type=float, help='duración máxima del montaje (encargo del vídeo)')
+    p.add_argument('--cta', help='texto de cierre escrito por ti, p. ej. "Reserva la teva hora"')
     p.add_argument('--transcript', help='JSON con segmentos ya transcritos (opcional)')
     p.add_argument('--render', action='store_true')
     p.add_argument('--out', help='carpeta de salida (por defecto junto al vídeo)')
@@ -30,6 +33,7 @@ def main():
     source = Path(args.video).resolve()
     out = Path(args.out).resolve() if args.out else source.parent / (source.stem + '_v4')
     out.mkdir(parents=True, exist_ok=True)
+    options = {'brief': {'max_seconds': args.max_seconds, 'cta': args.cta}}
     tr = None
     if args.transcript:
         data = json.loads(Path(args.transcript).read_text(encoding='utf8'))
@@ -38,11 +42,11 @@ def main():
     P.dump(P.summary(u), out / 'analysis_summary.json')
     if not args.render:
         plan = build_plan(u['transcript'].get('segments', []), u['meta']['duration'], args.style, args.language,
-                          analysis=u['analysis'], meta=u['meta'], brand=args.brand)
+                          analysis=u['analysis'], meta=u['meta'], brand=args.brand, options=options)
         P.dump(plan, out / 'edit_plan.json')
         print(f'PLAN: {out / "edit_plan.json"} -> {plan["status"]} ({len(plan["candidates"])} propostes)')
         return 0 if plan['status'] == 'drafts' else 2
-    res = P.produce(source, out, args.style, args.language, understood=u, brand=args.brand,
+    res = P.produce(source, out, args.style, args.language, options, understood=u, brand=args.brand,
                     progress=lambda s, pct, m: print(f'[{pct:3d}%] {m}', flush=True))
     P.dump(res['plan'], out / 'edit_plan.json')
     if res['plan']['status'] != 'drafts':
@@ -52,6 +56,7 @@ def main():
         if 'error' in r:
             print('ERROR', r['edl']['id'], r['error'], file=sys.stderr)
             continue
+        r['path'].with_suffix('.guio.md').write_text(storyboard.as_markdown(r['edl']), encoding='utf8')
         P.dump({'qc': r['qc'], 'render': r['render'], 'sha256': r['sha256'], 'edl': r['edl']}, r['path'].with_suffix('.qc.json'))
         print(f"{r['qc']['status'].upper():4} {r['path']}  sha256={r['sha256'][:16]}…  {r['edl']['explanation']}")
     return 0

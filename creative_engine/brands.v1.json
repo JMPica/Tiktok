@@ -1,6 +1,6 @@
 {
   "schema": "brand_style_v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "release_date": "2026-11-11",
   "default_brand": "blau_de_mar",
   "note": "Fichas de estilo por marca. Los colores y tipografías marcados como 'provisional' NO están verificados en activos oficiales: confirmar con el brand kit antes de publicar.",
@@ -11,9 +11,16 @@
       "label_ca": "Blau de Mar · Estètica avançada",
       "editorial_mode": "editorial_beauty",
       "location": "Arenys de Mar, Maresme",
-      "languages": ["ca", "es"],
+      "languages": [
+        "ca",
+        "es"
+      ],
       "download_prefix": "blau",
-      "presets": ["blau_sensory", "blau_expert", "blau_human"],
+      "presets": [
+        "blau_sensory",
+        "blau_expert",
+        "blau_human"
+      ],
       "legacy_styles": "all",
       "auto_map": {
         "no_speech": "blau_sensory",
@@ -21,15 +28,59 @@
         "humor": "blau_human",
         "default": "blau_human"
       },
-      "explain_keywords": ["per què", "por qué", "consell", "consejo", "truc", "truco", "mite", "mito", "error", "tractament", "tratamiento"],
-      "vocabulary": ["blau de mar", "cabina", "pell", "piel", "tractament", "tratamiento", "facial", "massatge", "masaje", "centre",
-        "centro", "arenys", "clienta", "equip", "equipo", "estètica", "estética"],
-      "dictionary": ["Blau de Mar", "Arenys de Mar", "HIFU 7D", "Zionic", "IPL", "Dermapen", "pressoteràpia", "radiofreqüència"],
+      "explain_keywords": [
+        "per què",
+        "por qué",
+        "consell",
+        "consejo",
+        "truc",
+        "truco",
+        "mite",
+        "mito",
+        "error",
+        "tractament",
+        "tratamiento"
+      ],
+      "vocabulary": [
+        "blau de mar",
+        "cabina",
+        "pell",
+        "piel",
+        "tractament",
+        "tratamiento",
+        "facial",
+        "massatge",
+        "masaje",
+        "centre",
+        "centro",
+        "arenys",
+        "clienta",
+        "equip",
+        "equipo",
+        "estètica",
+        "estética"
+      ],
+      "dictionary": [
+        "Blau de Mar",
+        "Arenys de Mar",
+        "HIFU 7D",
+        "Zionic",
+        "IPL",
+        "Dermapen",
+        "pressoteràpia",
+        "radiofreqüència"
+      ],
       "claims_pattern": "cura|curar|curem|elimina|eliminar|per sempre|para siempre|garantit|garantizado|garantia|garantía|100 ?%|sense dolor|sin dolor|sense efectes|sin efectos|rejoveneix|rejuvenece|anys menys|años menos|definitiu|definitivo|mèdic|médico|metge|tratamiento médico|clínicament|clínicamente|demostrat|demostrado|adelgaza|aprima|cel·lulitis|celulitis|arrugues|arrugas",
       "sensitive": [
-        {"pattern": "descompte|descuento|oferta|promoció|promoción|\\d+ ?% de", "risk": "es menciona una promoció: ha de coincidir amb una oferta aprovada per l’empresa", "requires": "claims_review"}
+        {
+          "pattern": "descompte|descuento|oferta|promoció|promoción|\\d+ ?% de",
+          "risk": "es menciona una promoció: ha de coincidir amb una oferta aprovada per l’empresa",
+          "requires": "claims_review"
+        }
       ],
-      "always_requires": ["team_consent"],
+      "always_requires": [
+        "team_consent"
+      ],
       "visual": {
         "status": "provisional",
         "accent": "#7FE3D6",
@@ -37,10 +88,28 @@
         "caption_size": null,
         "source": "valor heredado del proyecto V4; pendiente de confirmar con el brand kit oficial"
       },
-      "cta_examples_ca": ["Reserva la teva hora", "Pregunta’ns sense compromís"],
-      "objectives": ["reserves", "clientes noves", "recurrència", "experiències i targetes regal"],
-      "limits": ["sense promeses mèdiques no verificades", "sense diagnòstic improvisat", "sense abans/després fabricats",
-        "sense testimonis ficticis", "cap clienta sense consentiment", "no anunciar descomptes no aprovats"]
+      "cta_examples_ca": [
+        "Reserva la teva hora",
+        "Pregunta’ns sense compromís"
+      ],
+      "objectives": [
+        "reserves",
+        "clientes noves",
+        "recurrència",
+        "experiències i targetes regal"
+      ],
+      "limits": [
+        "sense promeses mèdiques no verificades",
+        "sense diagnòstic improvisat",
+        "sense abans/després fabricats",
+        "sense testimonis ficticis",
+        "cap clienta sense consentiment",
+        "no anunciar descomptes no aprovats"
+      ],
+      "audio": {
+        "target_lufs": -16,
+        "note": "valor heretat del projecte; la guia de referència fa servir -14. Es pot canviar per marca."
+      }
     },
     {
       "id": "top_house",
@@ -48,27 +117,101 @@
       "label_ca": "Top House · Immobiliària",
       "editorial_mode": "real_estate_documentary",
       "location": "Arenys de Mar, Maresme",
-      "languages": ["ca", "es"],
+      "languages": [
+        "ca",
+        "es"
+      ],
       "download_prefix": "tophouse",
-      "presets": ["top_local_story", "top_property", "top_owner_expert"],
-      "legacy_styles": ["auto", "clean_talking", "microvlog", "backstage", "premium", "cinematic", "respuesta_comentario"],
+      "presets": [
+        "top_local_story",
+        "top_property",
+        "top_owner_expert"
+      ],
+      "legacy_styles": [
+        "auto",
+        "clean_talking",
+        "microvlog",
+        "backstage",
+        "premium",
+        "cinematic",
+        "respuesta_comentario"
+      ],
       "auto_map": {
         "no_speech": "top_property",
         "explain": "top_owner_expert",
         "humor": "top_local_story",
         "default": "top_local_story"
       },
-      "explain_keywords": ["per què", "por qué", "consell", "consejo", "error", "valoració", "valoración", "vendre", "vender", "propietari",
-        "propietario", "preu", "precio", "hipoteca", "negociació", "negociación", "portals", "portales"],
-      "vocabulary": ["top house", "maresme", "arenys", "pis", "piso", "casa", "habitatge", "vivienda", "immoble", "inmueble", "terrassa",
-        "terraza", "vistes", "vistas", "mar", "propietari", "propietario", "valoració", "valoración", "barri", "barrio", "poble", "pueblo"],
-      "dictionary": ["Top House", "Arenys de Mar", "Maresme", "Canet de Mar", "Caldes d'Estrac", "Sant Pol de Mar"],
+      "explain_keywords": [
+        "per què",
+        "por qué",
+        "consell",
+        "consejo",
+        "error",
+        "valoració",
+        "valoración",
+        "vendre",
+        "vender",
+        "propietari",
+        "propietario",
+        "preu",
+        "precio",
+        "hipoteca",
+        "negociació",
+        "negociación",
+        "portals",
+        "portales"
+      ],
+      "vocabulary": [
+        "top house",
+        "maresme",
+        "arenys",
+        "pis",
+        "piso",
+        "casa",
+        "habitatge",
+        "vivienda",
+        "immoble",
+        "inmueble",
+        "terrassa",
+        "terraza",
+        "vistes",
+        "vistas",
+        "mar",
+        "propietari",
+        "propietario",
+        "valoració",
+        "valoración",
+        "barri",
+        "barrio",
+        "poble",
+        "pueblo"
+      ],
+      "dictionary": [
+        "Top House",
+        "Arenys de Mar",
+        "Maresme",
+        "Canet de Mar",
+        "Caldes d'Estrac",
+        "Sant Pol de Mar"
+      ],
       "claims_pattern": "garantit|garantizado|garantia|garantía|100 ?%|el més barat|el más barato|ganga|xollo|chollo|rendibilitat|rentabilidad|revaloritz\\w*|revaloriz\\w*|venut en|vendido en|sense comissi\\w+|sin comisi\\w+|millor preu|mejor precio|inversió segura|inversión segura|\\d[\\d.,]* ?(€|euros|mil|milions|millones)|\\d+ ?(m2|m²|metres|metros)",
       "sensitive": [
-        {"pattern": "carrer|calle|avinguda|avenida|passeig|paseo|número \\d+|portal \\d+", "risk": "possible adreça identificable: no difondre sense autorització del propietari", "requires": "property_permission"},
-        {"pattern": "off[- ]?market|propietari\\w* (es diu|se llama)|llogater|inquilino|herència|herencia|divorci\\w*|embarg\\w*", "risk": "possible dada privada de l’operació o del propietari: revisar abans de publicar", "requires": "property_permission"}
+        {
+          "pattern": "carrer|calle|avinguda|avenida|passeig|paseo|número \\d+|portal \\d+",
+          "risk": "possible adreça identificable: no difondre sense autorització del propietari",
+          "requires": "property_permission"
+        },
+        {
+          "pattern": "off[- ]?market|propietari\\w* (es diu|se llama)|llogater|inquilino|herència|herencia|divorci\\w*|embarg\\w*",
+          "risk": "possible dada privada de l’operació o del propietari: revisar abans de publicar",
+          "requires": "property_permission"
+        }
       ],
-      "always_requires": ["team_consent", "property_permission"],
+      "always_requires": [
+        "team_consent",
+        "property_permission"
+      ],
       "visual": {
         "status": "provisional",
         "accent": "#E8D9B5",
@@ -76,10 +219,29 @@
         "caption_size": 64,
         "source": "valor temporal neutre triat per l’eina; cal substituir-lo pels colors i tipografies oficials de Top House"
       },
-      "cta_examples_ca": ["Demana una valoració sense compromís", "Escriu-nos i t’ho expliquem"],
-      "objectives": ["captació de propietaris", "sol·licituds de valoració", "encàrrecs de venda", "lloguers", "contactes qualificats"],
-      "limits": ["mai operacions off-market", "mai dades privades ni identitat de propietaris", "cap adreça identificable sense permís",
-        "cap preu, superfície, vista o condició inventats", "cap habitatge real representat amb IA sense retolar-ho", "no copiar guions ni plans de LABB Properties"]
+      "cta_examples_ca": [
+        "Demana una valoració sense compromís",
+        "Escriu-nos i t’ho expliquem"
+      ],
+      "objectives": [
+        "captació de propietaris",
+        "sol·licituds de valoració",
+        "encàrrecs de venda",
+        "lloguers",
+        "contactes qualificats"
+      ],
+      "limits": [
+        "mai operacions off-market",
+        "mai dades privades ni identitat de propietaris",
+        "cap adreça identificable sense permís",
+        "cap preu, superfície, vista o condició inventats",
+        "cap habitatge real representat amb IA sense retolar-ho",
+        "no copiar guions ni plans de LABB Properties"
+      ],
+      "audio": {
+        "target_lufs": -16,
+        "note": "valor heretat del projecte; la guia de referència fa servir -14. Es pot canviar per marca."
+      }
     }
   ]
 }

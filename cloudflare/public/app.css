@@ -61,3 +61,5 @@ code{font-size:12px;word-break:break-all}
 .footer{text-align:center;color:#6e8a84;font-size:11px;padding-top:18px}
 [hidden]{display:none!important}
 .brands{margin:10px 0 2px}.brands button{flex:1}
+.brief{margin:8px 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}.brief summary,.story summary{font-weight:650;font-size:14px;cursor:pointer}
+.storyrows{padding-left:20px;margin:8px 0}.storyrows li{margin:0 0 10px;line-height:1.45}

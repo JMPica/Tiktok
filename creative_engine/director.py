@@ -290,7 +290,7 @@ def _edl(cand_id, style, styles, language, segs, captions, overlays, meta, score
             'source': {'duration': meta['duration'], 'width': meta['width'], 'height': meta['height'],
                        'fps': meta['fps'], 'hdr': meta.get('hdr', False)},
             'segments': segs, 'captions': captions, 'overlays': overlays,
-            'audio': {'keep_original': True, 'target_lufs': -16, 'true_peak_max': -1.0, 'music': None,
+            'audio': {'keep_original': True, 'target_lufs': B.target_lufs(brand or B.get(None)), 'true_peak_max': -1.0, 'music': None,
                       'note': 'sin música añadida: solo audio original o librería con licencia comercial verificada'},
             'loop': bool(recipe.get('loop')), 'duration': total, 'score': score, 'provenance': provenance,
             'risks': risks, 'requires': requires, 'explanation': explanation,
@@ -400,6 +400,41 @@ def visual_candidates(style, styles, analysis, meta, options):
     return [{'cuts': [{'in': s['in'], 'out': s['out']} for s in best], 'total': total}], ''
 
 
+def clean_brief(raw) -> dict:
+    """Encàrrec per vídeo (tema, públic, objectiu, durada màxima, tancament). Només text escrit per la persona."""
+    raw = raw if isinstance(raw, dict) else {}
+    out = {}
+    for key, size in (('topic', 160), ('audience', 120), ('cta', 60)):
+        if str(raw.get(key) or '').strip():
+            out[key] = clean_phrase(raw[key])[:size]
+    if raw.get('goal') in ('reach', 'engagement', 'leads', 'sales'):
+        out['goal'] = raw['goal']
+    try:
+        sec = float(raw.get('max_seconds') or 0)
+        if 6 <= sec <= 180:
+            out['max_seconds'] = sec
+    except (TypeError, ValueError):
+        pass
+    return out
+
+
+def trim_to(edl: dict, limit: float):
+    """Peces sense diàleg: treu plans del final fins a cabre en la durada demanada (mai talla un pla pel mig)."""
+    segs = edl['segments']
+    while len(segs) > 1 and sum(s['out'] - s['in'] for s in segs) > limit:
+        segs.pop()
+    edl['duration'] = round(sum(s['out'] - s['in'] for s in segs), 3)
+
+
+def apply_brief(edl: dict, brief: dict):
+    edl['brief'] = brief
+    if brief.get('cta'):
+        # El tancament l'escriu la persona; l'eina no inventa crides a l'acció ni promocions.
+        total = float(edl['duration'])
+        edl.setdefault('overlays', []).append({'kind': 'cta', 'start': round(max(0.0, total - min(3.0, total / 2)), 3),
+                                              'end': round(total, 3), 'text': brief['cta']})
+
+
 def _semantic_status(sem) -> str:
     if not sem:
         return 'no disponible: només senyals d’imatge i so (activa BLAU_VISION_MODEL per a visió local)'
@@ -426,8 +461,15 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
     keep_repeats = style in COMEDY_REPEAT_STYLES
     rows, retakes = usable_rows(transcript, duration, keep_repeats)
     chosen, style_reason = resolve_style(style, rows, analysis, duration, brand)
+    brief = clean_brief(options.get('brief'))
+    if brief.get('max_seconds'):
+        # Encàrrec del vídeo: la durada màxima demanada mana sobre la recepta de l'estil.
+        limit = float(brief['max_seconds'])
+        styles = {**styles, chosen: {**styles[chosen], 'render': {
+            **styles[chosen]['render'], 'max_len': min(styles[chosen]['render'].get('max_len', 75), limit),
+            'ideal': [min(styles[chosen]['render'].get('ideal', [12, 45])[0], limit * 0.6), min(styles[chosen]['render'].get('ideal', [12, 45])[1], limit)]}}}
     recipe = styles[chosen]['render']
-    base = {'brand': brand['id'], 'style_requested': style, 'style': chosen, 'style_reason': style_reason, 'automatic_publish': False,
+    base = {'brand': brand['id'], 'brief': brief, 'style_requested': style, 'style': chosen, 'style_reason': style_reason, 'automatic_publish': False,
             'editorial_review_required': True, 'caption_review_required': True, 'claims_checked': False,
             'selection': 'multimodal_signals+speech' if analysis else 'speech_only',
             'semantic_vision': _semantic_status((analysis or {}).get('semantic_vision')),
@@ -464,6 +506,7 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
                     'retakes_removed': [[round(r['start'], 2), round(r['end'], 2)] for r in dropped_here]}
             edl = _edl(cid, chosen, styles, language, segs, captions, overlays, meta, score, prov, risks, reqs,
                        _explain(w, style_reason, w['scores'], w['notes'], language), brand)
+            apply_brief(edl, brief)
             edl['hook_overlay_suggestion'] = hook_text[:74]
             edl['title'] = f"{k + 1}. {hook_text[:48]}"
             candidates.append(edl)
@@ -492,6 +535,9 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
                        meta, score, prov, risks, reqs,
                        f"Peça sense diàleg amb {len(segs)} plans nítids ({v['total']:.1f}s) i so real. {style_reason.capitalize()}.",
                        brand)
+            if brief.get('max_seconds'):
+                trim_to(edl, float(brief['max_seconds']))
+            apply_brief(edl, brief)
             edl['title'] = '1. Visita / recorregut' if brand['id'] == 'top_house' else '1. Procés / sensorial'
             candidates.append(edl)
     return {**base, 'status': 'drafts', 'candidates': candidates}

@@ -353,7 +353,8 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     check('M06 subida a Top House queda etiquetada con su marca', tstart.get('brand') == 'top_house')
     check('M04 estilo genérico no habilitado para Top House => 422',
           top.post(f'{base}/api/uploads/{tuid}/jobs', json={'style': 'tacho_humor', 'language': args.language}).status_code == 422)
-    tjob = top.post(f'{base}/api/uploads/{tuid}/jobs', json={'style': 'auto', 'language': args.language}).json()
+    tjob = top.post(f'{base}/api/uploads/{tuid}/jobs', json={'style': 'auto', 'language': args.language, 'brief': {
+        'topic': 'pisos que no es venen', 'goal': 'leads', 'max_seconds': 14, 'cta': 'Demana una valoració', 'audience': '<b>x</b>' * 60}}).json()
     check('M05 Blau no ve el vídeo de Top House => 404', editor.get(f"{base}/api/jobs/{tjob['id']}").status_code == 404 and
           editor.get(f'{base}/api/uploads/{tuid}').status_code == 404)
     code, secs = agent_once('tophouse')
@@ -366,6 +367,14 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
         check('M08 EDL de Top House lleva su marca, su aspecto y su permiso de inmueble',
               tdet['edl']['brand']['id'] == 'top_house' and tdet['edl']['brand']['accent'] != det['edl']['brand']['accent']
               and 'property_permission' in tv['requires'], tdet['edl']['brand'])
+        cta = [o for o in tdet['edl'].get('overlays', []) if o.get('kind') == 'cta']
+        check('G01 encargo del vídeo: duración máxima y cierre escrito por la persona', tdet['edl']['duration'] <= 14.5 and cta
+              and cta[0]['text'] == 'Demana una valoració' and len(tdet['edl']['brief'].get('audience', '')) <= 120, tdet['edl']['duration'])
+        sb = tdet['edl'].get('storyboard') or []
+        check('G02 guion por momentos trazable al original', len(sb) == len(tdet['edl']['segments']) and sb[0]['source_out'] > sb[0]['source_in']
+              and 'Demana una valoració' in sb[-1]['on_screen'], sb[:1])
+        first2 = [c for c in tdet['qc_full']['checks'] if c['check'] == 'primeros 2 s sin sonido']
+        check('G03 QC comprueba los 2 primeros segundos sin sonido', bool(first2), first2)
         dl = top.get(f"{base}/api/variants/{tv['id']}/download")
         check('M09 descarga Top House = sha256 y nombre de su marca', hashlib.sha256(dl.content).hexdigest() == tv['sha256']
               and 'tophouse-' in dl.headers.get('Content-Disposition', ''), dl.headers.get('Content-Disposition'))

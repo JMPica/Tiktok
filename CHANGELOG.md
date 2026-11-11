@@ -1,4 +1,16 @@
 # Changelog
+## V4.3.0 — 2026-11-11 · Método de la guía «Deja de editar tus reels» — sin desplegar
+- **Encargo por vídeo** (opcional al subir): de qué va, para quién, objetivo, duración máxima y texto de cierre.
+  La duración máxima manda sobre el estilo; el cierre sale escrito al final tal como se teclea (la herramienta no
+  inventa llamadas a la acción ni ofertas).
+- **Guion por momentos** en cada versión: segundo del montaje, de dónde sale del original, qué se dice, qué texto se
+  ve y qué efecto lleva. En la web (desplegable) y en la CLI (`*.guio.md`).
+- **Corrección a una duración**: «fes una versió de 25 s» recorta por frases enteras; si no cabe, lo dice.
+- **QC**: nueva comprobación «primeros 2 s sin sonido» (aviso, no bloqueo).
+- **Sonoridad por marca** (`audio.target_lufs` en `brands.v1.json`, −16 por defecto; la guía usa −14).
+- Inventario del ZIP de ChatGPT en `docs/AUDITORIA_CONTENT_STUDIO_V4.md` §8: no aporta código nuevo.
+- Pruebas: 43 unitarias, E2E 75, interfaz 17.
+
 ## V4.2.0 — 2026-11-11 · Content Studio (Blau de Mar + Top House) — sin desplegar
 - **Dos marcas, un motor**: `creative_engine/brands.v1.json` (`brand_style_v1`) con vocabulario, afirmaciones a
   verificar, datos sensibles y aspecto por marca. 6 presets nuevos (3 por marca); «Automático» elige entre ellos.

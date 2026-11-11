@@ -50,6 +50,22 @@
       <label class="field">Enllaç de la tendència<input id="trendUrl" type="url" placeholder="https://…"></label>
       <label class="field">Data observada<input id="trendDate" type="date"></label>
     </div>
+    <details class="brief">
+      <summary>Encàrrec d'aquest vídeo (opcional)</summary>
+      <label class="field">De què va, en una frase<input id="briefTopic" maxlength="160" placeholder="Ex.: per què escalfem les tovalloles"></label>
+      <div class="grid2">
+        <label class="field">Per a qui<input id="briefAudience" maxlength="120" placeholder="Ex.: clientes noves del Maresme"></label>
+        <label class="field">El vull per a
+          <select id="briefGoal"><option value="">Sense indicar</option><option value="reach">Que ens descobreixin</option>
+            <option value="engagement">Que comentin i comparteixin</option><option value="leads">Que ens escriguin</option><option value="sales">Que reservin o comprin</option></select>
+        </label>
+      </div>
+      <div class="grid2">
+        <label class="field">Durada màxima (segons)<input id="briefSeconds" type="number" min="6" max="180" inputmode="numeric" placeholder="Ex.: 25"></label>
+        <label class="field">Text de tancament<input id="briefCta" maxlength="60" placeholder="Ex.: Reserva la teva hora"></label>
+      </div>
+      <p class="muted small">El tancament surt escrit als últims segons, tal com l'escrius. L'eina no inventa ofertes ni crides a l'acció.</p>
+    </details>
     <label class="check"><input type="checkbox" id="consent"> Les persones que surten al vídeo han donat permís per gravar i editar.</label>
     <button id="upload" class="wide">Pujar i preparar edició</button>
     <div id="queue" class="queue"></div>

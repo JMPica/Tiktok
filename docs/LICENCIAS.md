@@ -22,7 +22,7 @@ un uso comercial distinto del actual** (no he podido abrir sus páginas desde es
 | Herramienta | Decisión | Motivo |
 |---|---|---|
 | HyperFrames (HeyGen) | pendiente de prueba práctica | Apache-2.0 según la evaluación previa; necesita Chrome sin interfaz en el editor: más tiempo de render |
-| Remotion | no integrar por ahora | licencia de empresa para equipos a partir de cierto tamaño; verificar condiciones vigentes |
+| Remotion | no integrar por ahora | según la guía de @tumadreanna (PDF, pág. 4): gratis por cuenta propia; un equipo o agencia de 4 o más personas debe pedir licencia. Verificar condiciones vigentes |
 | reels-montage | solo como referencia de método | pensado para Claude Code en un PC, no para una cola sin operador |
 | rembg (u2net_human_seg) | no integrar por ahora | coste de cálculo alto en CPU; aporta poco a los formatos actuales |
 | yt-dlp | no integrar | descargar Reels/Shorts de terceros choca con las condiciones de las plataformas; las referencias se analizan con material aportado legítimamente |

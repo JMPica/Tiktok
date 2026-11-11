@@ -1,5 +1,5 @@
 {
- "date": "2026-11-11T18:11:42.534Z",
+ "date": "2026-11-11T18:27:30.000Z",
  "status": "passed",
  "browser": "Chromium (viewport iPhone 13), no Safari real",
  "checks": [
@@ -31,12 +31,17 @@
   {
    "check": "agent local processa el vídeo",
    "status": "passed",
-   "detail": "ntrol de qualitat fet\n  [ 93%] Pujant proposta 1 de 2\n  → proposta 1 pujada (6.1 MB) · needs_approval\n  [ 96%] Pujant proposta 2 de 2\n  → proposta 2 pujada (9.6 MB) · needs_approval\n[be94a735] acabat\n"
+   "detail": "ntrol de qualitat fet\n  [ 93%] Pujant proposta 1 de 2\n  → proposta 1 pujada (6.1 MB) · needs_approval\n  [ 96%] Pujant proposta 2 de 2\n  → proposta 2 pujada (6.1 MB) · needs_approval\n[e9c7b112] acabat\n"
   },
   {
    "check": "propostes visibles amb vídeo i explicació",
    "status": "passed",
    "detail": "2 propostes"
+  },
+  {
+   "check": "guió per moments visible, amb origen i tancament escrit per la persona",
+   "status": "passed",
+   "detail": "0.0–3.9 s · de l’original 11.5–15.4 sEs diu: «La persona estigui com una i relaxa la mes del primer minut.»Efecte: cap3.9–7.8 s · de l’original 16.4–20.3 sEs di"
   },
   {
    "check": "l’equip no veu el botó Aprovar",

@@ -89,6 +89,7 @@
       "required": ["keep_original"],
       "properties": {
         "keep_original": {"type": "boolean"},
+        "target_lufs": {"type": "number", "minimum": -24, "maximum": -12},
         "music": {"type": ["object", "null"]}
       }
     },

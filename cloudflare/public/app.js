@@ -109,7 +109,9 @@ async function uploadAll() {
   if (!$('consent').checked) return show('Confirma que les persones que surten han donat permís.');
   show('');
   $('upload').disabled = true;
-  const opts = { brand: brand.id, style: $('style').value, language: $('language').value, comment_text: $('commentText').value || undefined,
+  const brief = { topic: $('briefTopic').value.trim(), audience: $('briefAudience').value.trim(), goal: $('briefGoal').value,
+    max_seconds: Number($('briefSeconds').value) || undefined, cta: $('briefCta').value.trim() };
+  const opts = { brand: brand.id, brief, style: $('style').value, language: $('language').value, comment_text: $('commentText').value || undefined,
     trend_source: $('trendUrl').value ? { url: $('trendUrl').value, date: $('trendDate').value } : undefined };
   try {
     for (const f of files) await uploadOne(f, opts);
@@ -238,6 +240,25 @@ function variantCard(v) {
   if (v.qc) {
     card.append(el('details', {}, el('summary', { text: `Control de qualitat: ${v.qc.status === 'pass' ? 'correcte' : 'cal revisar'}` }),
       el('ul', { class: 'qc' }, v.qc.checks.map((c) => el('li', { class: c.status, text: `${c.status === 'pass' ? '✓' : c.status === 'warn' ? '!' : '✗'} ${c.check}: ${c.detail}` })))));
+  }
+  if (v.has_preview) {
+    // Guió per moments: es carrega quan s'obre, des de l'EDL d'aquesta versió exacta.
+    const body = el('div', { class: 'small', text: 'Carregant…' });
+    const det = el('details', { class: 'story' }, el('summary', { text: 'Guió per moments (què es talla i d’on surt)' }), body);
+    det.addEventListener('toggle', async () => {
+      if (!det.open || det.dataset.loaded) return;
+      try {
+        const full = await getJSON('/variants/' + v.id);
+        const rows = full.edl?.storyboard || [];
+        det.dataset.loaded = '1';
+        body.replaceChildren(rows.length ? el('ol', { class: 'storyrows' }, rows.map((r) => el('li', {},
+          el('strong', { text: `${r.start.toFixed(1)}–${r.end.toFixed(1)} s` }), ` · de l’original ${r.source_in.toFixed(1)}–${r.source_out.toFixed(1)} s`,
+          el('div', { text: r.says ? `Es diu: «${r.says}»` : 'Sense diàleg' }),
+          r.on_screen.length ? el('div', { text: 'Text en pantalla: ' + r.on_screen.join(' · ') }) : null,
+          el('div', { class: 'muted', text: 'Efecte: ' + r.effect })))) : 'Aquesta versió no té guió desat.');
+      } catch (e) { body.textContent = e.message; }
+    });
+    card.append(det);
   }
   if (v.approved_at) card.append(el('div', { class: 'small', text: `Aprovat per ${v.approved_by} · ${fmtTime(v.approved_at)} · sha256 ${v.sha256.slice(0, 12)}…` }));
   const actions = el('div', { class: 'actions' });
