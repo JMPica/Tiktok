@@ -1,0 +1,215 @@
+{
+ "meta": {
+  "duration": 42.838,
+  "width": 1080,
+  "height": 1920,
+  "coded_width": 1080,
+  "coded_height": 1920,
+  "rotation": 0,
+  "fps": "30/1",
+  "fps_float": 30.0,
+  "r_frame_rate": "30/1",
+  "vfr": false,
+  "hdr": false,
+  "color_transfer": "",
+  "color_primaries": "",
+  "color_space": "",
+  "dolby_vision": false,
+  "pix_fmt": "yuv420p",
+  "codec": "h264",
+  "audio": true,
+  "audio_codec": "aac",
+  "audio_channels": 1,
+  "audio_rate": 48000,
+  "size_bytes": 19278538
+ },
+ "shots": 1,
+ "face_ratio": 0.0,
+ "face_detector": "opencv-haar",
+ "blurry_ranges": [],
+ "dark_ranges": [],
+ "motion_bursts": [
+  {
+   "start": 3.25,
+   "end": 4.25
+  },
+  {
+   "start": 7.0,
+   "end": 8.25
+  },
+  {
+   "start": 11.25,
+   "end": 12.25
+  },
+  {
+   "start": 15.25,
+   "end": 16.25
+  },
+  {
+   "start": 19.0,
+   "end": 20.25
+  },
+  {
+   "start": 23.25,
+   "end": 24.25
+  },
+  {
+   "start": 27.25,
+   "end": 28.25
+  },
+  {
+   "start": 31.0,
+   "end": 32.25
+  },
+  {
+   "start": 35.25,
+   "end": 36.25
+  },
+  {
+   "start": 39.25,
+   "end": 40.25
+  }
+ ],
+ "audio": {
+  "has_audio": true,
+  "median_db": -30.5,
+  "probable_music": true,
+  "bpm": 188,
+  "silences": [
+   {
+    "start": 0.0,
+    "end": 2.0
+   },
+   {
+    "start": 6.0,
+    "end": 7.5
+   },
+   {
+    "start": 9.6,
+    "end": 11.0
+   },
+   {
+    "start": 15.2,
+    "end": 16.2
+   },
+   {
+    "start": 20.2,
+    "end": 27.5
+   },
+   {
+    "start": 30.8,
+    "end": 31.7
+   },
+   {
+    "start": 35.9,
+    "end": 36.8
+   },
+   {
+    "start": 40.4,
+    "end": 42.8
+   }
+  ],
+  "energy_bursts": [
+   {
+    "start": 2.0,
+    "end": 2.9
+   },
+   {
+    "start": 5.2,
+    "end": 6.0
+   },
+   {
+    "start": 7.5,
+    "end": 8.7
+   },
+   {
+    "start": 8.9,
+    "end": 9.6
+   },
+   {
+    "start": 11.0,
+    "end": 12.0
+   },
+   {
+    "start": 14.5,
+    "end": 15.2
+   },
+   {
+    "start": 16.2,
+    "end": 17.1
+   },
+   {
+    "start": 19.4,
+    "end": 20.2
+   },
+   {
+    "start": 27.5,
+    "end": 28.3
+   },
+   {
+    "start": 29.9,
+    "end": 30.8
+   },
+   {
+    "start": 31.7,
+    "end": 32.7
+   },
+   {
+    "start": 35.0,
+    "end": 35.9
+   },
+   {
+    "start": 36.8,
+    "end": 37.7
+   },
+   {
+    "start": 39.5,
+    "end": 40.4
+   }
+  ]
+ },
+ "transcript": {
+  "engine": "sherpa-onnx:whisper",
+  "language": "ca",
+  "word_timing": "estimated",
+  "error": null,
+  "segments": [
+   {
+    "start": 2.022,
+    "end": 6.114,
+    "text": "i ara el piquet és clar que el femrestu va llorar salons de cara a takta"
+   },
+   {
+    "start": 7.814,
+    "end": 9.73,
+    "text": "(...)"
+   },
+   {
+    "start": 11.558,
+    "end": 15.266,
+    "text": "La persona estigui com una i relaxa la mes del primer minut."
+   },
+   {
+    "start": 16.486,
+    "end": 20.162,
+    "text": "Però he vist la caïlla sent a fallar en la cafè. És el secret."
+   },
+   {
+    "start": 27.558,
+    "end": 30.85,
+    "text": "M'hauré explicat la pròpia missatge amb el meu primer"
+   },
+   {
+    "start": 31.942,
+    "end": 35.97,
+    "text": "Suri la porta de la carina, qui vol càmer amb tota la confiança."
+   },
+   {
+    "start": 36.87,
+    "end": 40.418,
+    "text": "El final van viure tan que ara és la nostra moment de lluit."
+   }
+  ]
+ },
+ "semantic_vision": null
+}

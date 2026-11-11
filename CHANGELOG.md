@@ -1,4 +1,17 @@
 # Changelog
+## V4.2.0 — 2026-11-11 · Content Studio (Blau de Mar + Top House) — sin desplegar
+- **Dos marcas, un motor**: `creative_engine/brands.v1.json` (`brand_style_v1`) con vocabulario, afirmaciones a
+  verificar, datos sensibles y aspecto por marca. 6 presets nuevos (3 por marca); «Automático» elige entre ellos.
+- **Top House**: precios, superficies, direcciones y datos de la operación se marcan como riesgo y exigen el nuevo
+  punto de aprobación `property_permission`.
+- **Separación de activos**: columna `brand` (migración `0003_brands.sql`), rutas R2 `brands/<marca>/`, permisos por
+  marca (`BRAND_MEMBERS`), listas y descargas filtradas. Selector de marca en la web.
+- **EDL validado por esquema** (`edl.schema.json`) antes de cada render.
+- Pruebas: 38 unitarias, E2E 72 comprobaciones, interfaz 16. Fixtures sintéticos con `tests/make_fixture.py`.
+- Documentos: `docs/AUDITORIA_CONTENT_STUDIO_V4.md`, `docs/adr/0001-dos-marcas.md`, `docs/LICENCIAS.md`.
+- Cambio de comportamiento: en Blau de Mar, «Automático» ahora elige `blau_sensory` / `blau_expert` / `blau_human`
+  en lugar de `asmr` / `educativo` / `tacho_*` (que siguen disponibles a mano).
+
 ## V4.1.1 — 2026-10-31
 - Preses repetides: si una frase es comença i es torna a dir, el director es queda amb l'última presa completa
   (en estils d'humor es conserva una repetició sencera). Les correccions fan servir les mateixes files.

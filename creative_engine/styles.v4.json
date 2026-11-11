@@ -1,7 +1,7 @@
 {
-  "schema_version": "4.1.0",
-  "release_date": "2026-10-28",
-  "project": "Blau de Mar TikTok Studio V4",
+  "schema_version": "4.2.0",
+  "release_date": "2026-11-11",
+  "project": "Content Studio V4 (Blau de Mar + Top House)",
   "editorial_mode": "quality_over_quantity",
   "profiles": [
     {
@@ -545,6 +545,201 @@
       },
       "label_ca": "Servei / reserva sense anunci dur",
       "intent_ca": "Problema real, explicació correcta i crida a reservar"
+    },
+    {
+      "id": "blau_sensory",
+      "brand": "blau_de_mar",
+      "label": "Blau · Sensorial",
+      "intent": "Ritual, cabina y experiencia con sonido real; sin diálogo",
+      "look": "premium",
+      "target_shot_seconds": {
+        "min": 2.5,
+        "max": 5.0
+      },
+      "story_arc": "sensory_sequence",
+      "automated_state": "render_recipe",
+      "validation": "hypothesis_pending_real_footage",
+      "render": {
+        "speech": "none",
+        "ideal": [
+          15,
+          45
+        ],
+        "max_len": 60,
+        "max_pause": 2.0,
+        "grade": "premium",
+        "captions": "none",
+        "push_in": 0.03,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [],
+        "shot_max": 5.0
+      },
+      "label_ca": "Blau · Sensorial (cabina i ritual)",
+      "intent_ca": "Ritual, cabina i experiència amb so real; sense diàleg"
+    },
+    {
+      "id": "blau_expert",
+      "brand": "blau_de_mar",
+      "label": "Blau · Experta",
+      "intent": "Especialista a cámara: pregunta frecuente y explicación breve",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.8,
+        "max": 5.0
+      },
+      "story_arc": "hook_context_payoff",
+      "automated_state": "render_recipe",
+      "validation": "hypothesis_pending_real_footage",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          20,
+          55
+        ],
+        "max_len": 80,
+        "max_pause": 0.5,
+        "grade": "natural",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [
+          "claims_review"
+        ],
+        "hook_text": true
+      },
+      "label_ca": "Blau · Experta a càmera",
+      "intent_ca": "Especialista a càmera: pregunta freqüent i explicació breu"
+    },
+    {
+      "id": "blau_human",
+      "brand": "blau_de_mar",
+      "label": "Blau · Equipo",
+      "intent": "Equipo, situaciones cotidianas, humor discreto",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 1.4,
+        "max": 4.5
+      },
+      "story_arc": "hook_context_payoff",
+      "automated_state": "render_recipe",
+      "validation": "hypothesis_pending_real_footage",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          10,
+          40
+        ],
+        "max_len": 60,
+        "max_pause": 0.75,
+        "grade": "natural",
+        "captions": "words",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [],
+        "comedy_pauses": true
+      },
+      "label_ca": "Blau · Equip i dia a dia",
+      "intent_ca": "Equip, situacions quotidianes, humor discret"
+    },
+    {
+      "id": "top_local_story",
+      "brand": "top_house",
+      "label": "Top House · Historia local",
+      "intent": "Agente a cámara sobre vivir en el Maresme; ritmo documental",
+      "look": "documentary",
+      "target_shot_seconds": {
+        "min": 2.0,
+        "max": 6.0
+      },
+      "story_arc": "hook_context_payoff",
+      "automated_state": "render_recipe",
+      "validation": "hypothesis_pending_real_footage",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          20,
+          50
+        ],
+        "max_len": 75,
+        "max_pause": 0.7,
+        "grade": "documentary",
+        "captions": "phrase",
+        "push_in": 0.02,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": []
+      },
+      "label_ca": "Top House · Viure al Maresme",
+      "intent_ca": "Agent a càmera sobre viure al Maresme; ritme documental"
+    },
+    {
+      "id": "top_property",
+      "brand": "top_house",
+      "label": "Top House · Inmueble",
+      "intent": "Visita narrativa de un inmueble real con ritmo respirable",
+      "look": "documentary",
+      "target_shot_seconds": {
+        "min": 3.0,
+        "max": 6.0
+      },
+      "story_arc": "property_walkthrough",
+      "automated_state": "render_recipe",
+      "validation": "hypothesis_pending_real_footage",
+      "render": {
+        "speech": "optional",
+        "ideal": [
+          15,
+          45
+        ],
+        "max_len": 60,
+        "max_pause": 1.0,
+        "grade": "documentary",
+        "captions": "phrase",
+        "push_in": 0.04,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [],
+        "shot_max": 6.0
+      },
+      "label_ca": "Top House · Visita d’immoble",
+      "intent_ca": "Visita narrativa d’un immoble real amb ritme respirable"
+    },
+    {
+      "id": "top_owner_expert",
+      "brand": "top_house",
+      "label": "Top House · Propietarios",
+      "intent": "Información útil para propietarios: valoración, venta, errores",
+      "look": "natural",
+      "target_shot_seconds": {
+        "min": 2.0,
+        "max": 6.0
+      },
+      "story_arc": "hook_context_payoff",
+      "automated_state": "render_recipe",
+      "validation": "hypothesis_pending_real_footage",
+      "render": {
+        "speech": "required",
+        "ideal": [
+          20,
+          60
+        ],
+        "max_len": 90,
+        "max_pause": 0.55,
+        "grade": "documentary",
+        "captions": "phrase",
+        "push_in": 0,
+        "punch_zoom": 0,
+        "loop": false,
+        "requires": [
+          "claims_review"
+        ],
+        "hook_text": true
+      },
+      "label_ca": "Top House · Consells per a propietaris",
+      "intent_ca": "Informació útil per a propietaris: valoració, venda, errors"
     }
   ],
   "global_rules": {
@@ -560,5 +755,5 @@
     "original_audio_retained_if_dialogue": true,
     "maximum_results_default": 4
   },
-  "recipe_note": "Cada perfil es una receta de render parametrizada (pausas, ritmo, color, subtítulos, zoom, bucle, requisitos). No son 18 algoritmos visuales distintos ni efectos generativos."
+  "recipe_note": "Cada perfil es una receta de render parametrizada (pausas, ritmo, color, subtítulos, zoom, bucle, requisitos). No son 18 algoritmos visuales distintos ni efectos generativos. Los perfiles con \"brand\" son presets de marca (brand_style_v1, ver brands.v1.json) y son hipótesis hasta validarlos con metraje real."
 }

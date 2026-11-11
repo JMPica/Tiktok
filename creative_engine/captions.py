@@ -94,10 +94,12 @@ def _bgr(hexrgb: str) -> str:
     return f'&H00{h[4:6]}{h[2:4]}{h[0:2]}'.upper()
 
 
-def build_ass(captions: dict, overlays: list[dict] | None = None, accent: str = '#7FE3D6') -> str:
+def build_ass(captions: dict, overlays: list[dict] | None = None, accent: str = '#7FE3D6',
+              font: str | None = None, font_size: int | None = None) -> str:
     """captions = {'mode': words|phrase|none, 'size': m|l, 'position': lower|upper|middle, 'events': [...]}"""
     mode = captions.get('mode', 'phrase')
-    size = SIZES.get(captions.get('size', 'm'), 72)
+    size = int(font_size or SIZES.get(captions.get('size', 'm'), 72))
+    cap_font = font if font in (FONT, FONT_SEMI) else FONT  # solo fuentes OFL incluidas en assets/fonts
     x, y, an = POSITIONS.get(captions.get('position', 'lower'), POSITIONS['lower'])
     acc = _bgr(accent)
     head = f"""[Script Info]
@@ -109,7 +111,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: cap,{FONT},{size},&H00FFFFFF,&H00FFFFFF,&H00151515,&H96000000,0,0,0,0,100,100,0,0,1,6,2,{an},{SAFE_LEFT},{1080 - SAFE_RIGHT},0,1
+Style: cap,{cap_font},{size},&H00FFFFFF,&H00FFFFFF,&H00151515,&H96000000,0,0,0,0,100,100,0,0,1,6,2,{an},{SAFE_LEFT},{1080 - SAFE_RIGHT},0,1
 Style: hook,{FONT},84,&H00FFFFFF,&H00FFFFFF,&H00151515,&H96000000,0,0,0,0,100,100,0,0,1,7,3,8,{SAFE_LEFT},{1080 - SAFE_RIGHT},0,1
 Style: bubble,{FONT_SEMI},50,&H00202020,&H00202020,&H00FFFFFF,&H00FFFFFF,0,0,0,0,100,100,0,0,3,16,0,8,{SAFE_LEFT},{1080 - SAFE_RIGHT},0,1
 

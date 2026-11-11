@@ -1,4 +1,9 @@
-# Blau de Mar — TikTok Studio V4
+# Content Studio V4 — Blau de Mar + Top House
+
+> **11-11-2026:** el estudio sirve ahora a dos marcas con vídeos, formatos y permisos separados. Estado, pruebas y
+> bloqueos: `docs/AUDITORIA_CONTENT_STUDIO_V4.md`. Este cambio **no está desplegado**; pasos en `docs/adr/0001-dos-marcas.md`.
+> Probar una marca en local: `python -m creative_engine.cli MI_VIDEO.mov --brand top_house --render`.
+
 
 Estudio privado para que el equipo suba vídeos desde el iPhone y reciba **0, 1 o varias** propuestas editadas
 (MP4 1080×1920 con subtítulos, sonido normalizado y QC medido), las revise, pida cambios con una frase,
@@ -57,8 +62,8 @@ Editor al núvol (GitHub Actions, 0 €) o ordenador Windows/Mac ─► agente: 
 ## Pruebas
 ```
 pip install -r requirements-dev.txt
-python -m pytest -q tests                      # 24 pruebas (incluye render FFmpeg real)
+python -m pytest -q tests                      # 38 pruebas (incluye render FFmpeg real)
 cd cloudflare && npm install && cd ..
-python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (54 comprobaciones)
+python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (72 comprobaciones; --top-video para la segunda marca)
 node cloudflare/test/ui_e2e.mjs MI_VIDEO.mov    # interfaz con viewport iPhone (Chromium)
 ```

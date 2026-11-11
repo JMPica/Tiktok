@@ -34,6 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CF = ROOT / 'cloudflare'
 TEAM, AUD = 'blau-test.cloudflareaccess.com', 'e2e-aud'
 OWNER, EDITOR, OUTSIDER = 'owner@blau.test', 'editor@blau.test', 'intrus@example.com'
+TOP_AGENT = 'agent@tophouse.test'  # equipo de Top House: no debe ver nada de Blau de Mar, ni al revés
 PART = 8 * 1024 * 1024
 LOG = []
 
@@ -115,6 +116,7 @@ def main():
     ap.add_argument('--video', required=True)
     ap.add_argument('--language', default='ca')
     ap.add_argument('--style', default='auto')
+    ap.add_argument('--top-video', help='vídeo para la marca Top House (por defecto, el mismo --video)')
     ap.add_argument('--evidence')
     ap.add_argument('--keep', action='store_true')
     args = ap.parse_args()
@@ -128,7 +130,8 @@ def main():
     env = {**os.environ, 'WRANGLER_SEND_METRICS': 'false', 'CI': '1'}
     subprocess.run([wr, 'd1', 'execute', 'blau-tiktok-v3', '--local', '--persist-to', str(tmp / 'state'), '--file', 'schema.sql', '-y'],
                    cwd=CF, env=env, check=True, capture_output=True, timeout=180)
-    variables = {'ACCESS_TEAM_DOMAIN': TEAM, 'ACCESS_AUD': AUD, 'OWNER_EMAIL': OWNER, 'TEAM_EMAILS': EDITOR,
+    variables = {'ACCESS_TEAM_DOMAIN': TEAM, 'ACCESS_AUD': AUD, 'OWNER_EMAIL': OWNER, 'TEAM_EMAILS': f'{EDITOR},{TOP_AGENT}',
+                 'BRAND_MEMBERS': json.dumps({'top_house': TOP_AGENT}, separators=(',', ':')),
                  'ACCESS_JWKS_URL': f'http://127.0.0.1:{jport}/certs', 'AGENT_TOKEN': agent_token,
                  'LEASE_SECONDS': '20', 'GITHUB_REPO': 'JMPica/Tiktok', 'GITHUB_REF': 'main',
                  'GITHUB_OIDC_JWKS_URL': f'http://127.0.0.1:{jport}/certs', 'GITHUB_DISPATCH_TOKEN': 'e2e-dispatch',
@@ -206,7 +209,7 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     check('T01 token caducado => 401', exp.status_code == 401)
     check('T02 roles owner/editor', owner.get(base + '/api/me').json()['role'] == 'owner' and editor.get(base + '/api/me').json()['role'] == 'editor')
     check('agente sin token => 401', requests.post(base + '/api/agent/claim').status_code == 401)
-    check('estáticos servidos', requests.get(base + '/').status_code == 200 and 'TikTok Studio' in requests.get(base + '/').text)
+    check('estáticos servidos', requests.get(base + '/').status_code == 200 and 'Content Studio' in requests.get(base + '/').text)
     cross = editor.post(base + '/api/uploads', json={'filename': 'x.mp4', 'size_bytes': 5000}, headers={'Origin': 'https://evil.example'})
     check('CSRF: mutación desde otro origen => 403', cross.status_code == 403)
 
@@ -321,6 +324,61 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     late = requests.post(f"{base}/api/agent/jobs/{crash['id']}/complete", json={},
                          headers={'Authorization': f'Bearer {agent_token}', 'X-Agent-Id': ghost['agent_id']})
     check('T05 el agente antiguo ya no puede escribir resultados', late.status_code in (404, 409), late.status_code)
+
+    # --- dos marcas: separación de activos, presets y permisos
+    top = s(TOP_AGENT)
+    brands = lambda x: sorted(x.get(base + '/api/me').json()['brands'])
+    check('M01 marcas por persona (propietaria: todas; equipos: solo la suya)',
+          brands(owner) == ['blau_de_mar', 'top_house'] and brands(editor) == ['blau_de_mar'] and brands(top) == ['top_house'])
+    cfg = top.get(base + '/api/config').json()
+    check('M02 config solo expone la marca propia y sus 3 presets', [b['id'] for b in cfg['brands']] == ['top_house'] and
+          cfg['brands'][0]['presets'] == ['top_local_story', 'top_property', 'top_owner_expert'])
+    r = editor.post(base + '/api/uploads', json={'filename': 'x.mp4', 'size_bytes': 5000, 'brand': 'top_house'})
+    check('M03 equipo de Blau no puede subir a Top House => 403', r.status_code == 403, r.text)
+    check('M03 marca inexistente => 422', owner.post(base + '/api/uploads', json={'filename': 'x.mp4', 'size_bytes': 5000, 'brand': 'otra'}).status_code == 422)
+    r = editor.post(f'{base}/api/uploads/{uid}/jobs', json={'style': 'top_property', 'language': args.language})
+    check('M04 preset de Top House sobre un vídeo de Blau => 422', r.status_code == 422, r.text)
+    check('M05 Top House no ve trabajos/variantes/descargas de Blau => 404',
+          {top.get(f"{base}/api/jobs/{job['id']}").status_code, top.get(f"{base}/api/variants/{v['id']}").status_code,
+           top.get(f"{base}/api/variants/{v['id']}/download").status_code, top.get(f'{base}/api/uploads/{uid}').status_code} == {404})
+    check('M05 listar otra marca => 403', editor.get(base + '/api/jobs?brand=top_house').status_code == 403 and
+          top.get(base + '/api/jobs?brand=blau_de_mar').status_code == 403)
+    tvideo = Path(args.top_video).resolve() if args.top_video else video
+    tdata = tvideo.read_bytes()
+    tstart = top.post(base + '/api/uploads', json={'filename': tvideo.name, 'size_bytes': len(tdata), 'consent_team': True, 'brand': 'top_house'}).json()
+    tuid = tstart['id']
+    for n in range(1, tstart['total_parts'] + 1):
+        assert top.put(f'{base}/api/uploads/{tuid}/parts/{n}', data=tdata[(n - 1) * PART:n * PART]).ok
+    assert top.post(f'{base}/api/uploads/{tuid}/finalize').ok
+    check('M06 subida a Top House queda etiquetada con su marca', tstart.get('brand') == 'top_house')
+    check('M04 estilo genérico no habilitado para Top House => 422',
+          top.post(f'{base}/api/uploads/{tuid}/jobs', json={'style': 'tacho_humor', 'language': args.language}).status_code == 422)
+    tjob = top.post(f'{base}/api/uploads/{tuid}/jobs', json={'style': 'auto', 'language': args.language}).json()
+    check('M05 Blau no ve el vídeo de Top House => 404', editor.get(f"{base}/api/jobs/{tjob['id']}").status_code == 404 and
+          editor.get(f'{base}/api/uploads/{tuid}').status_code == 404)
+    code, secs = agent_once('tophouse')
+    tj = top.get(f"{base}/api/jobs/{tjob['id']}").json()
+    check('M07 agente procesa el vídeo de Top House', code == 0 and tj['status'] in ('done', 'needs_review'), f"{tj['status']} en {secs:.0f}s · {tj.get('error')}")
+    check('M07 el trabajo usa un preset de Top House', tj['brand'] == 'top_house' and (tj.get('summary') or {}).get('style', 'top_').startswith('top_'), tj.get('summary'))
+    if tj['variants']:
+        tv = tj['variants'][0]
+        tdet = owner.get(f"{base}/api/variants/{tv['id']}").json()
+        check('M08 EDL de Top House lleva su marca, su aspecto y su permiso de inmueble',
+              tdet['edl']['brand']['id'] == 'top_house' and tdet['edl']['brand']['accent'] != det['edl']['brand']['accent']
+              and 'property_permission' in tv['requires'], tdet['edl']['brand'])
+        dl = top.get(f"{base}/api/variants/{tv['id']}/download")
+        check('M09 descarga Top House = sha256 y nombre de su marca', hashlib.sha256(dl.content).hexdigest() == tv['sha256']
+              and 'tophouse-' in dl.headers.get('Content-Disposition', ''), dl.headers.get('Content-Disposition'))
+        check('M05 Blau no puede descargar la versión de Top House => 404', editor.get(f"{base}/api/variants/{tv['id']}/download").status_code == 404)
+        chk = {k: True for k in ['team_consent', 'client_consent', 'captions_reviewed', *tv['requires']]}
+        no_prop = {k: x for k, x in chk.items() if k != 'property_permission'}
+        r = owner.post(f"{base}/api/variants/{tv['id']}/approve", json={'sha256': tv['sha256'], 'confirm': True, 'checklist': no_prop})
+        check('M10 Top House no se aprueba sin permiso de difusión del inmueble => 422', tv['status'] != 'needs_approval' or r.status_code == 422, r.text)
+    lists = lambda x, b='': {j['id'] for j in x.get(base + '/api/jobs' + b).json()['items']}
+    check('M11 listas separadas por marca', tjob['id'] in lists(top) and job['id'] not in lists(top) and tjob['id'] not in lists(editor)
+          and tjob['id'] in lists(owner, '?brand=top_house') and job['id'] not in lists(owner, '?brand=top_house'))
+    check('M12 regresión: la versión anterior de Blau sigue descargable tras editar otras', hashlib.sha256(
+        editor.get(f"{base}/api/variants/{v['id']}/download").content).hexdigest() == v['sha256'])
 
     # --- auditoría, cron y borrado RGPD
     sch = requests.get(base + '/__scheduled?cron=17+3+*+*+*')

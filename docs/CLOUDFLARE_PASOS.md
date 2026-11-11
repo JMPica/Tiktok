@@ -24,6 +24,7 @@ El bucket queda privado: **no** actives `r2.dev` ni dominio público. El Worker 
   npx wrangler d1 export blau-tiktok-v3 --remote --output=backup-v3.sql
   npx wrangler d1 execute blau-tiktok-v3 --remote --file=migrations/0001_add_style.sql   # solo si no la aplicaste
   npx wrangler d1 execute blau-tiktok-v3 --remote --file=migrations/0002_v4.sql
+  npx wrangler d1 execute blau-tiktok-v3 --remote --file=migrations/0003_brands.sql   # dos marcas (ver docs/adr/0001-dos-marcas.md)
   ```
 
 ## 3. Secreto del agente

@@ -25,6 +25,8 @@ GRADES = {
     'natural': 'eq=contrast=1.03:saturation=1.05',
     'punchy': "eq=contrast=1.07:saturation=1.12:gamma=0.98,unsharp=5:5:0.35:5:5:0",
     'premium': 'eq=contrast=1.02:saturation=0.95:gamma=1.01,colorbalance=rs=0.015:bs=-0.015:rh=0.01:bh=-0.01',
+    # Top House: documental sobri, lleugerament desaturat (hipòtesi pendent de validar amb material real).
+    'documentary': 'eq=contrast=1.05:saturation=0.90,colorbalance=rs=0.012:bs=-0.012',
     'none': '',
 }
 MAX_OUTPUT_SECONDS = 180
@@ -139,8 +141,9 @@ def render(edl: dict, source: Path, meta: dict, target: Path, workdir: Path) -> 
     if (edl.get('output') or {}).get('fps'):
         fps_str, fps_reason = edl['output']['fps'], (edl['output'].get('fps_reason') or fps_reason)
     fps = Fraction(fps_str)
+    brand = edl.get('brand') or {}
     ass = build_ass(edl.get('captions') or {'mode': 'none', 'events': []}, edl.get('overlays'),
-                    (edl.get('brand') or {}).get('accent', '#7FE3D6'))
+                    brand.get('accent', '#7FE3D6'), brand.get('caption_font'), brand.get('caption_size'))
     (workdir / 'subs.ass').write_text(ass, encoding='utf-8')
     fonts = workdir / 'fonts'
     if FONTS.is_dir() and not fonts.exists():

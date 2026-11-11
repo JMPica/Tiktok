@@ -13,6 +13,7 @@ from typing import Callable
 
 from creative_engine import qc as QC
 from creative_engine.analysis import analyze
+from creative_engine import edl_schema
 from creative_engine.director import build_plan
 from creative_engine.media import probe
 from creative_engine.render import poster, render
@@ -45,6 +46,7 @@ def understand(source: Path, language: str = 'ca', progress: Progress = _noop, t
 
 
 def render_candidate(source: Path, meta: dict, edl: dict, workdir: Path) -> dict:
+    edl_schema.assert_valid(edl, meta['duration'])  # nada se renderiza con un EDL fuera de esquema
     out = workdir / f"{edl['id']}-v{edl.get('version', 1)}.mp4"
     info = render(edl, source, meta, out, workdir / ('work-' + edl['id']))
     report = QC.check(out, edl, meta, info)
@@ -53,12 +55,12 @@ def render_candidate(source: Path, meta: dict, edl: dict, workdir: Path) -> dict
 
 
 def produce(source: Path, workdir: Path, style: str = 'auto', language: str = 'ca', options: dict | None = None,
-            progress: Progress = _noop, understood: dict | None = None) -> dict:
+            progress: Progress = _noop, understood: dict | None = None, brand: str | None = None) -> dict:
     workdir.mkdir(parents=True, exist_ok=True)
     u = understood or understand(source, language, progress)
     progress('directing', 45, 'Buscant les millors històries')
     plan = build_plan(u['transcript'].get('segments', []), u['meta']['duration'], style, language,
-                      analysis=u['analysis'], meta=u['meta'], options=options or {})
+                      analysis=u['analysis'], meta=u['meta'], options=options or {}, brand=brand)
     if u['transcript'].get('error'):
         plan['transcript_error'] = u['transcript']['error']
     results = []

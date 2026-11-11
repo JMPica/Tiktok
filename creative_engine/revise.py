@@ -12,6 +12,7 @@ import re
 import urllib.request
 
 from creative_engine.captions import chunk, map_words
+from creative_engine import brands as B
 from creative_engine.director import cut_window, frame_segments, load_styles, usable_rows
 
 HELP = ('Puc entendre: «més curt», «més llarg», «més divertit», «més ràpid/lent», «sense subtítols», '
@@ -128,7 +129,12 @@ def apply(edl: dict, instruction: str, transcript: list[dict] | None, meta: dict
     for op in ops:
         kind = op['op']
         if kind == 'style':
-            style = op['style']
+            brand = B.get((edl.get('brand') or {}).get('id'))
+            wanted = op['style']
+            if not B.style_allowed(brand, styles[wanted]):
+                # Estil d'una altra marca: es tradueix al preset equivalent de la marca del vídeo.
+                wanted = brand['auto_map']['humor' if wanted in ('tacho_humor', 'loop', 'fast_cuts') else 'default']
+            style = wanted
             new['style'], new['style_label'] = style, styles[style]['label']
             new['grade'] = styles[style]['render'].get('grade', 'natural')
             new['loop'] = bool(styles[style]['render'].get('loop'))

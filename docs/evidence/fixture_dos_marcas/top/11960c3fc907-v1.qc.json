@@ -1,0 +1,550 @@
+{
+ "qc": {
+  "status": "pass",
+  "checks": [
+   {
+    "check": "resolución",
+    "status": "pass",
+    "detail": "1080x1920"
+   },
+   {
+    "check": "códec",
+    "status": "pass",
+    "detail": "h264/aac"
+   },
+   {
+    "check": "decodificación completa",
+    "status": "pass",
+    "detail": "sin errores"
+   },
+   {
+    "check": "duración",
+    "status": "pass",
+    "detail": "14.30s (esperado 14.23s)"
+   },
+   {
+    "check": "fps",
+    "status": "pass",
+    "detail": "30/1 · fps nativo del bruto"
+   },
+   {
+    "check": "audio",
+    "status": "pass",
+    "detail": "audio presente"
+   },
+   {
+    "check": "sonoridad",
+    "status": "pass",
+    "detail": "-16.0 LUFS (objetivo -16)"
+   },
+   {
+    "check": "pico real",
+    "status": "pass",
+    "detail": "-1.40 dBTP (máximo -1)"
+   },
+   {
+    "check": "negros",
+    "status": "pass",
+    "detail": "0.0% del metraje en negro"
+   },
+   {
+    "check": "subtítulos",
+    "status": "pass",
+    "detail": "7 subtítulos · pendientes de revisión humana"
+   }
+  ],
+  "measured": {
+   "duration": 14.3,
+   "width": 1080,
+   "height": 1920,
+   "coded_width": 1080,
+   "coded_height": 1920,
+   "rotation": 0,
+   "fps": "30/1",
+   "fps_float": 30.0,
+   "r_frame_rate": "30/1",
+   "vfr": false,
+   "hdr": false,
+   "color_transfer": "bt709",
+   "color_primaries": "bt709",
+   "color_space": "bt709",
+   "dolby_vision": false,
+   "pix_fmt": "yuv420p",
+   "codec": "h264",
+   "audio": true,
+   "audio_codec": "aac",
+   "audio_channels": 2,
+   "audio_rate": 48000,
+   "size_bytes": 10835724,
+   "integrated_lufs": -16.0,
+   "lra_lu": 0.9,
+   "true_peak_dbtp": -1.4,
+   "black_ratio": 0.0
+  },
+  "captions": {
+   "mode": "phrase",
+   "events": 7,
+   "overlays": 0,
+   "issues": [],
+   "verified_by_human": false
+  },
+  "decode_ok": true,
+  "audio_present": true,
+  "width": 1080,
+  "height": 1920,
+  "duration": 14.3,
+  "fps": "30/1",
+  "editorial_review": "human_required",
+  "generative_effects": "disabled"
+ },
+ "render": {
+  "fps": "30/1",
+  "fps_reason": "fps nativo del bruto",
+  "expected_duration": 14.233,
+  "loudness_input": {
+   "input_i": "-20.16",
+   "input_tp": "-3.46",
+   "input_lra": "0.90",
+   "input_thresh": "-30.21",
+   "output_i": "-16.03",
+   "output_tp": "-1.50",
+   "output_lra": "0.80",
+   "output_thresh": "-26.06",
+   "normalization_type": "dynamic",
+   "target_offset": "0.03"
+  },
+  "tonemapped": false,
+  "filters": "single_pass_concat",
+  "encoder": "libx264 crf18"
+ },
+ "sha256": "fc01a620840b759f14758827687dd1e1edcdc8529610f42c515a255805264d34",
+ "edl": {
+  "schema": "blau.edl/4",
+  "id": "11960c3fc907",
+  "version": 1,
+  "style": "top_owner_expert",
+  "style_label": "Top House · Propietarios",
+  "brand": {
+   "id": "top_house",
+   "name": "Top House",
+   "style_schema": "brand_style_v1",
+   "style_version": "1.0.0",
+   "accent": "#E8D9B5",
+   "caption_font": "Poppins SemiBold",
+   "caption_size": 64,
+   "visual_status": "provisional"
+  },
+  "language": "ca",
+  "grade": "documentary",
+  "output": {
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "fps_reason": "fps nativo del bruto"
+  },
+  "source": {
+   "duration": 46.231,
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "hdr": false
+  },
+  "segments": [
+   {
+    "id": "s1",
+    "in": 28.278,
+    "out": 33.198,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s2",
+    "in": 33.942,
+    "out": 37.71,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s3",
+    "in": 38.454,
+    "out": 43.982,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   }
+  ],
+  "captions": {
+   "mode": "phrase",
+   "size": "m",
+   "position": "lower",
+   "events": [
+    {
+     "start": 0.08,
+     "end": 2.538,
+     "text": "que vius al mar\nés macuan, mai xus",
+     "words": [
+      {
+       "start": 0.08,
+       "end": 0.369,
+       "word": "que",
+       "source_start": 28.358
+      },
+      {
+       "start": 0.369,
+       "end": 0.731,
+       "word": "vius",
+       "source_start": 28.647
+      },
+      {
+       "start": 0.731,
+       "end": 0.948,
+       "word": "al",
+       "source_start": 29.009
+      },
+      {
+       "start": 0.948,
+       "end": 1.237,
+       "word": "mar",
+       "source_start": 29.226
+      },
+      {
+       "start": 1.237,
+       "end": 1.454,
+       "word": "és",
+       "source_start": 29.515
+      },
+      {
+       "start": 1.454,
+       "end": 1.96,
+       "word": "macuan,",
+       "source_start": 29.732
+      },
+      {
+       "start": 1.96,
+       "end": 2.249,
+       "word": "mai",
+       "source_start": 30.238
+      },
+      {
+       "start": 2.249,
+       "end": 2.538,
+       "word": "xus",
+       "source_start": 30.527
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 2.538,
+     "end": 4.78,
+     "text": "la pla de vans,\nla n'ha t'avala.",
+     "words": [
+      {
+       "start": 2.538,
+       "end": 2.755,
+       "word": "la",
+       "source_start": 30.816
+      },
+      {
+       "start": 2.755,
+       "end": 3.045,
+       "word": "pla",
+       "source_start": 31.033
+      },
+      {
+       "start": 3.045,
+       "end": 3.262,
+       "word": "de",
+       "source_start": 31.323
+      },
+      {
+       "start": 3.262,
+       "end": 3.623,
+       "word": "vans,",
+       "source_start": 31.54
+      },
+      {
+       "start": 3.623,
+       "end": 3.84,
+       "word": "la",
+       "source_start": 31.901
+      },
+      {
+       "start": 3.84,
+       "end": 4.202,
+       "word": "n'ha",
+       "source_start": 32.118
+      },
+      {
+       "start": 4.202,
+       "end": 4.78,
+       "word": "t'avala.",
+       "source_start": 32.48
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 5.0,
+     "end": 7.468,
+     "text": "1, el mercat, el\nlliçat, el pla, el",
+     "words": [
+      {
+       "start": 5.0,
+       "end": 5.154,
+       "word": "1,",
+       "source_start": 34.022
+      },
+      {
+       "start": 5.154,
+       "end": 5.386,
+       "word": "el",
+       "source_start": 34.176
+      },
+      {
+       "start": 5.386,
+       "end": 5.926,
+       "word": "mercat,",
+       "source_start": 34.408
+      },
+      {
+       "start": 5.926,
+       "end": 6.157,
+       "word": "el",
+       "source_start": 34.948
+      },
+      {
+       "start": 6.157,
+       "end": 6.697,
+       "word": "lliçat,",
+       "source_start": 35.179
+      },
+      {
+       "start": 6.697,
+       "end": 6.928,
+       "word": "el",
+       "source_start": 35.719
+      },
+      {
+       "start": 6.928,
+       "end": 7.237,
+       "word": "pla,",
+       "source_start": 35.95
+      },
+      {
+       "start": 7.237,
+       "end": 7.468,
+       "word": "el",
+       "source_start": 36.259
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 7.468,
+     "end": 8.548,
+     "text": "cap de semana.",
+     "words": [
+      {
+       "start": 7.468,
+       "end": 7.777,
+       "word": "cap",
+       "source_start": 36.49
+      },
+      {
+       "start": 7.777,
+       "end": 8.008,
+       "word": "de",
+       "source_start": 36.799
+      },
+      {
+       "start": 8.008,
+       "end": 8.548,
+       "word": "semana.",
+       "source_start": 37.03
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 8.768,
+     "end": 11.201,
+     "text": "Al final, viure\naquí és de niç de",
+     "words": [
+      {
+       "start": 8.768,
+       "end": 8.989,
+       "word": "Al",
+       "source_start": 38.534
+      },
+      {
+       "start": 8.989,
+       "end": 9.431,
+       "word": "final,",
+       "source_start": 38.755
+      },
+      {
+       "start": 9.431,
+       "end": 9.874,
+       "word": "viure",
+       "source_start": 39.197
+      },
+      {
+       "start": 9.874,
+       "end": 10.242,
+       "word": "aquí",
+       "source_start": 39.64
+      },
+      {
+       "start": 10.242,
+       "end": 10.464,
+       "word": "és",
+       "source_start": 40.008
+      },
+      {
+       "start": 10.464,
+       "end": 10.685,
+       "word": "de",
+       "source_start": 40.23
+      },
+      {
+       "start": 10.685,
+       "end": 10.98,
+       "word": "niç",
+       "source_start": 40.451
+      },
+      {
+       "start": 10.98,
+       "end": 11.201,
+       "word": "de",
+       "source_start": 40.746
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 11.201,
+     "end": 13.486,
+     "text": "mar a 5 minuts\ni preixon-se la",
+     "words": [
+      {
+       "start": 11.201,
+       "end": 11.496,
+       "word": "mar",
+       "source_start": 40.967
+      },
+      {
+       "start": 11.496,
+       "end": 11.643,
+       "word": "a",
+       "source_start": 41.262
+      },
+      {
+       "start": 11.643,
+       "end": 11.791,
+       "word": "5",
+       "source_start": 41.409
+      },
+      {
+       "start": 11.791,
+       "end": 12.307,
+       "word": "minuts",
+       "source_start": 41.557
+      },
+      {
+       "start": 12.307,
+       "end": 12.454,
+       "word": "i",
+       "source_start": 42.073
+      },
+      {
+       "start": 12.454,
+       "end": 13.265,
+       "word": "preixon-se",
+       "source_start": 42.22
+      },
+      {
+       "start": 13.265,
+       "end": 13.486,
+       "word": "la",
+       "source_start": 43.031
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 13.486,
+     "end": 14.186,
+     "text": "lletana.",
+     "words": [
+      {
+       "start": 13.486,
+       "end": 14.076,
+       "word": "lletana.",
+       "source_start": 43.252
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    }
+   ]
+  },
+  "overlays": [],
+  "audio": {
+   "keep_original": true,
+   "target_lufs": -16,
+   "true_peak_max": -1.0,
+   "music": null,
+   "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+  },
+  "loop": false,
+  "duration": 14.216,
+  "score": {
+   "hook": 14,
+   "story": 20,
+   "authenticity": 8,
+   "utility": 6,
+   "rhythm": 12,
+   "brand": 6,
+   "total": 66,
+   "meaning": "puntuació editorial, no probabilitat de viralitat"
+  },
+  "provenance": {
+   "transcript_rows": [
+    4,
+    6
+   ],
+   "source_range": [
+    28.358,
+    43.842
+   ],
+   "text": "que vius al mar és macuan, mai xus la pla de vans, la n'ha t'avala. 1, el mercat, el lliçat, el pla, el cap de semana. Al final, viure aquí és de niç de mar a 5 minuts i preixon-se la lletana.",
+   "notes": [
+    "arrenca amb pregunta/ganxo",
+    "té remat",
+    "possible música de fons (revisar drets)",
+    "reacció/riure probable al final"
+   ],
+   "keep_full_repeats": false,
+   "retakes_removed": []
+  },
+  "risks": [],
+  "requires": [
+   "claims_review",
+   "team_consent",
+   "property_permission"
+  ],
+  "explanation": "Fragment 28.4–43.8 s del vídeo original. Diàleg explicatiu: format expert/consell. Per què: arrenca amb pregunta/ganxo; té remat; possible música de fons (revisar drets); reacció/riure probable al final. Puntuació editorial 66/100 (no és predicció de viralitat).",
+  "automatic_publish": false,
+  "editorial_review_required": true,
+  "hook_overlay_suggestion": "que vius al mar és macuan, mai xus la pla de vans, la n'ha t'avala.",
+  "title": "2. que vius al mar és macuan, mai xus la pla de van"
+ }
+}

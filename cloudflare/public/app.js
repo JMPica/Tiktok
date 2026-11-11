@@ -1,4 +1,4 @@
-// Blau de Mar TikTok Studio V4 · interfície iPhone (Simple per a l'equip, Advanced per a la propietària).
+// Content Studio V4 (Blau de Mar + Top House) · interfície iPhone (Simple per a l'equip, Advanced per a la propietària).
 // Tot text que ve de l'usuari o del servidor s'insereix amb textContent (sense HTML injectat).
 const $ = (id) => document.getElementById(id);
 const PART = 8 * 1024 * 1024;
@@ -18,8 +18,9 @@ const CHECKS = {
   before_after_evidence: 'L’abans/després és real, comparable i sense retocs',
   trend_source: 'La tendència té font i data i encara és vigent',
   comment_text: 'El comentari respost és real i autoritzat',
+  property_permission: 'Tinc permís per difondre aquest immoble i totes les dades (preu, superfície, vistes) són certes; no surt cap adreça ni dada privada',
 };
-let me = null, config = null, mode = 'simple', currentJob = null, timer = null;
+let me = null, config = null, mode = 'simple', currentJob = null, timer = null, brand = null;
 
 function el(tag, attrs = {}, ...kids) {
   const n = document.createElement(tag);
@@ -51,7 +52,11 @@ async function boot() {
   try {
     [me, config] = await Promise.all([getJSON('/me'), getJSON('/config')]);
     $('user').textContent = `${me.email} · ${me.role === 'owner' ? 'Propietària' : 'Equip'}`;
-    for (const s of config.styles) if (s.id !== 'auto') $('style').append(el('option', { value: s.id, text: s.label }));
+    let saved = null;
+    try { saved = localStorage.getItem('studio-brand'); } catch { /* */ }
+    $('brandSwitch').hidden = config.brands.length < 2;
+    for (const b of config.brands) $('brandSwitch').append(el('button', { type: 'button', 'data-brand': b.id, text: b.name, onclick: () => setBrand(b.id) }));
+    setBrand(config.brands.some((b) => b.id === saved) ? saved : config.brands[0].id, false);
     if (me.role === 'owner') {
       $('modeSwitch').hidden = false;
       try { mode = localStorage.getItem('blau-mode') || 'simple'; } catch { /* */ }
@@ -69,6 +74,23 @@ function setMode(m) {
   try { localStorage.setItem('blau-mode', mode); } catch { /* */ }
   if (currentJob) openJob(currentJob.id);
 }
+// Canviar de marca canvia presets, llista de vídeos i destí de la pujada. Res d'una marca es veu a l'altra.
+function setBrand(id, reload = true) {
+  brand = config.brands.find((b) => b.id === id) || config.brands[0];
+  try { localStorage.setItem('studio-brand', brand.id); } catch { /* */ }
+  for (const b of document.querySelectorAll('#brandSwitch button')) b.classList.toggle('on', b.dataset.brand === brand.id);
+  $('eyebrow').textContent = brand.label;
+  $('brandNote').hidden = brand.visual_status !== 'provisional';
+  $('brandNote').textContent = `Colors i tipografia de ${brand.name}: valors provisionals fins que es confirmi el brand kit oficial.`;
+  const sel = $('style');
+  sel.replaceChildren(el('option', { value: 'auto', text: 'Automàtic (recomanat)' }));
+  const own = config.styles.filter((s) => brand.presets.includes(s.id));
+  const rest = config.styles.filter((s) => s.id !== 'auto' && !s.brand && brand.styles.includes(s.id));
+  if (own.length) sel.append(el('optgroup', { label: 'Formats de ' + brand.name }, own.map((s) => el('option', { value: s.id, text: s.label }))));
+  if (rest.length) sel.append(el('optgroup', { label: 'Altres estils' }, rest.map((s) => el('option', { value: s.id, text: s.label }))));
+  onStyle();
+  if (reload) { $('detail').hidden = true; currentJob = null; refresh(); }
+}
 function onStyle() {
   const s = config?.styles.find((x) => x.id === $('style').value);
   $('styleHelp').textContent = s ? s.intent : '';
@@ -77,7 +99,7 @@ function onStyle() {
 }
 
 // ------------------------------------------------------------------ pujada reprenible, diversos fitxers
-const storeKey = (f) => `blau-up:${f.name}:${f.size}:${f.lastModified}`;
+const storeKey = (f) => `blau-up:${brand?.id}:${f.name}:${f.size}:${f.lastModified}`;
 function loadSaved(f) { try { return JSON.parse(localStorage.getItem(storeKey(f)) || 'null'); } catch { return null; } }
 function save(f, v) { try { v ? localStorage.setItem(storeKey(f), JSON.stringify(v)) : localStorage.removeItem(storeKey(f)); } catch { /* */ } }
 
@@ -87,7 +109,7 @@ async function uploadAll() {
   if (!$('consent').checked) return show('Confirma que les persones que surten han donat permís.');
   show('');
   $('upload').disabled = true;
-  const opts = { style: $('style').value, language: $('language').value, comment_text: $('commentText').value || undefined,
+  const opts = { brand: brand.id, style: $('style').value, language: $('language').value, comment_text: $('commentText').value || undefined,
     trend_source: $('trendUrl').value ? { url: $('trendUrl').value, date: $('trendDate').value } : undefined };
   try {
     for (const f of files) await uploadOne(f, opts);
@@ -110,7 +132,7 @@ async function uploadOne(f, opts) {
       catch { s = null; }
     }
     if (!s) {
-      const x = await send('/uploads', { filename: f.name, size_bytes: f.size, consent_team: true });
+      const x = await send('/uploads', { filename: f.name, size_bytes: f.size, consent_team: true, brand: opts.brand });
       s = { id: x.id, parts: [], status: 'uploading' };
       save(f, s);
     }
@@ -148,7 +170,7 @@ async function uploadOne(f, opts) {
 async function refresh() {
   if (!me) return;
   try {
-    const d = await getJSON('/jobs');
+    const d = await getJSON('/jobs?brand=' + encodeURIComponent(brand.id));
     const box = $('jobs'); box.replaceChildren();
     if (!d.items.length) box.append(el('p', { class: 'muted', text: 'Encara no hi ha vídeos.' }));
     const mine = mode === 'advanced' ? d.items : d.items.filter((j) => j.owner === me.email || me.role !== 'owner');
@@ -195,7 +217,8 @@ async function openJob(id, scroll = true) {
   } catch (e) { show(e.message); }
 }
 function retryBox(j) {
-  const sel = el('select', {}, config.styles.map((s) => el('option', { value: s.id, text: s.label, selected: s.id === j.style })));
+  const allowed = (config.brands.find((b) => b.id === j.brand) || brand).styles;
+  const sel = el('select', {}, config.styles.filter((s) => allowed.includes(s.id)).map((s) => el('option', { value: s.id, text: s.label, selected: s.id === j.style })));
   return el('div', { class: 'actions' },
     el('button', { class: 'secondary', type: 'button', text: 'Reintentar', onclick: async () => { try { await send(`/jobs/${j.id}/retry`); refresh(); openJob(j.id); } catch (e) { show(e.message); } } }),
     sel,

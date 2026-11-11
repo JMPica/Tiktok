@@ -1,0 +1,568 @@
+{
+ "qc": {
+  "status": "pass",
+  "checks": [
+   {
+    "check": "resolución",
+    "status": "pass",
+    "detail": "1080x1920"
+   },
+   {
+    "check": "códec",
+    "status": "pass",
+    "detail": "h264/aac"
+   },
+   {
+    "check": "decodificación completa",
+    "status": "pass",
+    "detail": "sin errores"
+   },
+   {
+    "check": "duración",
+    "status": "pass",
+    "detail": "15.60s (esperado 15.53s)"
+   },
+   {
+    "check": "fps",
+    "status": "pass",
+    "detail": "30/1 · fps nativo del bruto"
+   },
+   {
+    "check": "audio",
+    "status": "pass",
+    "detail": "audio presente"
+   },
+   {
+    "check": "sonoridad",
+    "status": "pass",
+    "detail": "-16.0 LUFS (objetivo -16)"
+   },
+   {
+    "check": "pico real",
+    "status": "pass",
+    "detail": "-1.50 dBTP (máximo -1)"
+   },
+   {
+    "check": "negros",
+    "status": "pass",
+    "detail": "0.0% del metraje en negro"
+   },
+   {
+    "check": "subtítulos",
+    "status": "pass",
+    "detail": "8 subtítulos · pendientes de revisión humana"
+   }
+  ],
+  "measured": {
+   "duration": 15.6,
+   "width": 1080,
+   "height": 1920,
+   "coded_width": 1080,
+   "coded_height": 1920,
+   "rotation": 0,
+   "fps": "30/1",
+   "fps_float": 30.0,
+   "r_frame_rate": "30/1",
+   "vfr": false,
+   "hdr": false,
+   "color_transfer": "bt709",
+   "color_primaries": "bt709",
+   "color_space": "bt709",
+   "dolby_vision": false,
+   "pix_fmt": "yuv420p",
+   "codec": "h264",
+   "audio": true,
+   "audio_codec": "aac",
+   "audio_channels": 2,
+   "audio_rate": 48000,
+   "size_bytes": 11997137,
+   "integrated_lufs": -16.0,
+   "lra_lu": 1.3,
+   "true_peak_dbtp": -1.5,
+   "black_ratio": 0.0
+  },
+  "captions": {
+   "mode": "phrase",
+   "events": 8,
+   "overlays": 0,
+   "issues": [],
+   "verified_by_human": false
+  },
+  "decode_ok": true,
+  "audio_present": true,
+  "width": 1080,
+  "height": 1920,
+  "duration": 15.6,
+  "fps": "30/1",
+  "editorial_review": "human_required",
+  "generative_effects": "disabled"
+ },
+ "render": {
+  "fps": "30/1",
+  "fps_reason": "fps nativo del bruto",
+  "expected_duration": 15.533,
+  "loudness_input": {
+   "input_i": "-20.84",
+   "input_tp": "-4.65",
+   "input_lra": "1.10",
+   "input_thresh": "-30.88",
+   "output_i": "-15.84",
+   "output_tp": "-1.50",
+   "output_lra": "1.10",
+   "output_thresh": "-25.89",
+   "normalization_type": "dynamic",
+   "target_offset": "-0.16"
+  },
+  "tonemapped": false,
+  "filters": "single_pass_concat",
+  "encoder": "libx264 crf18"
+ },
+ "sha256": "5d36017cec68ed5172a4f7c7ec1c431b69e9fc2550efc3915547ba0eeae5ccb7",
+ "edl": {
+  "schema": "blau.edl/4",
+  "id": "df4772eea81e",
+  "version": 1,
+  "style": "top_owner_expert",
+  "style_label": "Top House · Propietarios",
+  "brand": {
+   "id": "top_house",
+   "name": "Top House",
+   "style_schema": "brand_style_v1",
+   "style_version": "1.0.0",
+   "accent": "#E8D9B5",
+   "caption_font": "Poppins SemiBold",
+   "caption_size": 64,
+   "visual_status": "provisional"
+  },
+  "language": "ca",
+  "grade": "documentary",
+  "output": {
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "fps_reason": "fps nativo del bruto"
+  },
+  "source": {
+   "duration": 46.231,
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "hdr": false
+  },
+  "segments": [
+   {
+    "id": "s1",
+    "in": 1.942,
+    "out": 6.414,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s2",
+    "in": 7.894,
+    "out": 11.598,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s3",
+    "in": 12.79,
+    "out": 16.014,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s4",
+    "in": 16.918,
+    "out": 21.038,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   }
+  ],
+  "captions": {
+   "mode": "phrase",
+   "size": "m",
+   "position": "lower",
+   "events": [
+    {
+     "start": 0.08,
+     "end": 2.24,
+     "text": "Saps per què\nalguns tilos poten",
+     "words": [
+      {
+       "start": 0.08,
+       "end": 0.417,
+       "word": "Saps",
+       "source_start": 2.022
+      },
+      {
+       "start": 0.417,
+       "end": 0.687,
+       "word": "per",
+       "source_start": 2.359
+      },
+      {
+       "start": 0.687,
+       "end": 0.957,
+       "word": "què",
+       "source_start": 2.629
+      },
+      {
+       "start": 0.957,
+       "end": 1.43,
+       "word": "alguns",
+       "source_start": 2.899
+      },
+      {
+       "start": 1.43,
+       "end": 1.835,
+       "word": "tilos",
+       "source_start": 3.372
+      },
+      {
+       "start": 1.835,
+       "end": 2.24,
+       "word": "poten",
+       "source_start": 3.777
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 2.24,
+     "end": 4.332,
+     "text": "menys els portals\nsense vendre?",
+     "words": [
+      {
+       "start": 2.24,
+       "end": 2.645,
+       "word": "menys",
+       "source_start": 4.182
+      },
+      {
+       "start": 2.645,
+       "end": 2.915,
+       "word": "els",
+       "source_start": 4.587
+      },
+      {
+       "start": 2.915,
+       "end": 3.455,
+       "word": "portals",
+       "source_start": 4.857
+      },
+      {
+       "start": 3.455,
+       "end": 3.86,
+       "word": "sense",
+       "source_start": 5.397
+      },
+      {
+       "start": 3.86,
+       "end": 4.332,
+       "word": "vendre?",
+       "source_start": 5.802
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 4.552,
+     "end": 6.361,
+     "text": "Preu de sotina\nno sotm'una,",
+     "words": [
+      {
+       "start": 4.552,
+       "end": 4.887,
+       "word": "Preu",
+       "source_start": 7.974
+      },
+      {
+       "start": 4.887,
+       "end": 5.088,
+       "word": "de",
+       "source_start": 8.309
+      },
+      {
+       "start": 5.088,
+       "end": 5.557,
+       "word": "sotina",
+       "source_start": 8.51
+      },
+      {
+       "start": 5.557,
+       "end": 5.758,
+       "word": "no",
+       "source_start": 8.979
+      },
+      {
+       "start": 5.758,
+       "end": 6.361,
+       "word": "sotm'una,",
+       "source_start": 9.18
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 6.361,
+     "end": 8.036,
+     "text": "valoració real\ndel barri.",
+     "words": [
+      {
+       "start": 6.361,
+       "end": 7.031,
+       "word": "valoració",
+       "source_start": 9.783
+      },
+      {
+       "start": 7.031,
+       "end": 7.366,
+       "word": "real",
+       "source_start": 10.453
+      },
+      {
+       "start": 7.366,
+       "end": 7.634,
+       "word": "del",
+       "source_start": 10.788
+      },
+      {
+       "start": 7.634,
+       "end": 8.036,
+       "word": "barri.",
+       "source_start": 11.056
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 8.256,
+     "end": 10.346,
+     "text": "Elles fotos no\nexpliquen com es",
+     "words": [
+      {
+       "start": 8.256,
+       "end": 8.648,
+       "word": "Elles",
+       "source_start": 12.87
+      },
+      {
+       "start": 8.648,
+       "end": 9.04,
+       "word": "fotos",
+       "source_start": 13.262
+      },
+      {
+       "start": 9.04,
+       "end": 9.236,
+       "word": "no",
+       "source_start": 13.654
+      },
+      {
+       "start": 9.236,
+       "end": 9.889,
+       "word": "expliquen",
+       "source_start": 13.85
+      },
+      {
+       "start": 9.889,
+       "end": 10.15,
+       "word": "com",
+       "source_start": 14.503
+      },
+      {
+       "start": 10.15,
+       "end": 10.346,
+       "word": "es",
+       "source_start": 14.764
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 10.346,
+     "end": 11.26,
+     "text": "viu a la casa.",
+     "words": [
+      {
+       "start": 10.346,
+       "end": 10.607,
+       "word": "viu",
+       "source_start": 14.96
+      },
+      {
+       "start": 10.607,
+       "end": 10.738,
+       "word": "a",
+       "source_start": 15.221
+      },
+      {
+       "start": 10.738,
+       "end": 10.933,
+       "word": "la",
+       "source_start": 15.352
+      },
+      {
+       "start": 10.933,
+       "end": 11.26,
+       "word": "casa.",
+       "source_start": 15.547
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 11.48,
+     "end": 13.69,
+     "text": "I show el primer\npassembre és una",
+     "words": [
+      {
+       "start": 11.48,
+       "end": 11.61,
+       "word": "I",
+       "source_start": 16.998
+      },
+      {
+       "start": 11.61,
+       "end": 11.935,
+       "word": "show",
+       "source_start": 17.128
+      },
+      {
+       "start": 11.935,
+       "end": 12.13,
+       "word": "el",
+       "source_start": 17.453
+      },
+      {
+       "start": 12.13,
+       "end": 12.585,
+       "word": "primer",
+       "source_start": 17.648
+      },
+      {
+       "start": 12.585,
+       "end": 13.235,
+       "word": "passembre",
+       "source_start": 18.103
+      },
+      {
+       "start": 13.235,
+       "end": 13.43,
+       "word": "és",
+       "source_start": 18.753
+      },
+      {
+       "start": 13.43,
+       "end": 13.69,
+       "word": "una",
+       "source_start": 18.948
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 13.69,
+     "end": 15.38,
+     "text": "bona valoració,\nés la clau.",
+     "words": [
+      {
+       "start": 13.69,
+       "end": 14.015,
+       "word": "bona",
+       "source_start": 19.208
+      },
+      {
+       "start": 14.015,
+       "end": 14.665,
+       "word": "valoració,",
+       "source_start": 19.533
+      },
+      {
+       "start": 14.665,
+       "end": 14.86,
+       "word": "és",
+       "source_start": 20.183
+      },
+      {
+       "start": 14.86,
+       "end": 15.055,
+       "word": "la",
+       "source_start": 20.378
+      },
+      {
+       "start": 15.055,
+       "end": 15.38,
+       "word": "clau.",
+       "source_start": 20.573
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    }
+   ]
+  },
+  "overlays": [],
+  "audio": {
+   "keep_original": true,
+   "target_lufs": -16,
+   "true_peak_max": -1.0,
+   "music": null,
+   "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+  },
+  "loop": false,
+  "duration": 15.52,
+  "score": {
+   "hook": 17,
+   "story": 20,
+   "authenticity": 8,
+   "utility": 13,
+   "rhythm": 12,
+   "brand": 10,
+   "total": 80,
+   "meaning": "puntuació editorial, no probabilitat de viralitat"
+  },
+  "provenance": {
+   "transcript_rows": [
+    0,
+    3
+   ],
+   "source_range": [
+    2.022,
+    20.898
+   ],
+   "text": "Saps per què alguns tilos poten menys els portals sense vendre? Preu de sotina no sotm'una, valoració real del barri. Elles fotos no expliquen com es viu a la casa. I show el primer passembre és una bona valoració, és la clau.",
+   "notes": [
+    "arrenca amb pregunta/ganxo",
+    "té remat",
+    "possible música de fons (revisar drets)",
+    "reacció/riure probable al final"
+   ],
+   "keep_full_repeats": false,
+   "retakes_removed": []
+  },
+  "risks": [],
+  "requires": [
+   "claims_review",
+   "team_consent",
+   "property_permission"
+  ],
+  "explanation": "Fragment 2.0–20.9 s del vídeo original. Diàleg explicatiu: format expert/consell. Per què: arrenca amb pregunta/ganxo; té remat; possible música de fons (revisar drets); reacció/riure probable al final. Puntuació editorial 80/100 (no és predicció de viralitat).",
+  "automatic_publish": false,
+  "editorial_review_required": true,
+  "hook_overlay_suggestion": "Saps per què alguns tilos poten menys els portals sense vendre?",
+  "title": "1. Saps per què alguns tilos poten menys els portal"
+ }
+}

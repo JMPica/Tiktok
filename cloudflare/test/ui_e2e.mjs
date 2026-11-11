@@ -41,7 +41,9 @@ const worker = spawn(wr, args, { cwd: CF, env, stdio: 'ignore' });
 const base = `http://127.0.0.1:${wport}`;
 for (let i = 0; i < 120; i++) { try { if ((await fetch(base + '/api/health')).ok) break; } catch { /* */ } await new Promise((r) => setTimeout(r, 1000)); }
 
-const runAgent = () => spawnSync(path.join(ROOT, '.venv', 'bin', 'python'), ['-m', 'local_worker.agent', '--once'], { cwd: ROOT, encoding: 'utf8',
+const venvPy = path.join(ROOT, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+const PY = process.env.PYTHON || (fs.existsSync(venvPy) ? venvPy : 'python3');
+const runAgent = () => spawnSync(PY, ['-m', 'local_worker.agent', '--once'], { cwd: ROOT, encoding: 'utf8',
   env: { ...process.env, STUDIO_PUBLIC_URL: base, STUDIO_ALLOW_INSECURE_LOCALHOST: '1', STUDIO_AGENT_TOKEN: agentToken, BLAU_X264_PRESET: 'veryfast' }, timeout: 3600000 });
 
 const iphone = { ...devices['iPhone 13'] };
@@ -54,7 +56,8 @@ try {
   await page.goto(base + '/');
   await page.getByText(`${EDITOR} · Equip`).waitFor();
   check('Simple: sessió d’equip visible i sense commutador Advanced', await page.locator('#modeSwitch').isHidden());
-  check('18 estils al selector', (await page.locator('#style option').count()) === 18);
+  check('equip de Blau: 21 estils (auto + 3 formats de marca + 17 genèrics) i sense commutador de marca',
+    (await page.locator('#style option').count()) === 21 && await page.locator('#brandSwitch').isHidden());
   const noScroll = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
   check('sense scroll horitzontal a 390 px', noScroll);
   await page.screenshot({ path: path.join(shots, '01_simple_inici.jpg'), fullPage: true, type: 'jpeg', quality: 70 });
@@ -86,6 +89,17 @@ try {
   await op.getByText(`${OWNER} · Propietària`).waitFor();
   await op.click('#modeSwitch button[data-mode="advanced"]');
   check('Advanced: veu tots els vídeos', (await op.locator('#listTitle').textContent()) === 'Tots els vídeos');
+  // Dues marques: la propietària pot canviar; Top House té els seus formats i la seva llista (buida) separada.
+  check('propietària: commutador amb les dues marques', (await op.locator('#brandSwitch button').count()) === 2);
+  await op.locator('#brandSwitch button[data-brand="top_house"]').click();
+  await op.getByText('Encara no hi ha vídeos.').waitFor();
+  const topStyles = await op.locator('#style option').allTextContents();
+  check('Top House: només els seus formats (auto + 3 propis + 6 genèrics) i cap vídeo de Blau',
+    topStyles.length === 10 && topStyles.some((t) => t.includes('Visita d’immoble')) && !topStyles.some((t) => t.includes('Blau')) && (await op.locator('.job').count()) === 0, topStyles.join(' | '));
+  check('Top House: avís de colors provisionals visible', await op.locator('#brandNote').isVisible());
+  await op.screenshot({ path: path.join(shots, '07_top_house.jpg'), fullPage: true, type: 'jpeg', quality: 70 });
+  await op.locator('#brandSwitch button[data-brand="blau_de_mar"]').click();
+  await op.locator('.job').first().waitFor();
   await op.locator('.job', { hasText: 'Propostes llestes' }).first().click();
   await op.locator('.variant').first().waitFor();
   await op.getByText('Original i anàlisi').waitFor();

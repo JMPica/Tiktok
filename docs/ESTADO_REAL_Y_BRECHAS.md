@@ -1,5 +1,8 @@
 # Estado real V4 — 28 octubre 2026
 
+> Actualización 11-11-2026 (dos marcas, esquema de EDL, pruebas de hoy): `docs/AUDITORIA_CONTENT_STUDIO_V4.md`.
+> Dos marcas: `implemented` + `tested_unit` + `tested_e2e_local`; **no** `deployed`.
+
 Leyenda: `implemented` (código escrito) · `tested_unit` · `tested_e2e_local` (Worker real con wrangler dev +
 D1/R2 locales + agente + FFmpeg + navegador Chromium con viewport iPhone) · `deployed` (tu Cloudflare) · `tested_device`.
 

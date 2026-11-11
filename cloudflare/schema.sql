@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS uploads (
  id TEXT PRIMARY KEY, owner TEXT NOT NULL, filename TEXT NOT NULL,
  size_bytes INTEGER NOT NULL, r2_key TEXT NOT NULL, multipart_id TEXT NOT NULL,
  status TEXT NOT NULL DEFAULT 'uploading', created_at INTEGER NOT NULL,
- completed_at INTEGER, consent_team INTEGER NOT NULL DEFAULT 0, analysis_key TEXT
+ completed_at INTEGER, consent_team INTEGER NOT NULL DEFAULT 0, analysis_key TEXT,
+ brand TEXT NOT NULL DEFAULT 'blau_de_mar'
 );
 CREATE TABLE IF NOT EXISTS upload_parts (
  upload_id TEXT NOT NULL REFERENCES uploads(id), part_no INTEGER NOT NULL,
@@ -20,7 +21,8 @@ CREATE TABLE IF NOT EXISTS jobs (
  kind TEXT NOT NULL DEFAULT 'produce', language TEXT NOT NULL DEFAULT 'ca', options TEXT,
  parent_variant_id TEXT, instruction TEXT, manual_edits TEXT,
  stage TEXT, progress INTEGER NOT NULL DEFAULT 0, message TEXT,
- attempts INTEGER NOT NULL DEFAULT 0, finished_at INTEGER, summary TEXT
+ attempts INTEGER NOT NULL DEFAULT 0, finished_at INTEGER, summary TEXT,
+ brand TEXT NOT NULL DEFAULT 'blau_de_mar'
 );
 CREATE TABLE IF NOT EXISTS job_output_parts (
  job_id TEXT NOT NULL REFERENCES jobs(id), part_no INTEGER NOT NULL,
@@ -34,7 +36,8 @@ CREATE TABLE IF NOT EXISTS variants (
  output_multipart_id TEXT, size_bytes INTEGER, sha256 TEXT, qc TEXT, explanation TEXT,
  score_total INTEGER, risks TEXT, requires TEXT, duration REAL,
  approved_by TEXT, approved_sha256 TEXT, approved_at INTEGER, approval_checklist TEXT,
- reviewed_by TEXT, review_note TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+ reviewed_by TEXT, review_note TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL,
+ brand TEXT NOT NULL DEFAULT 'blau_de_mar'
 );
 CREATE TABLE IF NOT EXISTS variant_parts (
  variant_id TEXT NOT NULL REFERENCES variants(id), part_no INTEGER NOT NULL,
@@ -50,3 +53,4 @@ CREATE INDEX IF NOT EXISTS idx_jobs_owner ON jobs(owner,created_at);
 CREATE INDEX IF NOT EXISTS idx_variants_job ON variants(job_id,idx);
 CREATE INDEX IF NOT EXISTS idx_variants_upload ON variants(upload_id);
 CREATE INDEX IF NOT EXISTS idx_uploads_owner ON uploads(owner,created_at);
+CREATE INDEX IF NOT EXISTS idx_jobs_brand ON jobs(brand,created_at);

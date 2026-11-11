@@ -16,6 +16,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 from creative_engine import analysis as A
+from creative_engine import brands as B
 from creative_engine import vision_llm as V
 from creative_engine.captions import chunk, map_words
 from creative_engine.media import output_fps
@@ -122,7 +123,8 @@ def _ends_sentence(text: str) -> bool:
     return text.rstrip()[-1:] in '.?!…'
 
 
-def score_window(rows: list[dict], i: int, j: int, language: str, analysis: dict | None, recipe: dict) -> dict:
+def score_window(rows: list[dict], i: int, j: int, language: str, analysis: dict | None, recipe: dict,
+                 vocabulary=BRAND) -> dict:
     win = rows[i:j + 1]
     a, b = win[0]['start'], win[-1]['end']
     text = ' '.join(r['text'] for r in win)
@@ -195,7 +197,7 @@ def score_window(rows: list[dict], i: int, j: int, language: str, analysis: dict
     rhythm = 5 + (5 if 1.8 <= wps <= 3.8 else 2) + (5 if lo <= dur <= hi else 2 if dur <= recipe.get('max_len', 75) else 0)
     rhythm -= 3 if dead > 0.45 and not recipe.get('comedy_pauses') else 0
     # Marca (10): presencia natural, no publicidad.
-    brand = min(10, 4 + 2 * _has(text, BRAND))
+    brand = min(10, 4 + 2 * _has(text, vocabulary))
     # Calidad técnica (veto parcial)
     veto = []
     if analysis:
@@ -258,27 +260,32 @@ def frame_segments(cuts: list[dict], analysis: dict | None, meta: dict, recipe: 
 
 
 # ---------------------------------------------------------------- estilo automático
-def resolve_style(style: str, rows: list[dict], analysis: dict | None, duration: float) -> tuple[str, str]:
+def resolve_style(style: str, rows: list[dict], analysis: dict | None, duration: float,
+                  brand: dict | None = None) -> tuple[str, str]:
+    """'auto' elige uno de los presets de la marca según el material (habla, explicación, reacciones)."""
     if style != 'auto':
         return style, 'estil triat per l’usuària'
+    brand = brand or B.get(None)
+    auto = brand['auto_map']
     speech = sum(r['end'] - r['start'] for r in rows)
     if speech < 0.15 * duration or not rows:
-        return 'asmr', 'gairebé sense diàleg: muntatge sensorial del procés amb so real'
+        return auto['no_speech'], 'gairebé sense diàleg: muntatge visual amb so real'
     text = ' '.join(r['text'] for r in rows).lower()
-    if any(k in text for k in ('per què', 'por qué', 'consell', 'consejo', 'truc', 'truco', 'mite', 'mito')):
-        return 'educativo', 'diàleg explicatiu: format consell/mite'
+    if any(k in text for k in brand['explain_keywords']):
+        return auto['explain'], 'diàleg explicatiu: format expert/consell'
     if analysis and len((analysis.get('audio') or {}).get('energy_bursts', [])) >= 3:
-        return 'tacho_humor', 'reaccions/riures detectats: humor quotidià'
-    return 'tacho_humano', 'diàleg a càmera: humà autèntic'
+        return auto['humor'], 'reaccions/riures detectats: to proper i humà'
+    return auto['default'], 'diàleg a càmera: persona real explicant'
 
 
 # ---------------------------------------------------------------- plan
-def _edl(cand_id, style, styles, language, segs, captions, overlays, meta, score, provenance, risks, requires, explanation):
+def _edl(cand_id, style, styles, language, segs, captions, overlays, meta, score, provenance, risks, requires, explanation,
+         brand=None):
     recipe = styles[style]['render']
     fps, fps_reason = output_fps(meta)
     total = round(sum(s['out'] - s['in'] for s in segs), 3)
     return {'schema': EDL_SCHEMA, 'id': cand_id, 'version': 1, 'style': style, 'style_label': styles[style]['label'],
-            'language': language, 'grade': recipe.get('grade', 'natural'),
+            'brand': B.edl_brand(brand or B.get(None)), 'language': language, 'grade': recipe.get('grade', 'natural'),
             'output': {'width': 1080, 'height': 1920, 'fps': fps, 'fps_reason': fps_reason},
             'source': {'duration': meta['duration'], 'width': meta['width'], 'height': meta['height'],
                        'fps': meta['fps'], 'hdr': meta.get('hdr', False)},
@@ -290,17 +297,24 @@ def _edl(cand_id, style, styles, language, segs, captions, overlays, meta, score
             'automatic_publish': False, 'editorial_review_required': True}
 
 
-def _requirements(style, styles, text, options) -> tuple[list[str], list[str]]:
+def _requirements(style, styles, text, options, brand=None) -> tuple[list[str], list[str]]:
+    brand = brand or B.get(None)
     reqs = list(styles[style]['render'].get('requires', []))
     risks = []
-    claims = sorted({m.group(0).lower() for m in CLAIMS.finditer(text)})
+    claims = sorted({m.group(0).lower() for m in B.claims_regex(brand).finditer(text)})
     if claims:
         risks.append('afirmacions a verificar abans de publicar: ' + ', '.join(claims))
         if 'claims_review' not in reqs:
             reqs.append('claims_review')
     if MINORS.search(text):
         risks.append('possible menció de menors: revisar consentiment')
-    reqs.append('team_consent')
+    for hit in B.sensitive_hits(brand, text):
+        risks.append(hit['risk'])
+        if hit.get('requires') and hit['requires'] not in reqs:
+            reqs.append(hit['requires'])
+    for req in brand.get('always_requires', ['team_consent']):
+        if req not in reqs:
+            reqs.append(req)
     if 'comment_text' in reqs and options.get('comment_text'):
         reqs.remove('comment_text')
     if 'trend_source' in reqs and options.get('trend_source', {}).get('url') and options.get('trend_source', {}).get('date'):
@@ -322,7 +336,7 @@ def _overlaps(r1, r2) -> float:
     return inter / max(0.1, min(r1[1] - r1[0], r2[1] - r2[0]))
 
 
-def speech_candidates(rows, style, styles, language, analysis, meta, options, style_reason):
+def speech_candidates(rows, style, styles, language, analysis, meta, options, style_reason, vocabulary=BRAND):
     recipe = styles[style]['render']
     lo, hi = recipe.get('ideal', [12, 45])
     max_len = recipe.get('max_len', 75)
@@ -337,7 +351,7 @@ def speech_candidates(rows, style, styles, language, analysis, meta, options, st
                 break  # una pausa muy larga separa historias
             if dur < min_len:
                 continue
-            w = score_window(rows, i, j, language, analysis, recipe)
+            w = score_window(rows, i, j, language, analysis, recipe, vocabulary)
             w['i'], w['j'] = i, j
             wins.append(w)
     wins.sort(key=lambda w: (-w['total'], -(w['range'][1] - w['range'][0])))
@@ -367,7 +381,7 @@ def visual_candidates(style, styles, analysis, meta, options):
         q = A.visual_quality(analysis, a, b)
         if q['dark'] or q['sharp_rel'] < 0.6:
             continue
-        lo_s, hi_s = 2.0, 4.5
+        hi_s = float(recipe.get('shot_max', 4.5))
         mid = (a + b) / 2
         length = min(hi_s, b - a)
         shots.append({'in': round(max(a, mid - length / 2), 3), 'out': round(min(b, mid + length / 2), 3),
@@ -394,27 +408,34 @@ def _semantic_status(sem) -> str:
     return f"{sem.get('model')}: {len(sem.get('shots', []))} plans descrits en local"
 
 
-def build_plan(transcript, duration, style='auto', language='ca', analysis=None, meta=None, options=None):
-    """Plan editorial 0..N. Compatible con la firma V4 inicial (transcript, duration, style, language)."""
+def build_plan(transcript, duration, style='auto', language='ca', analysis=None, meta=None, options=None, brand=None):
+    """Plan editorial 0..N. Compatible con la firma V4 inicial (transcript, duration, style, language).
+
+    ``brand`` (id de brands.v1.json) decide presets, vocabulario, riesgos y aspecto; por defecto Blau de Mar.
+    """
     styles = load_styles()
     if style not in styles:
         raise ValueError('Unknown style: ' + style)
+    brand = B.get(brand)
+    if not B.style_allowed(brand, styles[style]):
+        raise ValueError(f"Style {style} is not available for brand {brand['id']}")
     if language not in ('ca', 'es'):
         raise ValueError('Unsupported language')
     options = options or {}
     meta = meta or (analysis or {}).get('meta') or {'duration': duration, 'width': 1080, 'height': 1920, 'fps': '30/1'}
     keep_repeats = style in COMEDY_REPEAT_STYLES
     rows, retakes = usable_rows(transcript, duration, keep_repeats)
-    chosen, style_reason = resolve_style(style, rows, analysis, duration)
+    chosen, style_reason = resolve_style(style, rows, analysis, duration, brand)
     recipe = styles[chosen]['render']
-    base = {'style_requested': style, 'style': chosen, 'style_reason': style_reason, 'automatic_publish': False,
+    base = {'brand': brand['id'], 'style_requested': style, 'style': chosen, 'style_reason': style_reason, 'automatic_publish': False,
             'editorial_review_required': True, 'caption_review_required': True, 'claims_checked': False,
             'selection': 'multimodal_signals+speech' if analysis else 'speech_only',
             'semantic_vision': _semantic_status((analysis or {}).get('semantic_vision')),
             'retakes_removed': [{'start': r['start'], 'end': r['end'], 'text': r['text'][:80]} for r in retakes]}
     candidates = []
     if rows and recipe.get('speech') != 'none':
-        picked, best = speech_candidates(rows, chosen, styles, language, analysis, meta, options, style_reason)
+        picked, best = speech_candidates(rows, chosen, styles, language, analysis, meta, options, style_reason,
+                                         brand['vocabulary'])
         for k, w in enumerate(picked):
             win_rows = rows[w['i']:w['j'] + 1]
             cuts = cut_window(win_rows, recipe, duration)
@@ -430,7 +451,7 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
             overlays = []
             if options.get('comment_text') and chosen == 'respuesta_comentario':
                 overlays.append({'kind': 'comment', 'start': 0.0, 'end': min(3.5, total), 'text': options['comment_text'][:120]})
-            reqs, risks = _requirements(chosen, styles, w['text'], options)
+            reqs, risks = _requirements(chosen, styles, w['text'], options, brand)
             risks += w['veto'] + w.get('sem_risks', [])
             cid = uuid.uuid4().hex[:12]
             hook_text = win_rows[0]['text']
@@ -442,7 +463,7 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
                     'text': w['text'][:1200], 'notes': w['notes'], 'keep_full_repeats': keep_repeats,
                     'retakes_removed': [[round(r['start'], 2), round(r['end'], 2)] for r in dropped_here]}
             edl = _edl(cid, chosen, styles, language, segs, captions, overlays, meta, score, prov, risks, reqs,
-                       _explain(w, style_reason, w['scores'], w['notes'], language))
+                       _explain(w, style_reason, w['scores'], w['notes'], language), brand)
             edl['hook_overlay_suggestion'] = hook_text[:74]
             edl['title'] = f"{k + 1}. {hook_text[:48]}"
             candidates.append(edl)
@@ -461,7 +482,7 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
             return {**base, 'status': 'needs_review', 'reason': reason, 'candidates': []}
         for v in vis:
             segs = frame_segments(v['cuts'], analysis, meta, recipe)
-            reqs, risks = _requirements(chosen, styles, '', options)
+            reqs, risks = _requirements(chosen, styles, '', options, brand)
             if (analysis.get('audio') or {}).get('probable_music'):
                 risks.append('l’àudio original sembla contenir música: verificar drets')
             q = {'hook': 10, 'story': 8, 'authenticity': 14, 'utility': 6, 'rhythm': 11, 'brand': 6}
@@ -469,7 +490,8 @@ def build_plan(transcript, duration, style='auto', language='ca', analysis=None,
             prov = {'shots': v['cuts'], 'notes': ['plans més nítids en ordre cronològic', 'so original']}
             edl = _edl(uuid.uuid4().hex[:12], chosen, styles, language, segs, {'mode': 'none', 'events': []}, [],
                        meta, score, prov, risks, reqs,
-                       f"Peça sense diàleg amb {len(segs)} plans nítids ({v['total']:.1f}s) i so real. {style_reason.capitalize()}.")
-            edl['title'] = '1. Procés / sensorial'
+                       f"Peça sense diàleg amb {len(segs)} plans nítids ({v['total']:.1f}s) i so real. {style_reason.capitalize()}.",
+                       brand)
+            edl['title'] = '1. Visita / recorregut' if brand['id'] == 'top_house' else '1. Procés / sensorial'
             candidates.append(edl)
     return {**base, 'status': 'drafts', 'candidates': candidates}

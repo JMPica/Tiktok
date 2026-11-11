@@ -1,0 +1,434 @@
+{
+ "qc": {
+  "status": "pass",
+  "checks": [
+   {
+    "check": "resolución",
+    "status": "pass",
+    "detail": "1080x1920"
+   },
+   {
+    "check": "códec",
+    "status": "pass",
+    "detail": "h264/aac"
+   },
+   {
+    "check": "decodificación completa",
+    "status": "pass",
+    "detail": "sin errores"
+   },
+   {
+    "check": "duración",
+    "status": "pass",
+    "detail": "7.90s (esperado 7.83s)"
+   },
+   {
+    "check": "fps",
+    "status": "pass",
+    "detail": "30/1 · fps nativo del bruto"
+   },
+   {
+    "check": "audio",
+    "status": "pass",
+    "detail": "audio presente"
+   },
+   {
+    "check": "sonoridad",
+    "status": "pass",
+    "detail": "-16.0 LUFS (objetivo -16)"
+   },
+   {
+    "check": "pico real",
+    "status": "pass",
+    "detail": "-1.50 dBTP (máximo -1)"
+   },
+   {
+    "check": "negros",
+    "status": "pass",
+    "detail": "0.0% del metraje en negro"
+   },
+   {
+    "check": "subtítulos",
+    "status": "pass",
+    "detail": "6 subtítulos · pendientes de revisión humana"
+   }
+  ],
+  "measured": {
+   "duration": 7.9,
+   "width": 1080,
+   "height": 1920,
+   "coded_width": 1080,
+   "coded_height": 1920,
+   "rotation": 0,
+   "fps": "30/1",
+   "fps_float": 30.0,
+   "r_frame_rate": "30/1",
+   "vfr": false,
+   "hdr": false,
+   "color_transfer": "bt709",
+   "color_primaries": "bt709",
+   "color_space": "bt709",
+   "dolby_vision": false,
+   "pix_fmt": "yuv420p",
+   "codec": "h264",
+   "audio": true,
+   "audio_codec": "aac",
+   "audio_channels": 2,
+   "audio_rate": 48000,
+   "size_bytes": 6347950,
+   "integrated_lufs": -16.0,
+   "lra_lu": 1.1,
+   "true_peak_dbtp": -1.5,
+   "black_ratio": 0.0
+  },
+  "captions": {
+   "mode": "words",
+   "events": 6,
+   "overlays": 0,
+   "issues": [],
+   "verified_by_human": false
+  },
+  "decode_ok": true,
+  "audio_present": true,
+  "width": 1080,
+  "height": 1920,
+  "duration": 7.9,
+  "fps": "30/1",
+  "editorial_review": "human_required",
+  "generative_effects": "disabled"
+ },
+ "render": {
+  "fps": "30/1",
+  "fps_reason": "fps nativo del bruto",
+  "expected_duration": 7.833,
+  "loudness_input": {
+   "input_i": "-21.12",
+   "input_tp": "-4.39",
+   "input_lra": "0.80",
+   "input_thresh": "-31.17",
+   "output_i": "-16.15",
+   "output_tp": "-1.50",
+   "output_lra": "1.10",
+   "output_thresh": "-26.20",
+   "normalization_type": "dynamic",
+   "target_offset": "0.15"
+  },
+  "tonemapped": false,
+  "filters": "single_pass_concat",
+  "encoder": "libx264 crf18"
+ },
+ "sha256": "6d88cabd57538c0f204554c4ce19e316579f29483000d4a2cb957e7a5ff5390a",
+ "edl": {
+  "schema": "blau.edl/4",
+  "id": "505de9e3cb0b",
+  "version": 1,
+  "style": "blau_human",
+  "style_label": "Blau · Equipo",
+  "brand": {
+   "id": "blau_de_mar",
+   "name": "Blau de Mar",
+   "style_schema": "brand_style_v1",
+   "style_version": "1.0.0",
+   "accent": "#7FE3D6",
+   "caption_font": "Poppins ExtraBold",
+   "caption_size": null,
+   "visual_status": "provisional"
+  },
+  "language": "ca",
+  "grade": "natural",
+  "output": {
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "fps_reason": "fps nativo del bruto"
+  },
+  "source": {
+   "duration": 42.838,
+   "width": 1080,
+   "height": 1920,
+   "fps": "30/1",
+   "hdr": false
+  },
+  "segments": [
+   {
+    "id": "s1",
+    "in": 11.478,
+    "out": 15.406,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   },
+   {
+    "id": "s2",
+    "in": 16.406,
+    "out": 20.302,
+    "zoom": 1.0,
+    "x": 0.5,
+    "y": 0.5,
+    "push_in": 0.0,
+    "framing": "center"
+   }
+  ],
+  "captions": {
+   "mode": "words",
+   "size": "l",
+   "position": "lower",
+   "events": [
+    {
+     "start": 0.08,
+     "end": 1.749,
+     "text": "La persona\nestigui com una",
+     "words": [
+      {
+       "start": 0.08,
+       "end": 0.265,
+       "word": "La",
+       "source_start": 11.558
+      },
+      {
+       "start": 0.265,
+       "end": 0.76,
+       "word": "persona",
+       "source_start": 11.743
+      },
+      {
+       "start": 0.76,
+       "end": 1.254,
+       "word": "estigui",
+       "source_start": 12.238
+      },
+      {
+       "start": 1.254,
+       "end": 1.501,
+       "word": "com",
+       "source_start": 12.732
+      },
+      {
+       "start": 1.501,
+       "end": 1.749,
+       "word": "una",
+       "source_start": 12.979
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 1.749,
+     "end": 3.417,
+     "text": "i relaxa la\nmes del primer",
+     "words": [
+      {
+       "start": 1.749,
+       "end": 1.872,
+       "word": "i",
+       "source_start": 13.227
+      },
+      {
+       "start": 1.872,
+       "end": 2.305,
+       "word": "relaxa",
+       "source_start": 13.35
+      },
+      {
+       "start": 2.305,
+       "end": 2.49,
+       "word": "la",
+       "source_start": 13.783
+      },
+      {
+       "start": 2.49,
+       "end": 2.737,
+       "word": "mes",
+       "source_start": 13.968
+      },
+      {
+       "start": 2.737,
+       "end": 2.985,
+       "word": "del",
+       "source_start": 14.215
+      },
+      {
+       "start": 2.985,
+       "end": 3.417,
+       "word": "primer",
+       "source_start": 14.463
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 3.417,
+     "end": 4.008,
+     "text": "minut.",
+     "words": [
+      {
+       "start": 3.417,
+       "end": 3.788,
+       "word": "minut.",
+       "source_start": 14.895
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 4.008,
+     "end": 5.816,
+     "text": "Però he vist la\ncaïlla sent a",
+     "words": [
+      {
+       "start": 4.008,
+       "end": 4.309,
+       "word": "Però",
+       "source_start": 16.486
+      },
+      {
+       "start": 4.309,
+       "end": 4.49,
+       "word": "he",
+       "source_start": 16.787
+      },
+      {
+       "start": 4.49,
+       "end": 4.791,
+       "word": "vist",
+       "source_start": 16.968
+      },
+      {
+       "start": 4.791,
+       "end": 4.972,
+       "word": "la",
+       "source_start": 17.269
+      },
+      {
+       "start": 4.972,
+       "end": 5.394,
+       "word": "caïlla",
+       "source_start": 17.45
+      },
+      {
+       "start": 5.394,
+       "end": 5.695,
+       "word": "sent",
+       "source_start": 17.872
+      },
+      {
+       "start": 5.695,
+       "end": 5.816,
+       "word": "a",
+       "source_start": 18.173
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 5.816,
+     "end": 6.901,
+     "text": "fallar en\nla cafè.",
+     "words": [
+      {
+       "start": 5.816,
+       "end": 6.238,
+       "word": "fallar",
+       "source_start": 18.294
+      },
+      {
+       "start": 6.238,
+       "end": 6.418,
+       "word": "en",
+       "source_start": 18.716
+      },
+      {
+       "start": 6.418,
+       "end": 6.599,
+       "word": "la",
+       "source_start": 18.896
+      },
+      {
+       "start": 6.599,
+       "end": 6.901,
+       "word": "cafè.",
+       "source_start": 19.077
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    },
+    {
+     "start": 6.901,
+     "end": 7.684,
+     "text": "És el secret.",
+     "words": [
+      {
+       "start": 6.901,
+       "end": 7.081,
+       "word": "És",
+       "source_start": 19.379
+      },
+      {
+       "start": 7.081,
+       "end": 7.262,
+       "word": "el",
+       "source_start": 19.559
+      },
+      {
+       "start": 7.262,
+       "end": 7.684,
+       "word": "secret.",
+       "source_start": 19.74
+      }
+     ],
+     "type": "transcript_auto_unverified"
+    }
+   ]
+  },
+  "overlays": [],
+  "audio": {
+   "keep_original": true,
+   "target_lufs": -16,
+   "true_peak_max": -1.0,
+   "music": null,
+   "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+  },
+  "loop": false,
+  "duration": 7.824,
+  "score": {
+   "hook": 17,
+   "story": 20,
+   "authenticity": 8,
+   "utility": 10,
+   "rhythm": 12,
+   "brand": 4,
+   "total": 71,
+   "meaning": "puntuació editorial, no probabilitat de viralitat"
+  },
+  "provenance": {
+   "transcript_rows": [
+    1,
+    2
+   ],
+   "source_range": [
+    11.558,
+    20.162
+   ],
+   "text": "La persona estigui com una i relaxa la mes del primer minut. Però he vist la caïlla sent a fallar en la cafè. És el secret.",
+   "notes": [
+    "arrenca amb pregunta/ganxo",
+    "té remat",
+    "possible música de fons (revisar drets)",
+    "reacció/riure probable al final"
+   ],
+   "keep_full_repeats": false,
+   "retakes_removed": []
+  },
+  "risks": [],
+  "requires": [
+   "team_consent"
+  ],
+  "explanation": "Fragment 11.6–20.2 s del vídeo original. Reaccions/riures detectats: to proper i humà. Per què: arrenca amb pregunta/ganxo; té remat; possible música de fons (revisar drets); reacció/riure probable al final. Puntuació editorial 71/100 (no és predicció de viralitat).",
+  "automatic_publish": false,
+  "editorial_review_required": true,
+  "hook_overlay_suggestion": "La persona estigui com una i relaxa la mes del primer minut.",
+  "title": "1. La persona estigui com una i relaxa la mes del p"
+ }
+}

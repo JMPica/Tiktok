@@ -1,5 +1,7 @@
 # Checklist de aceptación V4 — evidencia a 28-10-2026
 
+> Tabla PASS / FAIL / BLOCKED del encargo Content Studio (11-11-2026): `docs/AUDITORIA_CONTENT_STUDIO_V4.md` §5.
+
 Entorno de prueba: Linux x86_64, Python 3.13, FFmpeg 6.1.1, Node 22, wrangler 4.154 (`wrangler dev` = runtime workerd
 con D1/R2 locales), Chromium (Playwright) con viewport iPhone 13. Material: vídeos **sintéticos** (patrón de color +
 voz espeak-ng en catalán y castellano) — no hay material propio consentido en el repositorio.

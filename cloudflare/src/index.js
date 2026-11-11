@@ -7,9 +7,10 @@
  */
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import styleData from '../../creative_engine/styles.v4.json' with { type: 'json' };
+import brandData from '../../creative_engine/brands.v1.json' with { type: 'json' };
 import STATIC from './static.generated.js';
 
-const VERSION = '4.0.0';
+const VERSION = '4.1.0';
 const PART = 8 * 1024 * 1024;
 const MAX_NAME = 180;
 const LEASE_DEFAULT_S = 30 * 60;
@@ -17,8 +18,13 @@ const LEASE_DEFAULT_S = 30 * 60;
 const leaseMs = (env) => Math.max(10, Number(env.LEASE_SECONDS || LEASE_DEFAULT_S)) * 1000;
 const MAX_ATTEMPTS = 3;
 const STYLES = new Map(styleData.profiles.map((s) => [s.id, s]));
+// Dues marques, un motor (brand_style_v1). Cada pujada, treball i versió pertany a UNA marca.
+const BRANDS = new Map(brandData.brands.map((b) => [b.id, b]));
+const DEFAULT_BRAND = brandData.default_brand;
+const styleAllowed = (brand, style) => (style.brand ? style.brand === brand.id
+  : brand.legacy_styles === 'all' || brand.legacy_styles.includes(style.id));
 const APPROVAL_ITEMS = ['team_consent', 'client_consent', 'claims_review', 'licensed_music', 'before_after_evidence',
-  'trend_source', 'comment_text', 'captions_reviewed'];
+  'trend_source', 'comment_text', 'captions_reviewed', 'property_permission'];
 const jwksCache = new Map();
 
 class HttpError extends Error {
@@ -72,10 +78,26 @@ async function who(req, env) {
   const role = owners.includes(email) ? 'owner' : 'editor';
   // Defensa en profundidad: si hi ha llista d'equip, ningú fora d'ella entra encara que Access ho permeti.
   if (role !== 'owner' && team_.length && !team_.includes(email)) fail(403, 'Aquest correu no forma part de l’equip');
-  return { email, role };
+  return { email, role, brands: brandsFor(env, email, role) };
+}
+// Marques que pot veure cada correu. La propietària, totes. La resta, segons el secret BRAND_MEMBERS
+// (JSON {"top_house":"a@x.cat,b@y.cat","blau_de_mar":"..."}); sense entrada pròpia => només la marca per defecte.
+function brandsFor(env, email, role) {
+  if (role === 'owner') return [...BRANDS.keys()];
+  const map = parse(env.BRAND_MEMBERS, null);
+  const mine = map && typeof map === 'object' ? [...BRANDS.keys()].filter((b) => emails(map[b]).includes(email)) : [];
+  return mine.length ? mine : [DEFAULT_BRAND];
+}
+function requireBrand(user, brand) {
+  const id = brand || DEFAULT_BRAND;
+  if (!BRANDS.has(id)) fail(422, 'Marca no vàlida');
+  if (!user.brands.includes(id)) fail(403, 'No tens accés a aquesta marca');
+  return id;
 }
 function requireOwnerRole(user) { if (user.role !== 'owner') fail(403, 'Només la propietària pot fer això'); }
-function assertCanSee(row, user) { if (!row || (user.role !== 'owner' && row.owner !== user.email)) fail(404, 'No trobat'); }
+function assertCanSee(row, user) {
+  if (!row || (user.role !== 'owner' && row.owner !== user.email) || !user.brands.includes(row.brand || DEFAULT_BRAND)) fail(404, 'No trobat');
+}
 // Editor al núvol (GitHub Actions): s'identifica amb un token OIDC signat per GitHub, sense secret compartit.
 const GH_OIDC_ISSUER = 'https://token.actions.githubusercontent.com';
 const GH_OIDC_AUDIENCE = 'blau-tiktok-studio';
@@ -175,13 +197,14 @@ async function beginUpload(req, env, user) {
   const limit = Number(env.UPLOADS_PER_HOUR || 40);
   const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM uploads WHERE owner=? AND created_at>?').bind(user.email, now() - 3600000).first();
   if (recent.n >= limit) fail(429, 'Massa pujades en una hora. Espera una mica.');
+  const brand = requireBrand(user, b.brand);
   const id = randomId();
-  const key = `originals/${id}/${name}`;
+  const key = `brands/${brand}/originals/${id}/${name}`;
   const multi = await env.BUCKET.createMultipartUpload(key, { httpMetadata: { contentType: /\.mov$/i.test(name) ? 'video/quicktime' : 'video/mp4' } });
-  await env.DB.prepare('INSERT INTO uploads (id,owner,filename,size_bytes,r2_key,multipart_id,status,created_at,consent_team) VALUES (?,?,?,?,?,?,?,?,?)')
-    .bind(id, user.email, name, size, key, multi.uploadId, 'uploading', now(), b.consent_team ? 1 : 0).run();
-  await audit(env, user.email, 'upload_started', id, { size });
-  return json({ id, chunk_size: PART, total_parts: Math.ceil(size / PART) });
+  await env.DB.prepare('INSERT INTO uploads (id,owner,filename,size_bytes,r2_key,multipart_id,status,created_at,consent_team,brand) VALUES (?,?,?,?,?,?,?,?,?,?)')
+    .bind(id, user.email, name, size, key, multi.uploadId, 'uploading', now(), b.consent_team ? 1 : 0, brand).run();
+  await audit(env, user.email, 'upload_started', id, { size, brand });
+  return json({ id, brand, chunk_size: PART, total_parts: Math.ceil(size / PART) });
 }
 async function uploadPart(req, env, user, id, partNo) {
   const row = await getUpload(env, id); assertCanSee(row, user);
@@ -228,21 +251,24 @@ async function createJob(req, env, user, uid) {
   if (!['automatic', 'real', 'creative'].includes(mode)) fail(422, 'Mode no vàlid');
   const style = b.style || 'auto';
   if (!STYLES.has(style)) fail(422, 'Estil no vàlid');
+  const brand = row.brand || DEFAULT_BRAND;
+  if (b.brand && b.brand !== brand) fail(409, 'Aquest vídeo pertany a una altra marca');
+  if (!styleAllowed(BRANDS.get(brand), STYLES.get(style))) fail(422, 'Aquest estil no és d’aquesta marca');
   const language = b.language || 'ca';
   if (!['ca', 'es'].includes(language)) fail(422, 'Idioma no vàlid');
   const dup = await env.DB.prepare("SELECT id,status FROM jobs WHERE upload_id=? AND kind='produce' AND style=? AND language=? AND status IN ('queued','processing')")
     .bind(uid, style, language).first();
   if (dup) return json({ id: dup.id, status: dup.status, reused: true });
   const id = randomId();
-  await env.DB.prepare('INSERT INTO jobs(id,upload_id,owner,mode,style,language,options,kind,status,stage,progress,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)')
-    .bind(id, uid, row.owner, mode, style, language, JSON.stringify(jobOptions(b)), 'produce', 'queued', 'queued', 0, now(), now()).run();
-  await audit(env, user.email, 'job_created', id, { style, language });
+  await env.DB.prepare('INSERT INTO jobs(id,upload_id,owner,mode,style,language,options,kind,status,stage,progress,created_at,updated_at,brand) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    .bind(id, uid, row.owner, mode, style, language, JSON.stringify(jobOptions(b)), 'produce', 'queued', 'queued', 0, now(), now(), brand).run();
+  await audit(env, user.email, 'job_created', id, { style, language, brand });
   return json({ id, status: 'queued' }, 201);
 }
 
 // ------------------------------------------------------------------ trabajos y variantes (usuaria)
 function publicVariant(v, full = false) {
-  const out = { id: v.id, job_id: v.job_id, upload_id: v.upload_id, idx: v.idx, version: v.version, parent_variant_id: v.parent_variant_id,
+  const out = { id: v.id, job_id: v.job_id, upload_id: v.upload_id, brand: v.brand || DEFAULT_BRAND, idx: v.idx, version: v.version, parent_variant_id: v.parent_variant_id,
     title: v.title, style: v.style, style_label: STYLES.get(v.style)?.label_ca || v.style, status: v.status, sha256: v.sha256,
     explanation: v.explanation, score_total: v.score_total, risks: parse(v.risks, []), requires: parse(v.requires, []),
     duration: v.duration, has_preview: !!v.r2_key && ['needs_approval', 'needs_review', 'approved', 'rejected'].includes(v.status),
@@ -254,15 +280,17 @@ function publicVariant(v, full = false) {
   return out;
 }
 function publicJob(j, upload) {
-  return { id: j.id, upload_id: j.upload_id, filename: upload?.filename, owner: j.owner, kind: j.kind, status: j.status,
+  return { id: j.id, upload_id: j.upload_id, brand: j.brand || DEFAULT_BRAND, filename: upload?.filename, owner: j.owner, kind: j.kind, status: j.status,
     style: j.style, style_label: STYLES.get(j.style)?.label_ca || j.style, language: j.language, stage: j.stage, progress: j.progress,
     message: j.message, error: j.error, instruction: j.instruction, parent_variant_id: j.parent_variant_id,
     created_at: j.created_at, updated_at: j.updated_at, finished_at: j.finished_at, summary: parse(j.summary, null) };
 }
-async function listJobs(env, user) {
-  const base = `SELECT j.*, u.filename FROM jobs j JOIN uploads u ON u.id=j.upload_id`;
-  const q = user.role === 'owner' ? env.DB.prepare(`${base} ORDER BY j.created_at DESC LIMIT 100`)
-    : env.DB.prepare(`${base} WHERE j.owner=? ORDER BY j.created_at DESC LIMIT 100`).bind(user.email);
+async function listJobs(env, user, brandFilter) {
+  // Sempre filtrat per marca: la demanada (si hi té accés) o totes les seves. Mai es barregen marques alienes.
+  const brands = brandFilter ? [requireBrand(user, brandFilter)] : user.brands;
+  const base = `SELECT j.*, u.filename FROM jobs j JOIN uploads u ON u.id=j.upload_id WHERE j.brand IN (${brands.map(() => '?').join(',')})`;
+  const q = user.role === 'owner' ? env.DB.prepare(`${base} ORDER BY j.created_at DESC LIMIT 100`).bind(...brands)
+    : env.DB.prepare(`${base} AND j.owner=? ORDER BY j.created_at DESC LIMIT 100`).bind(...brands, user.email);
   const { results } = await q.all();
   const ids = results.map((j) => j.id);
   const variants = new Map();
@@ -352,9 +380,9 @@ async function revise(req, env, user, id, manual) {
   }
   const j = await getJob(env, v.job_id);
   const jid = randomId();
-  await env.DB.prepare('INSERT INTO jobs(id,upload_id,owner,mode,style,language,options,kind,status,stage,progress,parent_variant_id,instruction,manual_edits,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+  await env.DB.prepare('INSERT INTO jobs(id,upload_id,owner,mode,style,language,options,kind,status,stage,progress,parent_variant_id,instruction,manual_edits,created_at,updated_at,brand) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     .bind(jid, v.upload_id, v.owner, j?.mode || 'automatic', v.style, j?.language || 'ca', j?.options || null, 'revise', 'queued', 'queued', 0, id,
-      instruction, edits ? JSON.stringify(edits) : null, now(), now()).run();
+      instruction, edits ? JSON.stringify(edits) : null, now(), now(), v.brand || DEFAULT_BRAND).run();
   await audit(env, user.email, manual ? 'variant_edited' : 'variant_revision_requested', id, { job: jid, instruction });
   return json({ id: jid, status: 'queued' }, 201);
 }
@@ -424,7 +452,7 @@ async function claim(env) {
     parent = pv ? { id: pv.id, version: pv.version, idx: pv.idx, edl: edlObj ? await edlObj.json() : null } : null;
   }
   const { results: done } = await env.DB.prepare("SELECT COUNT(*) AS n FROM variants WHERE job_id=? AND status!='uploading'").bind(j.id).all();
-  return json({ job: { id: j.id, kind: j.kind, upload_id: j.upload_id, filename: u?.filename, size_bytes: u?.size_bytes, mode: j.mode,
+  return json({ job: { id: j.id, kind: j.kind, upload_id: j.upload_id, brand: j.brand || DEFAULT_BRAND, filename: u?.filename, size_bytes: u?.size_bytes, mode: j.mode,
     style: j.style || 'auto', language: j.language || 'ca', options: parse(j.options, {}), instruction: j.instruction,
     manual_edits: parse(j.manual_edits, null), parent, analysis_available: !!u?.analysis_key, lease_until: t + leaseMs(env),
     agent_id: agentId, attempt: j.attempts, variants_done: done[0]?.n || 0 } });
@@ -455,7 +483,7 @@ async function putAnalysis(req, env, id) {
   const j = await agentJob(req, env, id);
   const b = await bodyJSON(req, 40 * 1024 * 1024);
   if (!b.full || !b.summary) fail(422, 'Falten dades d’anàlisi');
-  const key = `analysis/${j.upload_id}.json`;
+  const key = `brands/${j.brand || DEFAULT_BRAND}/analysis/${j.upload_id}.json`;
   await env.BUCKET.put(key, JSON.stringify(b.full), { httpMetadata: { contentType: 'application/json' } });
   await env.BUCKET.put(key.replace(/\.json$/, '.summary.json'), JSON.stringify(b.summary), { httpMetadata: { contentType: 'application/json' } });
   await env.DB.prepare('UPDATE uploads SET analysis_key=? WHERE id=?').bind(key, j.upload_id).run();
@@ -475,9 +503,12 @@ async function startVariant(req, env, id) {
   if (!Number.isSafeInteger(size) || size < 1 || size > 2 * 1024 * 1024 * 1024) fail(422, 'Mida de vídeo no vàlida');
   if (!b.edl || !Array.isArray(b.edl.segments)) fail(422, 'EDL requerit');
   if (b.style && !STYLES.has(b.style)) fail(422, 'Estil no vàlid');
+  const brand = j.brand || DEFAULT_BRAND;
+  if (b.style && !styleAllowed(BRANDS.get(brand), STYLES.get(b.style))) fail(422, 'Aquest estil no és d’aquesta marca');
+  if (b.edl.brand?.id && b.edl.brand.id !== brand) fail(422, 'L’EDL és d’una altra marca');
   const vid = randomId();
-  const key = `renders/${j.upload_id}/${vid}.mp4`;
-  const edlKey = `edl/${j.upload_id}/${vid}.json`;
+  const key = `brands/${brand}/renders/${j.upload_id}/${vid}.mp4`;
+  const edlKey = `brands/${brand}/edl/${j.upload_id}/${vid}.json`;
   await env.BUCKET.put(edlKey, JSON.stringify(b.edl), { httpMetadata: { contentType: 'application/json' } });
   const mpu = await env.BUCKET.createMultipartUpload(key, { httpMetadata: { contentType: 'video/mp4' } });
   let idx = Number(b.idx) || 0, version = Number(b.version) || 1, parentId = null;
@@ -485,11 +516,11 @@ async function startVariant(req, env, id) {
     const pv = await getVariant(env, j.parent_variant_id);
     if (pv) { idx = pv.idx; version = (pv.version || 1) + 1; parentId = pv.id; }
   }
-  await env.DB.prepare('INSERT INTO variants(id,job_id,upload_id,owner,idx,version,parent_variant_id,title,style,status,r2_key,edl_key,output_multipart_id,size_bytes,explanation,score_total,risks,requires,duration,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+  await env.DB.prepare('INSERT INTO variants(id,job_id,upload_id,owner,idx,version,parent_variant_id,title,style,status,r2_key,edl_key,output_multipart_id,size_bytes,explanation,score_total,risks,requires,duration,created_at,updated_at,brand) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     .bind(vid, id, j.upload_id, j.owner, idx, version, parentId, String(b.title || '').slice(0, 120), b.style || j.style, 'uploading', key, edlKey, mpu.uploadId, size,
       String(b.explanation || '').slice(0, 1500), Number.isFinite(b.score_total) ? Math.round(b.score_total) : null,
       JSON.stringify((b.risks || []).slice(0, 20)), JSON.stringify((b.requires || []).filter((x) => APPROVAL_ITEMS.includes(x))),
-      Number(b.edl.duration) || null, now(), now()).run();
+      Number(b.edl.duration) || null, now(), now(), brand).run();
   return json({ variant_id: vid, chunk_size: PART }, 201);
 }
 async function agentVariant(req, env, vid) {
@@ -597,7 +628,11 @@ async function router(req, env, ctx) {
   }
   if (m === 'GET' && p === '/api/me') return json(user);
   if (m === 'GET' && p === '/api/config') return json({ version: VERSION, part_size: PART, max_upload_bytes: Number(env.MAX_UPLOAD_BYTES || 4294967296),
-    styles: [...STYLES.values()].map((s) => ({ id: s.id, label: s.label_ca || s.label, intent: s.intent_ca || s.intent, requires: s.render?.requires || [] })) });
+    default_brand: DEFAULT_BRAND,
+    brands: user.brands.map((id) => { const b = BRANDS.get(id); return { id, name: b.name, label: b.label_ca, mode: b.editorial_mode, presets: b.presets,
+      visual_status: b.visual.status, accent: b.visual.accent,
+      styles: [...STYLES.values()].filter((s) => styleAllowed(b, s)).map((s) => s.id) }; }),
+    styles: [...STYLES.values()].map((s) => ({ id: s.id, brand: s.brand || null, label: s.label_ca || s.label, intent: s.intent_ca || s.intent, requires: s.render?.requires || [] })) });
   if (m === 'GET' && p === '/api/audit') {
     requireOwnerRole(user);
     const { results } = await env.DB.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 300').all();
@@ -618,7 +653,7 @@ async function router(req, env, ctx) {
     if (m === 'POST' && (action === 'render' || action === 'jobs')) return wake(ctx, env, await createJob(req, env, user, id));
     if (m === 'GET' && action === 'analysis') return uploadAnalysis(env, user, id);
   }
-  if (m === 'GET' && p === '/api/jobs') return listJobs(env, user);
+  if (m === 'GET' && p === '/api/jobs') return listJobs(env, user, u.searchParams.get('brand'));
   x = p.match(/^\/api\/jobs\/([0-9a-f]{32})(?:\/(retry))?$/);
   if (x) {
     if (m === 'GET' && !x[2]) return jobDetail(env, user, x[1]);
@@ -633,7 +668,7 @@ async function router(req, env, ctx) {
       const v = await getVariant(env, id); assertCanSee(v, user);
       if (action === 'poster') { if (!v.poster_key) fail(404, 'Sense portada'); return serveObject(req, env, v.poster_key, { type: 'image/jpeg' }); }
       if (!v.r2_key || v.status === 'uploading') fail(404, 'Vista prèvia no disponible');
-      return serveObject(req, env, v.r2_key, { download: action === 'download' ? `blau-${id.slice(0, 8)}-v${v.version}.mp4` : null });
+      return serveObject(req, env, v.r2_key, { download: action === 'download' ? `${BRANDS.get(v.brand || DEFAULT_BRAND)?.download_prefix || 'video'}-${id.slice(0, 8)}-v${v.version}.mp4` : null });
     }
     if (m === 'POST' && action === 'approve') return approve(req, env, user, id);
     if (m === 'POST' && action === 'reject') return reject(req, env, user, id);

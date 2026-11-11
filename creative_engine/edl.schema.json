@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "blau.edl/4",
+  "title": "Content Studio EDL v4",
+  "description": "Lista de decisiones de montaje reproducible. Los tiempos in/out son segundos del original (que nunca se modifica).",
+  "type": "object",
+  "required": ["schema", "id", "version", "style", "language", "output", "segments", "captions", "audio", "automatic_publish"],
+  "properties": {
+    "schema": {"enum": ["blau.edl/4"]},
+    "id": {"type": "string", "minLength": 4, "maxLength": 64},
+    "version": {"type": "integer", "minimum": 1},
+    "style": {"type": "string", "minLength": 1},
+    "language": {"enum": ["ca", "es"]},
+    "grade": {"enum": ["natural", "punchy", "premium", "documentary", "none"]},
+    "brand": {
+      "type": "object",
+      "required": ["id", "accent"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "accent": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+        "caption_font": {"type": ["string", "null"]},
+        "caption_size": {"type": ["integer", "null"], "minimum": 40, "maximum": 96},
+        "visual_status": {"enum": ["provisional", "verified"]}
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["width", "height", "fps"],
+      "properties": {
+        "width": {"enum": [1080]},
+        "height": {"enum": [1920]},
+        "fps": {"type": "string", "pattern": "^[0-9]+(/[0-9]+)?$"}
+      }
+    },
+    "segments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 120,
+      "items": {
+        "type": "object",
+        "required": ["in", "out"],
+        "properties": {
+          "in": {"type": "number", "minimum": 0},
+          "out": {"type": "number", "minimum": 0},
+          "zoom": {"type": "number", "minimum": 1, "maximum": 1.5},
+          "x": {"type": "number", "minimum": 0, "maximum": 1},
+          "y": {"type": "number", "minimum": 0, "maximum": 1},
+          "push_in": {"type": "number", "minimum": 0, "maximum": 0.2}
+        }
+      }
+    },
+    "captions": {
+      "type": "object",
+      "required": ["mode", "events"],
+      "properties": {
+        "mode": {"enum": ["none", "phrase", "words"]},
+        "size": {"enum": ["m", "l"]},
+        "position": {"enum": ["lower", "upper", "middle"]},
+        "events": {
+          "type": "array",
+          "maxItems": 600,
+          "items": {
+            "type": "object",
+            "required": ["start", "end", "text"],
+            "properties": {
+              "start": {"type": "number", "minimum": 0},
+              "end": {"type": "number", "minimum": 0},
+              "text": {"type": "string", "maxLength": 200}
+            }
+          }
+        }
+      }
+    },
+    "overlays": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["start", "end", "text"],
+        "properties": {
+          "start": {"type": "number", "minimum": 0},
+          "end": {"type": "number", "minimum": 0},
+          "text": {"type": "string", "maxLength": 200}
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "required": ["keep_original"],
+      "properties": {
+        "keep_original": {"type": "boolean"},
+        "music": {"type": ["object", "null"]}
+      }
+    },
+    "requires": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "automatic_publish": {"enum": [false]}
+  }
+}

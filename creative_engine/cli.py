@@ -1,6 +1,6 @@
 """Uso local sin Cloudflare (desarrollo o pruebas de calidad):
 
-  python -m creative_engine.cli VIDEO.mov [--style auto] [--language ca] [--transcript t.json] [--render] [--out carpeta]
+  python -m creative_engine.cli VIDEO.mov [--brand blau_de_mar|top_house] [--style auto] [--language ca] [--transcript t.json] [--render] [--out carpeta]
 
 Genera ``edit_plan.json`` con 0..N propuestas y, con --render, los MP4 + portada + informe QC.
 El original no se modifica. Nada se publica.
@@ -12,6 +12,7 @@ import json
 import sys
 from pathlib import Path
 
+from creative_engine import brands as B
 from creative_engine import pipeline as P
 from creative_engine.director import build_plan, load_styles
 
@@ -21,6 +22,7 @@ def main():
     p.add_argument('video')
     p.add_argument('--style', default='auto', choices=sorted(load_styles()))
     p.add_argument('--language', default='ca', choices=['ca', 'es'])
+    p.add_argument('--brand', default=B.default_brand(), choices=B.brand_ids())
     p.add_argument('--transcript', help='JSON con segmentos ya transcritos (opcional)')
     p.add_argument('--render', action='store_true')
     p.add_argument('--out', help='carpeta de salida (por defecto junto al vídeo)')
@@ -36,11 +38,11 @@ def main():
     P.dump(P.summary(u), out / 'analysis_summary.json')
     if not args.render:
         plan = build_plan(u['transcript'].get('segments', []), u['meta']['duration'], args.style, args.language,
-                          analysis=u['analysis'], meta=u['meta'])
+                          analysis=u['analysis'], meta=u['meta'], brand=args.brand)
         P.dump(plan, out / 'edit_plan.json')
         print(f'PLAN: {out / "edit_plan.json"} -> {plan["status"]} ({len(plan["candidates"])} propostes)')
         return 0 if plan['status'] == 'drafts' else 2
-    res = P.produce(source, out, args.style, args.language, understood=u,
+    res = P.produce(source, out, args.style, args.language, understood=u, brand=args.brand,
                     progress=lambda s, pct, m: print(f'[{pct:3d}%] {m}', flush=True))
     P.dump(res['plan'], out / 'edit_plan.json')
     if res['plan']['status'] != 'drafts':

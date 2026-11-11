@@ -4,7 +4,7 @@ from creative_engine.director import build_plan, load_styles
 
 def test_every_style_has_unique_id_and_render_recipe():
     s = load_styles()
-    assert len(s) == 18 and len(s) == len(set(s))
+    assert len(s) == 24 and len(s) == len(set(s))  # 18 genéricos + 3 presets por marca
     assert all('render' in p and p['automated_state'] == 'render_recipe' for p in s.values())
 
 

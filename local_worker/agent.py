@@ -224,7 +224,8 @@ class Agent:
         if not job.get('analysis_available'):
             self.progress('saving_analysis', 40, 'Desant l’anàlisi per a futures correccions')
             self.api('PUT', f"/api/agent/jobs/{job['id']}/analysis", json={'full': u, 'summary': P.summary(u)}, timeout=300)
-        res = P.produce(src, work, job.get('style') or 'auto', lang, job.get('options') or {}, self.progress, understood=u)
+        res = P.produce(src, work, job.get('style') or 'auto', lang, job.get('options') or {}, self.progress, understood=u,
+                        brand=job.get('brand'))
         plan, results = res['plan'], res['results']
         ok = [r for r in results if 'error' not in r]
         skip = int(job.get('variants_done') or 0)
@@ -236,7 +237,7 @@ class Agent:
         errors = [r['error'] for r in results if 'error' in r]
         reason = plan.get('reason') if plan['status'] != 'drafts' else ('; '.join(errors) if not ok and errors else '')
         self.api('POST', f"/api/agent/jobs/{job['id']}/complete", json={'reason': reason, 'summary': {
-            'style': plan.get('style'), 'style_reason': plan.get('style_reason'), 'selection': plan.get('selection'),
+            'brand': plan.get('brand'), 'style': plan.get('style'), 'style_reason': plan.get('style_reason'), 'selection': plan.get('selection'),
             'semantic_vision': plan.get('semantic_vision'), 'transcript_error': plan.get('transcript_error'),
             'candidates': len(plan['candidates']), 'render_errors': errors[:5]}})
 

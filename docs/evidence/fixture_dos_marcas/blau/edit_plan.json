@@ -1,0 +1,702 @@
+{
+ "brand": "blau_de_mar",
+ "style_requested": "auto",
+ "style": "blau_human",
+ "style_reason": "reaccions/riures detectats: to proper i humà",
+ "automatic_publish": false,
+ "editorial_review_required": true,
+ "caption_review_required": true,
+ "claims_checked": false,
+ "selection": "multimodal_signals+speech",
+ "semantic_vision": "no disponible: només senyals d’imatge i so (activa BLAU_VISION_MODEL per a visió local)",
+ "retakes_removed": [],
+ "status": "drafts",
+ "candidates": [
+  {
+   "schema": "blau.edl/4",
+   "id": "505de9e3cb0b",
+   "version": 1,
+   "style": "blau_human",
+   "style_label": "Blau · Equipo",
+   "brand": {
+    "id": "blau_de_mar",
+    "name": "Blau de Mar",
+    "style_schema": "brand_style_v1",
+    "style_version": "1.0.0",
+    "accent": "#7FE3D6",
+    "caption_font": "Poppins ExtraBold",
+    "caption_size": null,
+    "visual_status": "provisional"
+   },
+   "language": "ca",
+   "grade": "natural",
+   "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "fps_reason": "fps nativo del bruto"
+   },
+   "source": {
+    "duration": 42.838,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "hdr": false
+   },
+   "segments": [
+    {
+     "id": "s1",
+     "in": 11.478,
+     "out": 15.406,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    },
+    {
+     "id": "s2",
+     "in": 16.406,
+     "out": 20.302,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    }
+   ],
+   "captions": {
+    "mode": "words",
+    "size": "l",
+    "position": "lower",
+    "events": [
+     {
+      "start": 0.08,
+      "end": 1.749,
+      "text": "La persona\nestigui com una",
+      "words": [
+       {
+        "start": 0.08,
+        "end": 0.265,
+        "word": "La",
+        "source_start": 11.558
+       },
+       {
+        "start": 0.265,
+        "end": 0.76,
+        "word": "persona",
+        "source_start": 11.743
+       },
+       {
+        "start": 0.76,
+        "end": 1.254,
+        "word": "estigui",
+        "source_start": 12.238
+       },
+       {
+        "start": 1.254,
+        "end": 1.501,
+        "word": "com",
+        "source_start": 12.732
+       },
+       {
+        "start": 1.501,
+        "end": 1.749,
+        "word": "una",
+        "source_start": 12.979
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 1.749,
+      "end": 3.417,
+      "text": "i relaxa la\nmes del primer",
+      "words": [
+       {
+        "start": 1.749,
+        "end": 1.872,
+        "word": "i",
+        "source_start": 13.227
+       },
+       {
+        "start": 1.872,
+        "end": 2.305,
+        "word": "relaxa",
+        "source_start": 13.35
+       },
+       {
+        "start": 2.305,
+        "end": 2.49,
+        "word": "la",
+        "source_start": 13.783
+       },
+       {
+        "start": 2.49,
+        "end": 2.737,
+        "word": "mes",
+        "source_start": 13.968
+       },
+       {
+        "start": 2.737,
+        "end": 2.985,
+        "word": "del",
+        "source_start": 14.215
+       },
+       {
+        "start": 2.985,
+        "end": 3.417,
+        "word": "primer",
+        "source_start": 14.463
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 3.417,
+      "end": 4.008,
+      "text": "minut.",
+      "words": [
+       {
+        "start": 3.417,
+        "end": 3.788,
+        "word": "minut.",
+        "source_start": 14.895
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 4.008,
+      "end": 5.816,
+      "text": "Però he vist la\ncaïlla sent a",
+      "words": [
+       {
+        "start": 4.008,
+        "end": 4.309,
+        "word": "Però",
+        "source_start": 16.486
+       },
+       {
+        "start": 4.309,
+        "end": 4.49,
+        "word": "he",
+        "source_start": 16.787
+       },
+       {
+        "start": 4.49,
+        "end": 4.791,
+        "word": "vist",
+        "source_start": 16.968
+       },
+       {
+        "start": 4.791,
+        "end": 4.972,
+        "word": "la",
+        "source_start": 17.269
+       },
+       {
+        "start": 4.972,
+        "end": 5.394,
+        "word": "caïlla",
+        "source_start": 17.45
+       },
+       {
+        "start": 5.394,
+        "end": 5.695,
+        "word": "sent",
+        "source_start": 17.872
+       },
+       {
+        "start": 5.695,
+        "end": 5.816,
+        "word": "a",
+        "source_start": 18.173
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 5.816,
+      "end": 6.901,
+      "text": "fallar en\nla cafè.",
+      "words": [
+       {
+        "start": 5.816,
+        "end": 6.238,
+        "word": "fallar",
+        "source_start": 18.294
+       },
+       {
+        "start": 6.238,
+        "end": 6.418,
+        "word": "en",
+        "source_start": 18.716
+       },
+       {
+        "start": 6.418,
+        "end": 6.599,
+        "word": "la",
+        "source_start": 18.896
+       },
+       {
+        "start": 6.599,
+        "end": 6.901,
+        "word": "cafè.",
+        "source_start": 19.077
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 6.901,
+      "end": 7.684,
+      "text": "És el secret.",
+      "words": [
+       {
+        "start": 6.901,
+        "end": 7.081,
+        "word": "És",
+        "source_start": 19.379
+       },
+       {
+        "start": 7.081,
+        "end": 7.262,
+        "word": "el",
+        "source_start": 19.559
+       },
+       {
+        "start": 7.262,
+        "end": 7.684,
+        "word": "secret.",
+        "source_start": 19.74
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     }
+    ]
+   },
+   "overlays": [],
+   "audio": {
+    "keep_original": true,
+    "target_lufs": -16,
+    "true_peak_max": -1.0,
+    "music": null,
+    "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+   },
+   "loop": false,
+   "duration": 7.824,
+   "score": {
+    "hook": 17,
+    "story": 20,
+    "authenticity": 8,
+    "utility": 10,
+    "rhythm": 12,
+    "brand": 4,
+    "total": 71,
+    "meaning": "puntuació editorial, no probabilitat de viralitat"
+   },
+   "provenance": {
+    "transcript_rows": [
+     1,
+     2
+    ],
+    "source_range": [
+     11.558,
+     20.162
+    ],
+    "text": "La persona estigui com una i relaxa la mes del primer minut. Però he vist la caïlla sent a fallar en la cafè. És el secret.",
+    "notes": [
+     "arrenca amb pregunta/ganxo",
+     "té remat",
+     "possible música de fons (revisar drets)",
+     "reacció/riure probable al final"
+    ],
+    "keep_full_repeats": false,
+    "retakes_removed": []
+   },
+   "risks": [],
+   "requires": [
+    "team_consent"
+   ],
+   "explanation": "Fragment 11.6–20.2 s del vídeo original. Reaccions/riures detectats: to proper i humà. Per què: arrenca amb pregunta/ganxo; té remat; possible música de fons (revisar drets); reacció/riure probable al final. Puntuació editorial 71/100 (no és predicció de viralitat).",
+   "automatic_publish": false,
+   "editorial_review_required": true,
+   "hook_overlay_suggestion": "La persona estigui com una i relaxa la mes del primer minut.",
+   "title": "1. La persona estigui com una i relaxa la mes del p"
+  },
+  {
+   "schema": "blau.edl/4",
+   "id": "f24d57b6f9c3",
+   "version": 1,
+   "style": "blau_human",
+   "style_label": "Blau · Equipo",
+   "brand": {
+    "id": "blau_de_mar",
+    "name": "Blau de Mar",
+    "style_schema": "brand_style_v1",
+    "style_version": "1.0.0",
+    "accent": "#7FE3D6",
+    "caption_font": "Poppins ExtraBold",
+    "caption_size": null,
+    "visual_status": "provisional"
+   },
+   "language": "ca",
+   "grade": "natural",
+   "output": {
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "fps_reason": "fps nativo del bruto"
+   },
+   "source": {
+    "duration": 42.838,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "hdr": false
+   },
+   "segments": [
+    {
+     "id": "s1",
+     "in": 27.478,
+     "out": 30.99,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    },
+    {
+     "id": "s2",
+     "in": 31.862,
+     "out": 40.558,
+     "zoom": 1.0,
+     "x": 0.5,
+     "y": 0.5,
+     "push_in": 0.0,
+     "framing": "center"
+    }
+   ],
+   "captions": {
+    "mode": "words",
+    "size": "l",
+    "position": "lower",
+    "events": [
+     {
+      "start": 0.08,
+      "end": 1.726,
+      "text": "M'hauré explicat\nla pròpia",
+      "words": [
+       {
+        "start": 0.08,
+        "end": 0.568,
+        "word": "M'hauré",
+        "source_start": 27.558
+       },
+       {
+        "start": 0.568,
+        "end": 1.116,
+        "word": "explicat",
+        "source_start": 28.046
+       },
+       {
+        "start": 1.116,
+        "end": 1.299,
+        "word": "la",
+        "source_start": 28.594
+       },
+       {
+        "start": 1.299,
+        "end": 1.726,
+        "word": "pròpia",
+        "source_start": 28.777
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 1.726,
+      "end": 3.912,
+      "text": "missatge amb el\nmeu primer Suri",
+      "words": [
+       {
+        "start": 1.726,
+        "end": 2.275,
+        "word": "missatge",
+        "source_start": 29.204
+       },
+       {
+        "start": 2.275,
+        "end": 2.519,
+        "word": "amb",
+        "source_start": 29.753
+       },
+       {
+        "start": 2.519,
+        "end": 2.701,
+        "word": "el",
+        "source_start": 29.997
+       },
+       {
+        "start": 2.701,
+        "end": 2.945,
+        "word": "meu",
+        "source_start": 30.179
+       },
+       {
+        "start": 2.945,
+        "end": 3.372,
+        "word": "primer",
+        "source_start": 30.423
+       },
+       {
+        "start": 3.592,
+        "end": 3.912,
+        "word": "Suri",
+        "source_start": 31.942
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 3.912,
+      "end": 5.83,
+      "text": "la porta de la\ncarina, qui vol",
+      "words": [
+       {
+        "start": 3.912,
+        "end": 4.103,
+        "word": "la",
+        "source_start": 32.262
+       },
+       {
+        "start": 4.103,
+        "end": 4.487,
+        "word": "porta",
+        "source_start": 32.453
+       },
+       {
+        "start": 4.487,
+        "end": 4.679,
+        "word": "de",
+        "source_start": 32.837
+       },
+       {
+        "start": 4.679,
+        "end": 4.871,
+        "word": "la",
+        "source_start": 33.029
+       },
+       {
+        "start": 4.871,
+        "end": 5.318,
+        "word": "carina,",
+        "source_start": 33.221
+       },
+       {
+        "start": 5.318,
+        "end": 5.574,
+        "word": "qui",
+        "source_start": 33.668
+       },
+       {
+        "start": 5.574,
+        "end": 5.83,
+        "word": "vol",
+        "source_start": 33.924
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 5.83,
+      "end": 7.62,
+      "text": "càmer amb tota\nla confiança.",
+      "words": [
+       {
+        "start": 5.83,
+        "end": 6.213,
+        "word": "càmer",
+        "source_start": 34.18
+       },
+       {
+        "start": 6.213,
+        "end": 6.469,
+        "word": "amb",
+        "source_start": 34.563
+       },
+       {
+        "start": 6.469,
+        "end": 6.789,
+        "word": "tota",
+        "source_start": 34.819
+       },
+       {
+        "start": 6.789,
+        "end": 6.981,
+        "word": "la",
+        "source_start": 35.139
+       },
+       {
+        "start": 6.981,
+        "end": 7.62,
+        "word": "confiança.",
+        "source_start": 35.331
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 8.52,
+      "end": 10.117,
+      "text": "El final van\nviure tan que",
+      "words": [
+       {
+        "start": 8.52,
+        "end": 8.697,
+        "word": "El",
+        "source_start": 36.87
+       },
+       {
+        "start": 8.697,
+        "end": 9.052,
+        "word": "final",
+        "source_start": 37.047
+       },
+       {
+        "start": 9.052,
+        "end": 9.289,
+        "word": "van",
+        "source_start": 37.402
+       },
+       {
+        "start": 9.289,
+        "end": 9.644,
+        "word": "viure",
+        "source_start": 37.639
+       },
+       {
+        "start": 9.644,
+        "end": 9.88,
+        "word": "tan",
+        "source_start": 37.994
+       },
+       {
+        "start": 9.88,
+        "end": 10.117,
+        "word": "que",
+        "source_start": 38.23
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 10.117,
+      "end": 11.713,
+      "text": "ara és la\nnostra moment de",
+      "words": [
+       {
+        "start": 10.117,
+        "end": 10.353,
+        "word": "ara",
+        "source_start": 38.467
+       },
+       {
+        "start": 10.353,
+        "end": 10.531,
+        "word": "és",
+        "source_start": 38.703
+       },
+       {
+        "start": 10.531,
+        "end": 10.708,
+        "word": "la",
+        "source_start": 38.881
+       },
+       {
+        "start": 10.708,
+        "end": 11.122,
+        "word": "nostra",
+        "source_start": 39.058
+       },
+       {
+        "start": 11.122,
+        "end": 11.536,
+        "word": "moment",
+        "source_start": 39.472
+       },
+       {
+        "start": 11.536,
+        "end": 11.713,
+        "word": "de",
+        "source_start": 39.886
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     },
+     {
+      "start": 11.713,
+      "end": 12.413,
+      "text": "lluit.",
+      "words": [
+       {
+        "start": 11.713,
+        "end": 12.068,
+        "word": "lluit.",
+        "source_start": 40.063
+       }
+      ],
+      "type": "transcript_auto_unverified"
+     }
+    ]
+   },
+   "overlays": [],
+   "audio": {
+    "keep_original": true,
+    "target_lufs": -16,
+    "true_peak_max": -1.0,
+    "music": null,
+    "note": "sin música añadida: solo audio original o librería con licencia comercial verificada"
+   },
+   "loop": false,
+   "duration": 12.208,
+   "score": {
+    "hook": 9,
+    "story": 17,
+    "authenticity": 8,
+    "utility": 7,
+    "rhythm": 15,
+    "brand": 4,
+    "total": 60,
+    "meaning": "puntuació editorial, no probabilitat de viralitat"
+   },
+   "provenance": {
+    "transcript_rows": [
+     3,
+     5
+    ],
+    "source_range": [
+     27.558,
+     40.418
+    ],
+    "text": "M'hauré explicat la pròpia missatge amb el meu primer Suri la porta de la carina, qui vol càmer amb tota la confiança. El final van viure tan que ara és la nostra moment de lluit.",
+    "notes": [
+     "possible música de fons (revisar drets)",
+     "reacció/riure probable al final"
+    ],
+    "keep_full_repeats": false,
+    "retakes_removed": []
+   },
+   "risks": [],
+   "requires": [
+    "team_consent"
+   ],
+   "explanation": "Fragment 27.6–40.4 s del vídeo original. Reaccions/riures detectats: to proper i humà. Per què: possible música de fons (revisar drets); reacció/riure probable al final. Puntuació editorial 60/100 (no és predicció de viralitat).",
+   "automatic_publish": false,
+   "editorial_review_required": true,
+   "hook_overlay_suggestion": "M'hauré explicat la pròpia missatge amb el meu primer",
+   "title": "2. M'hauré explicat la pròpia missatge amb el meu p"
+  }
+ ]
+}
