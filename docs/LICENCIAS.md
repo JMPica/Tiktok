@@ -21,10 +21,11 @@ un uso comercial distinto del actual** (no he podido abrir sus páginas desde es
 ## Evaluadas, NO integradas
 | Herramienta | Decisión | Motivo |
 |---|---|---|
-| HyperFrames (HeyGen) | pendiente de prueba práctica | Apache-2.0 según la evaluación previa; necesita Chrome sin interfaz en el editor: más tiempo de render |
-| Remotion | no integrar por ahora | según la guía de @tumadreanna (PDF, pág. 4): gratis por cuenta propia; un equipo o agencia de 4 o más personas debe pedir licencia. Verificar condiciones vigentes |
-| reels-montage | solo como referencia de método | pensado para Claude Code en un PC, no para una cola sin operador |
+| HyperFrames (HeyGen) | candidato para Motion Creator; pendiente de prueba práctica y de tu autorización | **Apache-2.0, verificado** en su `LICENSE` (11-11-2026); Node ≥ 22; necesita Chrome sin interfaz en el editor: más tiempo de render |
+| Remotion | no integrar sin conocer la plantilla de la empresa | **Verificado** en su `LICENSE.md` (11-11-2026): gratis para una persona, organizaciones con ánimo de lucro de hasta 3 empleados y entidades sin ánimo de lucro; el resto necesita Company License. No es código abierto. Cambiará ligeramente en Remotion 5.0 |
+| reels-montage | solo como referencia de método | **MIT, verificado**; pensado para Claude Code en un PC, no para una cola sin operador |
 | rembg (u2net_human_seg) | no integrar por ahora | coste de cálculo alto en CPU; aporta poco a los formatos actuales |
+| «Blackdark Reels» (blackdark.club) | no evaluado | ficha del producto no accesible desde la sesión; licencia desconocida; no se usa ni se copia nada |
 | yt-dlp | no integrar | descargar Reels/Shorts de terceros choca con las condiciones de las plataformas; las referencias se analizan con material aportado legítimamente |
 
 ## Servicios y coste

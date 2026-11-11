@@ -1,4 +1,10 @@
 # Changelog
+## 2026-11-11 · Diseño de Motion Creator (sin código)
+- `docs/MOTION_CREATOR_DISENO.md`: módulo separado del editor de vídeo real que comparte perfiles de marca, QC y
+  aprobaciones; formatos propuestos por marca; opciones de motor; condiciones para empezar.
+- Licencias de Remotion, HyperFrames y reels-montage verificadas en sus repositorios (`docs/LICENCIAS.md`).
+- La ficha de «Blackdark Reels» y el perfil de Instagram no son accesibles desde la sesión: no se describe su contenido.
+
 ## V4.3.0 — 2026-11-11 · Método de la guía «Deja de editar tus reels» — sin desplegar
 - **Encargo por vídeo** (opcional al subir): de qué va, para quién, objetivo, duración máxima y texto de cierre.
   La duración máxima manda sobre el estilo; el cierre sale escrito al final tal como se teclea (la herramienta no
