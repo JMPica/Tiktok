@@ -207,6 +207,19 @@ def run_flow(base, issuer, agent_token, video, args, tmp):
     check('T02 roles owner/editor', owner.get(base + '/api/me').json()['role'] == 'owner' and editor.get(base + '/api/me').json()['role'] == 'editor')
     check('agente sin token => 401', requests.post(base + '/api/agent/claim').status_code == 401)
     check('estáticos servidos', requests.get(base + '/').status_code == 200 and 'TikTok Studio' in requests.get(base + '/').text)
+    # --- «Aprèn l'estil»: la fitxa (només números) es registra des de l'agent i es pot triar a l'app
+    from creative_engine import style_learn as SL
+    lp = SL.derive([{'duration': 30, 'shot_lengths': [2.0, 2.5, 3.0], 'cuts_per_10s': 3, 'has_audio': True, 'pause_s_p90': 0.5,
+                     'silence_ratio': 0.1, 'probable_music': False}] * 2, 'Estil E2E')
+    ah = {'Authorization': 'Bearer ' + agent_token}
+    check('estil après: registre sense token => 401', requests.put(f"{base}/api/agent/styles/{lp['id']}", json=lp).status_code == 401)
+    bad = {**lp, 'render': {**lp['render'], 'punch_zoom': 0.9}}
+    check('estil après: valors fora de rang => 422', requests.put(f"{base}/api/agent/styles/{lp['id']}", json=bad, headers=ah).status_code == 422)
+    check('estil après: registre per l\'agent', requests.put(f"{base}/api/agent/styles/{lp['id']}", json=lp, headers=ah).status_code == 200)
+    cfg_styles = {x['id']: x for x in editor.get(base + '/api/config').json()['styles']}
+    check('estil après: apareix a la config amb marca learned', cfg_styles.get(lp['id'], {}).get('learned') is True and 'auto' in cfg_styles)
+    check('estil après: no pot pisar els de sèrie', requests.put(f"{base}/api/agent/styles/learned_x", json=lp, headers=ah).status_code == 422)
+    check('estil après: l\'equip no el pot esborrar', editor.delete(f"{base}/api/styles/{lp['id']}").status_code == 403)
     cross = editor.post(base + '/api/uploads', json={'filename': 'x.mp4', 'size_bytes': 5000}, headers={'Origin': 'https://evil.example'})
     check('CSRF: mutación desde otro origen => 403', cross.status_code == 403)
 

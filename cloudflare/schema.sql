@@ -50,3 +50,7 @@ CREATE INDEX IF NOT EXISTS idx_jobs_owner ON jobs(owner,created_at);
 CREATE INDEX IF NOT EXISTS idx_variants_job ON variants(job_id,idx);
 CREATE INDEX IF NOT EXISTS idx_variants_upload ON variants(upload_id);
 CREATE INDEX IF NOT EXISTS idx_uploads_owner ON uploads(owner,created_at);
+
+CREATE TABLE IF NOT EXISTS learned_styles (
+ id TEXT PRIMARY KEY, label TEXT NOT NULL, profile TEXT NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+);

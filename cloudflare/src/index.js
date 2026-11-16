@@ -17,6 +17,32 @@ const LEASE_DEFAULT_S = 30 * 60;
 const leaseMs = (env) => Math.max(10, Number(env.LEASE_SECONDS || LEASE_DEFAULT_S)) * 1000;
 const MAX_ATTEMPTS = 3;
 const STYLES = new Map(styleData.profiles.map((s) => [s.id, s]));
+// Estilos aprendidos de vídeos de referencia («Aprèn l'estil»): solo números + entrevista, nunca vídeo ni texto.
+const LEARNED_ID = /^learned_[a-z0-9_]{1,32}$/;
+const L_GRADES = ['natural', 'punchy', 'premium', 'none'], L_CAPTIONS = ['words', 'phrase', 'none'], L_SPEECH = ['required', 'optional', 'none'];
+function validateLearned(p) {
+  const r = p?.render || {};
+  const num = (x, lo, hi) => typeof x === 'number' && Number.isFinite(x) && x >= lo && x <= hi;
+  const ok = p && p.schema === 'blau.learned_style/1' && LEARNED_ID.test(String(p.id)) && typeof p.label === 'string' && p.label.length >= 1 && p.label.length <= 60
+    && L_GRADES.includes(r.grade) && L_CAPTIONS.includes(r.captions) && L_SPEECH.includes(r.speech)
+    && Array.isArray(r.ideal) && r.ideal.length === 2 && num(r.ideal[0], 1, 120) && num(r.ideal[1], 2, 120) && r.ideal[0] < r.ideal[1]
+    && num(r.max_len, r.ideal[1], 120) && num(r.max_pause, 0.1, 1.5) && num(r.push_in, 0, 0.2) && num(r.punch_zoom, 0, 0.2);
+  if (!ok) fail(422, 'Fitxa d’estil no vàlida');
+  return { schema: p.schema, id: p.id, label: p.label, label_ca: p.label, intent: String(p.intent || '').slice(0, 200), intent_ca: String(p.intent_ca || '').slice(0, 200),
+    look: r.grade, target_shot_seconds: p.target_shot_seconds || null, story_arc: 'auto', automated_state: 'learned_from_references',
+    render: { speech: r.speech, ideal: r.ideal, max_len: r.max_len, max_pause: r.max_pause, grade: r.grade, captions: r.captions,
+      push_in: r.push_in, punch_zoom: r.punch_zoom, loop: false, requires: [] },  // un estil aprendido no pot treure requisits d'aprovació
+    learned: { references: Number(p.learned?.references) || 0, explanation: (p.learned?.explanation || []).slice(0, 8).map((x) => String(x).slice(0, 200)),
+      copies_content: false, caveat: String(p.learned?.caveat || '').slice(0, 300) } };
+}
+async function learnedStyles(env) {
+  const { results } = await env.DB.prepare('SELECT id,profile FROM learned_styles ORDER BY created_at').all();
+  return results.map((r) => parse(r.profile, null)).filter(Boolean);
+}
+async function styleExists(env, id) {
+  if (STYLES.has(id)) return true;
+  return LEARNED_ID.test(String(id)) && !!(await env.DB.prepare('SELECT 1 AS x FROM learned_styles WHERE id=?').bind(id).first());
+}
 const APPROVAL_ITEMS = ['team_consent', 'client_consent', 'claims_review', 'licensed_music', 'before_after_evidence',
   'trend_source', 'comment_text', 'captions_reviewed'];
 const jwksCache = new Map();
@@ -227,7 +253,7 @@ async function createJob(req, env, user, uid) {
   const mode = b.mode || 'automatic';
   if (!['automatic', 'real', 'creative'].includes(mode)) fail(422, 'Mode no vàlid');
   const style = b.style || 'auto';
-  if (!STYLES.has(style)) fail(422, 'Estil no vàlid');
+  if (!(await styleExists(env, style))) fail(422, 'Estil no vàlid');
   const language = b.language || 'ca';
   if (!['ca', 'es'].includes(language)) fail(422, 'Idioma no vàlid');
   const dup = await env.DB.prepare("SELECT id,status FROM jobs WHERE upload_id=? AND kind='produce' AND style=? AND language=? AND status IN ('queued','processing')")
@@ -401,6 +427,20 @@ async function uploadAnalysis(env, user, id) {
 }
 
 // ------------------------------------------------------------------ agente local
+async function learnedProfile(env, id) {
+  if (!LEARNED_ID.test(String(id || ''))) return null;
+  const r = await env.DB.prepare('SELECT profile FROM learned_styles WHERE id=?').bind(id).first();
+  return r ? parse(r.profile, null) : null;
+}
+async function putLearnedStyle(req, env, id) {
+  const prof = validateLearned(await bodyJSON(req, 64 * 1024));
+  if (prof.id !== id) fail(422, 'Identificador no coincideix');
+  const t = now();
+  await env.DB.prepare('INSERT INTO learned_styles(id,label,profile,created_at,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET label=excluded.label,profile=excluded.profile,updated_at=excluded.updated_at')
+    .bind(id, prof.label, JSON.stringify(prof), t, t).run();
+  await audit(env, 'agent', 'style_learned', id, { references: prof.learned.references });
+  return json({ id, label: prof.label });
+}
 async function claim(env) {
   const t = now();
   await env.DB.prepare("UPDATE jobs SET status='failed',error='L’ordinador editor s’ha aturat massa vegades amb aquest vídeo',stage='failed',updated_at=? WHERE status='processing' AND lease_until<? AND attempts>=?")
@@ -425,7 +465,7 @@ async function claim(env) {
   }
   const { results: done } = await env.DB.prepare("SELECT COUNT(*) AS n FROM variants WHERE job_id=? AND status!='uploading'").bind(j.id).all();
   return json({ job: { id: j.id, kind: j.kind, upload_id: j.upload_id, filename: u?.filename, size_bytes: u?.size_bytes, mode: j.mode,
-    style: j.style || 'auto', language: j.language || 'ca', options: parse(j.options, {}), instruction: j.instruction,
+    style: j.style || 'auto', style_profile: await learnedProfile(env, j.style), language: j.language || 'ca', options: parse(j.options, {}), instruction: j.instruction,
     manual_edits: parse(j.manual_edits, null), parent, analysis_available: !!u?.analysis_key, lease_until: t + leaseMs(env),
     agent_id: agentId, attempt: j.attempts, variants_done: done[0]?.n || 0 } });
 }
@@ -474,7 +514,7 @@ async function startVariant(req, env, id) {
   const size = Number(b.size_bytes);
   if (!Number.isSafeInteger(size) || size < 1 || size > 2 * 1024 * 1024 * 1024) fail(422, 'Mida de vídeo no vàlida');
   if (!b.edl || !Array.isArray(b.edl.segments)) fail(422, 'EDL requerit');
-  if (b.style && !STYLES.has(b.style)) fail(422, 'Estil no vàlid');
+  if (b.style && !(await styleExists(env, b.style))) fail(422, 'Estil no vàlid');
   const vid = randomId();
   const key = `renders/${j.upload_id}/${vid}.mp4`;
   const edlKey = `edl/${j.upload_id}/${vid}.json`;
@@ -561,6 +601,8 @@ async function failJob(req, env, id) {
 async function agentRouter(req, env, p, m) {
   await requireAgent(req, env);
   if (m === 'POST' && p === '/api/agent/claim') return claim(env);
+  const ls = p.match(/^\/api\/agent\/styles\/(learned_[a-z0-9_]{1,32})$/);
+  if (ls && m === 'PUT') return putLearnedStyle(req, env, ls[1]);
   let x = p.match(/^\/api\/agent\/jobs\/([0-9a-f]{32})\/(progress|source|analysis|variants|complete|fail)$/);
   if (x) {
     const [, id, action] = x;
@@ -597,7 +639,15 @@ async function router(req, env, ctx) {
   }
   if (m === 'GET' && p === '/api/me') return json(user);
   if (m === 'GET' && p === '/api/config') return json({ version: VERSION, part_size: PART, max_upload_bytes: Number(env.MAX_UPLOAD_BYTES || 4294967296),
-    styles: [...STYLES.values()].map((s) => ({ id: s.id, label: s.label_ca || s.label, intent: s.intent_ca || s.intent, requires: s.render?.requires || [] })) });
+    styles: [...STYLES.values(), ...(await learnedStyles(env))].map((s) => ({ id: s.id, label: s.label_ca || s.label, intent: s.intent_ca || s.intent, requires: s.render?.requires || [],
+      learned: s.id.startsWith('learned_') || undefined })) });
+  const ds = p.match(/^\/api\/styles\/(learned_[a-z0-9_]{1,32})$/);
+  if (ds && m === 'DELETE') {
+    requireOwnerRole(user);
+    await env.DB.prepare('DELETE FROM learned_styles WHERE id=?').bind(ds[1]).run();
+    await audit(env, user.email, 'style_deleted', ds[1], null);
+    return json({ deleted: ds[1] });
+  }
   if (m === 'GET' && p === '/api/audit') {
     requireOwnerRole(user);
     const { results } = await env.DB.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 300').all();

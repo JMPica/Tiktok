@@ -45,6 +45,7 @@ Editor al núvol (GitHub Actions, 0 €) o ordenador Windows/Mac ─► agente: 
 | `creative_engine/` | media, analysis, transcribe, director, captions, render, qc, revise, pipeline, CLI, estilos y marca |
 | `windows/`, `0X_*.cmd`, `macos/` | instalación y arranque sin Docker; autoarranque opcional |
 | `tests/` | unit + render real (`pytest`), E2E completo (`e2e_local.py`) |
+| `estil_referencies/` | vídeos de referència per a «Aprèn l'estil» (`docs/APREN_ESTIL.md`) |
 | `docs/` | guías, arquitectura/costes, estilos, investigación, **checklist con evidencias** (`docs/evidence/`) |
 | `server/`, `legacy/` | V3 heredado (FastAPI) y scripts originales, solo referencia |
 
@@ -57,7 +58,7 @@ Editor al núvol (GitHub Actions, 0 €) o ordenador Windows/Mac ─► agente: 
 ## Pruebas
 ```
 pip install -r requirements-dev.txt
-python -m pytest -q tests                      # 24 pruebas (incluye render FFmpeg real)
+python -m pytest -q tests                      # 36 pruebas (incluye render FFmpeg real)
 cd cloudflare && npm install && cd ..
 python tests/e2e_local.py --video MI_VIDEO.mov  # Worker real local + agente + FFmpeg (54 comprobaciones)
 node cloudflare/test/ui_e2e.mjs MI_VIDEO.mov    # interfaz con viewport iPhone (Chromium)

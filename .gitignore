@@ -28,3 +28,8 @@ venv/
 .wrangler/
 docs/evidence/**/*.mp4
 cloudflare/src/static.generated.js
+
+# «Aprèn l'estil»: vídeos de referència i fitxes locals (no es versionen)
+estil_referencies/*
+!estil_referencies/LLEGEIX.txt
+learned_styles/

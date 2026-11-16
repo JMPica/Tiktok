@@ -1,4 +1,9 @@
 # Changelog
+## V4.2.0 — 2026-11-16
+- **«Aprèn l'estil»** (`docs/APREN_ESTIL.md`): mesura 2–8 vídeos de referència (ritme de talls, durada, pauses, parlat) i genera un
+  estil editable sense copiar contingut; es registra al servei (només números) i es tria a l'app. Estils `learned_*` validats
+  (Worker i motor), no poden treure requisits d'aprovació. Advanced → «Estils apresos» (esborrar). Migració `0003_learned_styles.sql`.
+  Scripts `07_APRENDRE_ESTIL_*` i carpeta `estil_referencies/`. 9 proves noves (36 en total); E2E local 28 comprovacions amb estil après.
 ## V4.1.1 — 2026-10-31
 - Preses repetides: si una frase es comença i es torna a dir, el director es queda amb l'última presa completa
   (en estils d'humor es conserva una repetició sencera). Les correccions fan servir les mateixes files.

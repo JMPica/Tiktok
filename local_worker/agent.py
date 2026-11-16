@@ -197,7 +197,21 @@ class Agent:
         except JobGone:
             return None
 
+    def sync_styles(self) -> int:
+        """Envia al servidor les fitxes d'«Aprèn l'estil» d'aquest ordinador (només números, mai vídeo ni text)."""
+        from creative_engine.style_learn import load_learned
+        learned = load_learned()
+        for sid, prof in learned.items():
+            self.api('PUT', f'/api/agent/styles/{sid}', json=prof)
+            print(f'Estil registrat: {prof["label"]} ({sid})', flush=True)
+        if not learned:
+            print('No hi ha fitxes a learned_styles/ (vegeu: python -m creative_engine.style_learn)', flush=True)
+        return len(learned)
+
     def process(self, job: dict):
+        if job.get('style_profile'):  # estil après: el servidor n'envia la fitxa; es valida abans de fer-la servir
+            from creative_engine.director import register_learned
+            register_learned(job['style_profile'])
         self.job = job
         self._beat_stop.clear()
         beat = threading.Thread(target=self._heartbeat, daemon=True)
@@ -299,6 +313,10 @@ class Agent:
 
 
 def main():
+    if '--sync-styles' in sys.argv:
+        require_tools()
+        n = Agent().sync_styles()
+        sys.exit(0 if n else 2)
     Agent().loop(once='--once' in sys.argv, drain='--drain' in sys.argv)
 
 

@@ -1,0 +1,5 @@
+CARPETA DE REFERÈNCIES PER A «APRÈN L'ESTIL»
+Posa aquí 3 a 6 vídeos ACABATS i teus (o de l'equip) que representin el ritme que vols: .mp4 o .mov.
+Després fes doble clic a 07_APRENDRE_ESTIL_WINDOWS.cmd (Windows) o macos/07_APRENDRE_ESTIL_MAC.command (Mac).
+Només es desen números (ritme de talls, durada, pauses). Els vídeos no es copien ni es pugen enlloc,
+i aquesta carpeta no entra al repositori.

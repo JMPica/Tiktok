@@ -42,6 +42,7 @@ async function api(path, opts = {}) {
   return r;
 }
 const getJSON = async (p) => (await api(p)).json();
+const sLabel = (x) => config?.styles.find((s) => s.id === x.style)?.label || x.style_label;
 const send = async (p, data = {}, method = 'POST') => (await api(p, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })).json();
 const fmtTime = (ms) => new Date(ms).toLocaleString('ca-ES', { dateStyle: 'short', timeStyle: 'short' });
 const pill = (status) => { const [t, c] = STATUS[status] || [status, '']; return el('span', { class: 'pill ' + c, text: t }); };
@@ -51,7 +52,7 @@ async function boot() {
   try {
     [me, config] = await Promise.all([getJSON('/me'), getJSON('/config')]);
     $('user').textContent = `${me.email} · ${me.role === 'owner' ? 'Propietària' : 'Equip'}`;
-    for (const s of config.styles) if (s.id !== 'auto') $('style').append(el('option', { value: s.id, text: s.label }));
+    for (const s of config.styles) if (s.id !== 'auto') $('style').append(el('option', { value: s.id, text: s.learned ? s.label + ' (après)' : s.label }));
     if (me.role === 'owner') {
       $('modeSwitch').hidden = false;
       try { mode = localStorage.getItem('blau-mode') || 'simple'; } catch { /* */ }
@@ -65,6 +66,8 @@ function setMode(m) {
   mode = me?.role === 'owner' ? m : 'simple';
   for (const b of document.querySelectorAll('#modeSwitch button')) b.classList.toggle('on', b.dataset.mode === mode);
   $('auditPanel').hidden = mode !== 'advanced';
+  $('stylesPanel').hidden = mode !== 'advanced';
+  if (mode === 'advanced') renderLearned();
   $('listTitle').textContent = mode === 'advanced' ? 'Tots els vídeos' : 'Els meus vídeos';
   try { localStorage.setItem('blau-mode', mode); } catch { /* */ }
   if (currentJob) openJob(currentJob.id);
@@ -156,7 +159,7 @@ async function refresh() {
       const stage = j.status === 'processing' ? `${STAGES[j.stage] || 'Editant'} · ${j.progress}%` : '';
       const card = el('button', { class: 'job', type: 'button', onclick: () => openJob(j.id) },
         el('div', { class: 'row between' }, el('strong', { text: j.filename || 'Vídeo' }), pill(j.status)),
-        el('div', { class: 'small muted', text: `${j.kind === 'revise' ? 'Correcció · ' : ''}${j.style_label} · ${fmtTime(j.created_at)}${mode === 'advanced' ? ' · ' + j.owner : ''}` }),
+        el('div', { class: 'small muted', text: `${j.kind === 'revise' ? 'Correcció · ' : ''}${sLabel(j)} · ${fmtTime(j.created_at)}${mode === 'advanced' ? ' · ' + j.owner : ''}` }),
         j.status === 'processing' ? el('progress', { max: 100, value: j.progress }) : null,
         stage ? el('div', { class: 'small muted', text: stage + (j.message ? ' · ' + j.message : '') }) : null,
         j.status === 'needs_review' || j.status === 'failed' ? el('div', { class: 'small', text: j.error || '' }) : null,
@@ -205,7 +208,7 @@ function retryBox(j) {
 function variantCard(v) {
   const card = el('article', { class: 'variant' });
   card.append(el('div', { class: 'row between' }, el('strong', { text: `${v.title || 'Proposta'} · v${v.version}` }), pill(v.status)));
-  card.append(el('div', { class: 'small muted', text: `${v.style_label} · ${v.duration ? v.duration.toFixed(1) + ' s' : ''} · puntuació editorial ${v.score_total ?? '–'}/100 (no és predicció de viralitat)` }));
+  card.append(el('div', { class: 'small muted', text: `${sLabel(v)} · ${v.duration ? v.duration.toFixed(1) + ' s' : ''} · puntuació editorial ${v.score_total ?? '–'}/100 (no és predicció de viralitat)` }));
   if (v.has_preview) {
     card.append(el('video', { controls: true, playsinline: true, preload: 'metadata', src: `/api/variants/${v.id}/preview`,
       poster: v.has_poster ? `/api/variants/${v.id}/poster` : null }));
@@ -315,6 +318,15 @@ async function renderUploadAdvanced(j) {
     if (!confirm('S’esborraran per sempre l’original, l’anàlisi i totes les versions d’aquest vídeo. Continuar?')) return;
     try { await api('/uploads/' + j.upload_id, { method: 'DELETE' }); $('detail').hidden = true; currentJob = null; refresh(); }
     catch (e) { show(e.message); } } })));
+}
+function renderLearned() {
+  const list = (config?.styles || []).filter((s) => s.learned);
+  $('learnedStyles').replaceChildren(...(list.length ? list.map((s) => el('div', { class: 'row between' },
+    el('span', { text: `${s.label} — ${s.intent}` }),
+    el('button', { class: 'danger small-btn', type: 'button', text: 'Esborrar', onclick: async () => {
+      if (!confirm(`Esborrar l’estil «${s.label}»? Les peces ja fetes no canvien.`)) return;
+      try { await api('/styles/' + s.id, { method: 'DELETE' }); config = await getJSON('/config'); location.reload(); } catch (e) { show(e.message); } } })))
+    : [el('div', { class: 'muted', text: 'Cap encara. A l’ordinador editor: python -m creative_engine.style_learn REF1.mp4 REF2.mp4 --name "El meu estil"' })]));
 }
 async function loadAudit() {
   try {

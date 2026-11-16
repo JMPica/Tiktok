@@ -57,7 +57,7 @@ Comparació amb l'estudi de Blau de Mar:
 |---|---|
 | Treure silencis i muletes, subtítols paraula a paraula, 1080×1920, control abans d'entregar, versions _v1/_v2 | Ja fet (automàtic, sense ordinador, amb QC mesurat i hash) |
 | Quedar-se amb l'última presa quan es repeteix una frase | **Afegit avui** (`drop_retakes`); en estils d'humor es conserva la repetició sencera (pot ser el gag) |
-| Fitxa d'estil apresa de 3–6 vídeos de referència + entrevista | Pendent: proposta «Aprèn l'estil» a Advanced (mesurar ritme de talls, durada, sonoritat dels vídeos de referència) |
+| Fitxa d'estil apresa de 3–6 vídeos de referència + entrevista | **Fet (V4.2.0)**, `docs/APREN_ESTIL.md`: mesura ritme de talls, durada, pauses i parlat; l'entrevista és --captions/--grade. No mesura humor ni estètica |
 | Guió per moments i aprovació dels talls abans d'editar | Parcial: l'explicació i l'EDL es veuen després del render; es pot afegir un «guió» previ |
 | Animacions (Remotion/HyperFrames), text darrere la persona (rembg), música lliure de drets | Pendent i opcional: més cost de càlcul; Remotion pot requerir llicència per a un equip; música només amb llicència verificada |
 | −14 LUFS | Aquí −16 LUFS (encàrrec original); es pot canviar si ho preferiu |

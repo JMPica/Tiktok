@@ -48,9 +48,24 @@ CLAIMS = re.compile(r'\b(cura|curar|curem|elimina|eliminar|per sempre|para siemp
 MINORS = re.compile(r'\b(nen|nena|nens|niño|niña|niños|menor|filla|fill|hija|hijo)\b', re.I)
 
 
+_REGISTERED: dict[str, dict] = {}
+
+
+def register_learned(profile: dict) -> str:
+    """Registra en este proceso un estilo aprendido (p. ej. el que envía el servidor al agente). Lo valida."""
+    from creative_engine.style_learn import validate
+    validate(profile)
+    _REGISTERED[profile['id']] = profile
+    return profile['id']
+
+
 def load_styles() -> dict:
+    from creative_engine.style_learn import load_learned
     data = json.loads(Path(__file__).with_name('styles.v4.json').read_text(encoding='utf8'))
-    return {s['id']: s for s in data['profiles']}
+    styles = {s['id']: s for s in data['profiles']}
+    for sid, prof in {**load_learned(), **_REGISTERED}.items():
+        styles[sid] = prof  # los estilos aprendidos nunca pisan los 18 de serie (ids con prefijo learned_)
+    return styles
 
 
 def clean_phrase(s: str) -> str:
